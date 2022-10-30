@@ -1,0 +1,20 @@
+import { AppProvider } from '../context';
+import Header from './header';
+import Footer from './footer';
+
+const Layout = ({children, headerFooter}) => {
+	const { header, footer } = headerFooter || {};
+	return (
+		<AppProvider>
+			<div>
+				<Header header={header}/>
+				<main className="min-h-50vh">
+					{children}
+				</main>
+				<Footer footer={footer}/>
+			</div>
+		</AppProvider>
+	)
+}
+
+export default Layout
