@@ -22,13 +22,14 @@ export default async function handler(req, res) {
         success: false,
         products: []
     }
-
-    const {perPage} = req?.query ?? {};
+    console.log('req?.query', req?.query)
+    const {per_page, category} = req?.query ?? {};
     try {
         const {data} = await api.get(
             'products',
             {
-                per_page: perPage || 50
+                per_page: per_page || 50,
+                category: category || 0
             }
         )
         responseData.success = true;

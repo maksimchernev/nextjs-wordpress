@@ -2,26 +2,35 @@ import Link from "next/link"
 import {isEmpty, isArray} from 'lodash';
 import { sanitize } from "../../../utils/miscellaneous";
 import {getIconComponentByName} from '../../../utils/iconsMap'
+import Image from '../../image';
 const Footer = ({footer, header}) => {
 
-	const {siteLogoUrl} = header || {}
+	const {siteTitle, siteLogoUrl} = header || {}
 	const {copyrightText, sidebarOne, socialLinks} = footer || {}
     return (
       <footer className="py-20">
 			<div className="container mx-auto flex flex-wrap">
 				<div className="xl:w-1/2 w-full">
-					{/*Logo*/}
 					<div className="flex items-center flex-shrink-0 mb-5">
-						{
-							siteLogoUrl ? (
-								<img src={siteLogoUrl} alt={`${siteTitle} logo`} width='328'/>
-							) : (
-								<span className="font-semibold text-xl tracking-tight">
-									<p className="logo-text">Magnetic Light</p>
-								</span>
-							)
-						}
+							{
+								siteLogoUrl ? (
+									<Image 
+										sourceUrl={siteLogoUrl ?? ''}
+										altText={`${siteTitle} logo` ?? ''}
+										title={`${siteTitle} logo` ?? ''}
+										width={'328px'}
+										height={'50px'}
+									/>
+								) : (
+									<span className="font-semibold text-xl tracking-tight">
+										<p className="logo-text">Magnetic Light</p>
+									</span>
+								)
+							}
 					</div>
+
+					{/*Logo*/}
+			
 
 					
 					<div className="flex flex-wrap overflow-hidden text-white text-base widgets">
@@ -45,7 +54,7 @@ const Footer = ({footer, header}) => {
 						</div>
 
 						{/*Widget Two*/}
-						<div className="my-1 px-1  overflow-hidden w-1/">
+						<div className="my-1 px-1  overflow-hidden w-1/2">
 							<div dangerouslySetInnerHTML={{ __html: sanitize( sidebarOne ) }}/>
 						</div>
 
@@ -55,7 +64,7 @@ const Footer = ({footer, header}) => {
 							<ul className="flex item-center">
 								{ socialLinks.map( socialLink => (
 									<li key={socialLink?.iconName} className="mx-4 text-white">
-										<a href={ socialLink?.iconURL || '/'} target="_blank" title={socialLink?.iconName}>
+										<a href={ socialLink?.iconURL || '/'} target="_blank" rel="noreferrer" title={socialLink?.iconName}>
 											{ getIconComponentByName( socialLink?.iconName ) }
 											<span className="sr-only">{socialLink?.iconName}</span>
 										</a>
@@ -68,7 +77,7 @@ const Footer = ({footer, header}) => {
 				</div>
 
 				{/* form */}
-				<div className="my-1 px-1  overflow-hidden xl:w-1/3 w-1/2 text-white xl:mt-0 mt-10 ml-12" >
+				<div className="my-1 px-1 mx-24 overflow-hidden xl:w-1/3 w-full text-white xl:mt-0 mt-10 xl:ml-12" >
 					<p className="text-2xl uppercase mb-5">Наш специалист поможет выбрать конфигурацию под Ваш проект!</p>
 					<form action="/send-data-here" method="post" className="flex flex-col">
 						<input type="text" id="name" name="name" className="text-black bg-transparent border-b border-white py-2 mb-7" required placeholder="Имя"/>

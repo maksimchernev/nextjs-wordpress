@@ -5,9 +5,9 @@ import axios from 'axios'
 
 export default function Cart({headerFooter}) {
     return (
-        <Layout headerFooter={headerFooter}>
-            <p>I'm cart</p>
-        </Layout>
+        <div>
+            <p>Im cart</p>
+        </div>
     )
 }
 

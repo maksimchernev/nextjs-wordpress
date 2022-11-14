@@ -17,13 +17,13 @@ const ChooseBrand = ({categories}) => {
                 <div className="w-full my-24 flex flex-wrap -mx-3 overflow-hidden">
                     { categories.length ? categories.map( category => {
                         const img = category?.image ?? {}
-                        if (category.parent == 0 && category.name != 'Uncategorized') {
+                        if (category.parent == 0 && category.slug != 'uncategorized') {
                             return (
-                                <div className="mt-4 mb-8 px-3 w-full overflow-hidden sm:w-1/2 md:w-1/3 xl:w-1/4" key={ category?.id }>
+                                <div className="flex align-center justify-center  mb-4 py-4 px-3 w-full overflow-hidden sm:w-1/2 md:w-1/3 xl:w-1/4 " key={ category?.id }>
                                     <Link 
                                     href={{
-                                        pathname: '/categories/[category]',
-                                        query: { category: category?.slug },
+                                        pathname: '/brand/[brandId]',
+                                        query: { brandId: category?.slug },
                                     }}>
                                 
                                         <a>

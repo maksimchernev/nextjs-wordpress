@@ -10,13 +10,22 @@ body {
 #header {
     z-index: 999;
 }
+main {
+  position: relative;
+}
 .hero div h1{
     font-style: normal;
     font-weight: 700;
+    text-transform: uppercase;
+}
+.h1-color-yellow {
+    color: #FFDF38;
+    font-size: 60px;
+    line-height: 79px;
+}
+.h1-color-white {
     font-size: 66px;
     line-height: 79px;
-    text-transform: uppercase;
-    color: #FFFFFF;
 }
 .hero div p{
     font-style: normal;
@@ -52,6 +61,11 @@ footer {
 .hero div button {
     width: auto;
 }
+.hero div button:hover, .submit-btn:hover {
+    color: #333333;
+    background-color: #FFDF38;
+    transition: 0.2s;
+}
 #about div h2, #howto div h2, #brands div h2 {
     font-style: normal;
     font-weight: 700;
@@ -78,9 +92,8 @@ $dotSize: 100px;
     position: relative;
     display: block;
     z-index: 2;
-    width: 75%; /* change or remove*/
-    margin: auto;
-  
+    width: 80%; /* change or remove*/  
+    margin: 0 5% ;
 }
 
 .base-timeline::before {
@@ -151,4 +164,41 @@ $dotSize: 100px;
     line-height: 48px;
     text-transform: uppercase;
     color: #FFDF38;
+}
+.back-btn {
+    align-items: center;
+    cursor: pointer;
+}
+.back-dark{
+    color: #787878;
+}
+.back-white{
+    color: #fff;
+}
+.back-cont-abs {
+    top: 3rem;
+    position: absolute;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+
+}
+.back-text {
+    margin-left: 5px;
+    line-height:17px;
+    font-size:14px;
+    vertical-align:middle;
+    font-weight: 300;
+}
+.back-text:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px
+}
+
+.down-btn{
+    color: #333;
+}
+.down-btn:hover{
+    color: #FFDF38;
+    transition: 0.2s;
 }

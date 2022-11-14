@@ -20,5 +20,9 @@ module.exports = {
 	 * @see https://nextjs.org/docs/basic-features/image-optimization#domains
 	 */
 }
-module.exports = { images: { domains: [allowedImageWordPressDomain]}, }
+module.exports = { images: {
+	domains: [ allowedImageWordPressDomain, 'via.placeholder.com' ],
+},
+  }
+  
 
