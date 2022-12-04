@@ -1,5 +1,5 @@
-import Layout from '../../../src/components/layouts';
-import {getAllBrands, getCategoryData, getSeriesOfABrand} from '../../../src/utils/categories'
+import Layout from '../../../src/components/layout';
+import {getAllBrandsPaths, getCategoryDataBySlug, getSubCategoriesById} from '../../../src/utils/categories'
 import {HEADER_FOOTER_ENDPOINT} from '../../../src/utils/constants/endpoints'
 import axios from 'axios'
 import Image from '../../../src/components/image' 
@@ -10,12 +10,14 @@ import { Embedded } from '../../../src/components/icons';
 import { Overhead } from '../../../src/components/icons';
 import { Profile } from '../../../src/components/icons';
 import {useRouter} from 'next/router'
+
+
 export default function Brand(props) {
   const router = useRouter()
   if (router.isFallback) {
     return <h1>Loaddddd</h1>
   }
-  console.log('brandProps', props)
+ //console.log'brandProps', props)
   const img = props?.brandData?.image ?? {}
   let pecOne
   if (props?.series?.length > 1) {
@@ -23,13 +25,18 @@ export default function Brand(props) {
   } else {
     pecOne = null
   }
-  let pecs = props?.series ? props?.series.map(name => { 
+  let pecs = []
+  props?.series ? props?.series.map(name => { 
     let descrArr = name.description.split('\r\n')
-    return {
-      name: name.name,
-      peculiarity: descrArr[descrArr.indexOf('Особенности:')+1],
+    if(descrArr[descrArr.indexOf('Особенности:')+1]) {
+      pecs.push ({
+        name: name.name,
+        peculiarity: descrArr[descrArr.indexOf('Особенности:')+1],
+      })
     }
   }) : null
+  //console.log('pecs', pecs)
+
   let availablePics = ['встраиваемый', 'накладной', 'профиль']
   
   let options = props?.series ? props?.series.map(name => { 
@@ -37,17 +44,17 @@ export default function Brand(props) {
     return descrArr[descrArr.indexOf('Варианты установки:')+1]
   }) : null
   options? options = options.join() : options = null
-  //console.log('options', options)
+  //////console.log('options', options)
   let instOptions = []
   for (let picName of availablePics) {
     if (options && options.includes(picName)) {
       instOptions.push(picName)
     } 
   }
-  //console.log('instOptions', instOptions)
+  //////console.log('instOptions', instOptions)
 
   return (
-    <Layout headerFooter={props.headerFooter} initialHeader={'black'} isHeaderVisible={true}>
+    <Layout headerFooter={props.headerFooter} initialHeader={'black'} isHeaderVisible={true} isBagYellow={false}>
         <BackButton isHeaderVisible={true}/>
         <div className='w-full flex flex-wrap overflow-hidden container mx-auto px-12 justify-center'>
           <Image 
@@ -96,8 +103,6 @@ export default function Brand(props) {
                       <p className='capitalize pt-2'>{option}</p>
                     </div>
                   )
-                  
-                  
                 }) : null}
               </div>
           </div>
@@ -117,23 +122,26 @@ export default function Brand(props) {
         </div>
         
         <div className="w-full flex flex-wrap overflow-hidden container mx-auto py-24" id='series'>
-        <h1 className='w-full flex text-2xl font-semibold mb-12'>Магнитные трековые системы {props?.brandData?.name ?? ""}</h1>
+          <h1 className='w-full flex text-2xl font-semibold mb-12'>Магнитные трековые системы {props?.brandData?.name ?? ""}</h1>
           {
             props.series?.length ? props.series?.map ( name => {
+              let img = name.image
               return (
                 <div className='my-2 px-2 w-1/2 overflow-hidden' key={name.id}>
                   <Link href={{
                     pathname: '[brandId]/series/[seriesId]',
-                    query: { brandId: props?.brandData?.slug, seriesId: name?.slug },
+                    query: { brandId: router.query.brandId, seriesId: name?.slug },
                   }}>
                     <a>
-                      <div 
-                        style={{
-                          backgroundImage: `url(${name.image.src})`,
-                        }}
-                        className='h-96 bg-center bg-no-repeat bg-cover flex'
-                        >
-                        <p className='text-white ml-5 mb-5 uppercase self-end'>{name.name}</p>
+                      <div className='flex-col relative'>
+                        <Image
+                          sourceUrl={ img?.src ?? '' }
+                          altText={ img?.alt ?? ''}
+                          title={ name?.name ?? '' }
+                          width="800"
+                          height="500"
+                        />
+                        <p className='text-white uppercase self-end series-card-text'>{name?.name}</p>
                       </div>
                     </a>
                   </Link>
@@ -147,25 +155,22 @@ export default function Brand(props) {
 }
 
 export async function getStaticPaths() {
-    const paths = await getAllBrands()
+    const paths = await getAllBrandsPaths()
     return {
       paths,
       fallback: true,
     };
   } 
 
-export async function getStaticProps(context) {
+export async function getStaticProps({params}) {
   const { data: headerFooterData } = await axios.get( HEADER_FOOTER_ENDPOINT );
-  const {params} = context
-  const slug = params.brandId
-  const brandData = await getCategoryData(slug)
-  const series = await getSeriesOfABrand(brandData?.id)
+  const brandData = await getCategoryDataBySlug(params.brandId)
+  const series = await getSubCategoriesById(brandData?.id)
   if (!brandData?.id) {
     return {
       notFound: true
     }
   }
-  console.log(`generating page for /brands/${params.brandId}`)
 	return {
 		props: {
       headerFooter: headerFooterData?.data ?? {},

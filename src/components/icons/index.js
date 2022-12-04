@@ -1,3 +1,4 @@
+export { default as ArrowFilter } from "./ArrowFilter";
 export { default as ArrowDown } from "./ArrowDown";
 export { default as Back } from "./Back";
 export { default as Bag } from "./Bag";

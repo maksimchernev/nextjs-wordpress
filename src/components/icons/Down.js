@@ -14,12 +14,21 @@ const SvgDown = (props) => (
     <path
       style={{
         fill: "none",
+        strokeWidth: 12,
+        strokeLinecap: "square",
+        strokeMiterlimit: 10,
+      }}
+      d="M111 40.5 64 87.499"
+    />
+    <path
+      style={{
+        fill: "none",
         stroke: "#2f3435",
         strokeWidth: 12,
         strokeLinecap: "square",
         strokeMiterlimit: 10,
       }}
-      d="M111 40.5 64 87.499M64 87.499 17 40.5"
+      d="M64 87.499 17 40.5"
     />
   </svg>
 );

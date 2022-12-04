@@ -20,24 +20,43 @@ const api = new WooCommerceRestApi({
 export default async function handler(req, res) {
     const responseData = {
         success: false,
-        products: []
+        products: [],
     }
-    console.log('req?.query', req?.query)
-    const {per_page, category} = req?.query ?? {};
-    try {
-        const {data} = await api.get(
-            'products',
-            {
-                per_page: per_page || 50,
-                category: category || 0
-            }
-        )
-        responseData.success = true;
-        responseData.products = data
-
-        res.json(responseData)   
-    } catch(error) {
-        responseData.error = error.message
-        res.status(500).json(responseData)
+    //console.log('req?.query', req?.query)
+    const {per_page, category, page, attribute, term} = req?.query ?? {};
+    if (attribute && term) {
+        try {
+            const {data} = await api.get(
+                'products',
+                {
+                    per_page: per_page || 50,
+                    page: page || 1,
+                    category: category || 0,
+                }
+            )
+            responseData.success = true;
+            responseData.products = data
+            res.json(responseData)   
+        } catch(error) {
+            responseData.error = error.message
+            res.status(500).json(responseData)
+        }
+    } else {
+        try {
+            const {data} = await api.get(
+                'products',
+                {
+                    per_page: per_page || 50,
+                    page: page || 1,
+                    category: category || 0
+                }
+            )
+            responseData.success = true;
+            responseData.products = data
+            res.json(responseData)   
+        } catch(error) {
+            responseData.error = error.message
+            res.status(500).json(responseData)
+        }
     }
 }

@@ -3,12 +3,16 @@ import {isEmpty, isArray} from 'lodash';
 import { sanitize } from "../../../utils/miscellaneous";
 import {getIconComponentByName} from '../../../utils/iconsMap'
 import Image from '../../image';
+
+
+
+
 const Footer = ({footer, header}) => {
 
 	const {siteTitle, siteLogoUrl} = header || {}
-	const {copyrightText, sidebarOne, socialLinks} = footer || {}
+	const {copyrightText, sidebarOne, socialLinks, sidebarTwo} = footer || {}
     return (
-      <footer className="py-20">
+      <footer className="py-20 px-2">
 			<div className="container mx-auto flex flex-wrap">
 				<div className="xl:w-1/2 w-full">
 					<div className="flex items-center flex-shrink-0 mb-5">
@@ -23,7 +27,7 @@ const Footer = ({footer, header}) => {
 									/>
 								) : (
 									<span className="font-semibold text-xl tracking-tight">
-										<p className="logo-text">Magnetic Light</p>
+										<p className="logo-text text-2xl md:">Magnetic Light</p>
 									</span>
 								)
 							}
@@ -33,7 +37,7 @@ const Footer = ({footer, header}) => {
 			
 
 					
-					<div className="flex flex-wrap overflow-hidden text-white text-base widgets">
+					<div className="flex flex-wrap overflow-hidden text-white text-base widgets leading-8">
 						{/*Menu*/}
 						<div className="my-1 px-1  overflow-hidden w-1/2 ">
 							<Link href="/#About/">
@@ -53,9 +57,10 @@ const Footer = ({footer, header}) => {
 							</Link>
 						</div>
 
-						{/*Widget Two*/}
-						<div className="my-1 px-1  overflow-hidden w-1/2">
+						{/*Widget One & Two*/}
+						<div className="my-1 px-1 overflow-hidden w-1/2 leading-8">
 							<div dangerouslySetInnerHTML={{ __html: sanitize( sidebarOne ) }}/>
+							<div dangerouslySetInnerHTML={{ __html: sanitize( sidebarTwo ) }}/>
 						</div>
 
 						{/*Social links*/}
@@ -77,14 +82,14 @@ const Footer = ({footer, header}) => {
 				</div>
 
 				{/* form */}
-				<div className="my-1 px-1 mx-24 overflow-hidden xl:w-1/3 w-full text-white xl:mt-0 mt-10 xl:ml-12" >
-					<p className="text-2xl uppercase mb-5">Наш специалист поможет выбрать конфигурацию под Ваш проект!</p>
+				<div className="my-1 px-1 md:mx-24 overflow-hidden xl:w-1/3 w-full text-white xl:mt-0 mt-10 xl:ml-12" >
+					<p className="text-xl xl:text-2xl uppercase mb-5 text-center md:text-left">Наш специалист поможет выбрать конфигурацию под Ваш проект!</p>
 					<form action="/send-data-here" method="post" className="flex flex-col">
 						<input type="text" id="name" name="name" className="text-black bg-transparent border-b border-white py-2 mb-7" required placeholder="Имя"/>
 						<input type="phone" id="phone" name="phone" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" className="text-black bg-transparent border-b border-white py-2 mb-7" required placeholder="Телефон"/>
 
 						<button type="submit" className="rounded-none border submit-btn">Отправить</button>
-						<p className="text-xs text-gray-400 my-3">Нажимая кнопку “Отправить” я принимаю условия Политики приватности</p>
+						<p className="text-xs text-gray-400 my-3 text-center md:text-left">Нажимая кнопку “Отправить” я принимаю условия Политики приватности</p>
 					</form>
 				</div>
 

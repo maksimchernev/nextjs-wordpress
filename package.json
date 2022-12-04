@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "NODE_OPTIONS='--inspect' next dev",
+    "dev": "node server.js",
     "build": "next build",
-    "start": "next start",
+    "start": "NODE_ENV=production node server.js",
     "lint": "next lint",
     "svg": "svgr -d src/components/icons src/components/icons/svgs"
   },
@@ -19,7 +19,8 @@
     "prop-types": "^15.8.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "sass": "^1.55.0"
+    "sass": "^1.55.0",
+    "sharp": "^0.31.2"
   },
   "devDependencies": {
     "@svgr/cli": "^6.5.0",

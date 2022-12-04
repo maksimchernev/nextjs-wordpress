@@ -10,19 +10,14 @@ const api = new WooCommerceRestApi({
 export default async function handler(req, res) {
     const responseData = {
         success: false,
-        categories: []
+        attributes: []
     }
-
     try {
         const {data} = await api.get(
-            'products/categories',
-            {
-                per_page: 75,
-                parent: 21
-            }
+            'products/attributes/',
         )
         responseData.success = true;
-        responseData.categories = data
+        responseData.attributes = data
 
         res.json(responseData)   
     } catch(error) {

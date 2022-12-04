@@ -1,5 +1,6 @@
-const WooCommerceRestApi = require("@woocommerce/woocommerce-rest-api").default;
+import { getAttributeTermsByAttributeName } from "./attributes";
 
+const WooCommerceRestApi = require("@woocommerce/woocommerce-rest-api").default;
 
 const api = new WooCommerceRestApi({
   url: process.env.NEXT_PUBLIC_WORDPRESS_SITE_URL,
@@ -17,12 +18,59 @@ const api = new WooCommerceRestApi({
  * @return {Promise<void>}
  */
 
-export const getProductsData = async (per_page, category) => {
+export const getProductsDataByCategoryId = async (per_page, category, page) => {
     return await api.get(
             'products',
             {
-              per_page: per_page || 50,
-              category: category || 0
+              per_page: per_page || 100,
+              category: category || 0,
+              page: page || 1
             }
         )
+}
+
+export const getProductsData = async (per_page, page) => {
+    return await api.get(
+      'products',
+      {
+        per_page: per_page || 20,
+        page: page || 1
+      }
+  )
+}
+export const getProductData = async (slug) => {
+  return await api.get(
+    'products',
+    {
+      slug: slug || ''
+    }
+  )
+}
+export const getAllProductsPaths = async() => {
+  const { headers } = await getProductsData(100)
+  async function awaitAll(count, asyncFn) {
+      const promises = [];
+      for (let i = 1; i <= count; i++) {
+          promises.push(asyncFn(100, i));
+      }
+      return Promise.all(promises);
+  }
+
+  let products = await awaitAll(Number(headers['x-wp-totalpages']), getProductsData)
+  
+  products = products.map(data => {
+      return data.data
+  })
+  products = products.reduce((acc, value)=> {
+      return acc.concat(value)
+  }) 
+ //console.logproducts)
+  return products.map(product => {
+    /*//console.log'pmlk', product?.permalink?.split('product/')[1].slice(0,-1)) */
+    return {
+      params: {
+        productId: decodeURI(product.permalink.split('product/')[1].slice(0,-1))
+      }
+    }
+})
 }

@@ -15,7 +15,7 @@ export const AppProvider = ( props ) => {
 	 */
 	useEffect( () => {
 		
-		if ( process.browser ) {
+		if ( typeof window !== 'undefined' ) {
 			let cartData = localStorage.getItem( 'next-cart' );
 			cartData = null !== cartData ? JSON.parse( cartData ) : '';
 			setCart( cartData );
@@ -32,7 +32,7 @@ export const AppProvider = ( props ) => {
 	 */
 	useEffect( () => {
 
-		if ( process.browser ) {
+		if ( typeof window !== 'undefined' ) {
 			localStorage.setItem('next-cart', JSON.stringify(cart));
 		}
 
