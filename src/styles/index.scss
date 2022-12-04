@@ -406,6 +406,7 @@ $dotSize: 100px;
     }
     .base-timeline__item {
         display: inline-block;
+        margin-top: 0;
     }
     .base-timeline::before {
         content: '';
