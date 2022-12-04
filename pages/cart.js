@@ -5,9 +5,9 @@ import CartItemsContainer from '../src/components/cart/cart-item-container';
 
 export default function Cart({ headerFooter }) {
 	return (
-		<Layout headerFooter={headerFooter || {}}>
+		<Layout headerFooter={headerFooter || {}} initialHeader={'black'} isBagYellow={true}>
 			<div className='mt-28 container mx-auto'>
-				<h1 className="uppercase tracking-0.5px">Корзина</h1>
+				<h1 className="uppercase tracking-0.5px text-4xl mb-10">Корзина</h1>
 				<CartItemsContainer/>
 			</div>
 		</Layout>

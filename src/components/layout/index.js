@@ -7,7 +7,7 @@ const Layout = ({children, headerFooter, initialHeader, isBagYellow, bgProduct})
 	return (
 		<AppProvider>
 			<div className={bgProduct ? 'product-bg-gray' : null}>
-				<Header header={header} footer={footer} initialHeader={initialHeader} isBagYellow={isBagYellow} bgProduct={bgProduct}/>
+				<Header header={header} footer={footer} initialHeader={initialHeader} isBagYellow={isBagYellow}/>
 				<main className="min-h-50vh">
 					{children}
 				</main>

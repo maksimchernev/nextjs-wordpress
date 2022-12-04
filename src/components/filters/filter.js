@@ -1,7 +1,5 @@
-import { useState } from "react"
 import { sanitize } from "../../utils/miscellaneous"
 import { ArrowFilter } from "../icons"
-import { useEffect } from "react"
 
 const Filter = ({attribute, filters, setFilters, isOpened, setIsOpened}) => {
 
@@ -28,8 +26,6 @@ const Filter = ({attribute, filters, setFilters, isOpened, setIsOpened}) => {
                 }
             })
         }
-        /* //console.log('isKeyPresented',isKeyPresented)
-        //console.log('isValuePresented',isValuePresented) */
         if (!isValuePresented) {
             if (isKeyPresented) {
                 setFilters({...filters, [attrName]: [...filters[attrName], attrTerm]});
@@ -60,7 +56,6 @@ const Filter = ({attribute, filters, setFilters, isOpened, setIsOpened}) => {
                     )
                 }) : null
             }
-            
             </div>
         </div>
     )

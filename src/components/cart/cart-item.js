@@ -14,20 +14,6 @@ const CartItem = ( {
 	const [removingProduct, setRemovingProduct] = useState( false );
 	const productImg = item?.data?.images?.[0] ?? '';
 	
-	/**
-	 * Do not allow state update on an unmounted component.
-	 *
-	 * isMounted is used so that we can set it's value to false
-	 * when the component is unmounted.
-	 * This is done so that setState ( e.g setRemovingProduct ) in asynchronous calls
-	 * such as axios.post, do not get executed when component leaves the DOM
-	 * due to product/item deletion.
-	 * If we do not do this as unsubscription, we will get
-	 * "React memory leak warning- Can't perform a React state update on an unmounted component"
-	 *
-	 * @see https://dev.to/jexperton/how-to-fix-the-react-memory-leak-warning-d4i
-	 * @type {React.MutableRefObject<boolean>}
-	 */
 	const isMounted = useRef( false );
 	
 	useEffect( () => {
@@ -39,14 +25,6 @@ const CartItem = ( {
 		}
 	}, [] )
 	
-	/*
-	 * Handle remove product click.
-	 *
-	 * @param {Object} event event
-	 * @param {Integer} Product Id.
-	 *
-	 * @return {void}
-	 */
 	const handleRemoveProductClick = ( event, cartKey ) => {
 		event.stopPropagation();
 		
@@ -57,18 +35,10 @@ const CartItem = ( {
 		
 		deleteCartItem( cartKey, setCart, setRemovingProduct );
 	};
-	
-	/*
-	 * When user changes the qty from product input update the cart in localStorage
-	 * Also update the cart in global context
-	 *
-	 * @param {Object} event event
-	 *
-	 * @return {void}
-	 */
+
 	const handleQtyChange = ( event, cartKey, type ) => {
 		
-		if ( process.browser ) {
+		if ( typeof window !== 'undefined' ) {
 			
 			event.stopPropagation();
 			let newQty;
@@ -111,16 +81,16 @@ const CartItem = ( {
 			<div className="col-span-2 cart-right-col">
 				<div className="flex justify-between flex-col h-full">
 					<div className="cart-product-title-wrap relative">
-						<h3 className="cart-product-title text-brand-orange">{ item?.data?.name }</h3>
+						<h3 className="cart-product-title text-brand-orange font-bold mr-14 mb-5">{ item?.data?.name }</h3>
 						{item?.data?.description ? <p>{item?.data?.description}</p> : ''}
 						<button className="cart-remove-item absolute right-0 top-0 px-4 py-2 flex items-center text-22px leading-22px bg-transparent border border-brand-bright-grey" onClick={ ( event ) => handleRemoveProductClick( event, item?.key ) }>&times;</button>
 					</div>
 					
-					<footer className="cart-product-footer flex justify-between p-4 border-t border-brand-bright-grey">
+					<div className="cart-product-footer flex justify-between p-4 border-t">
 						<div className="">
 							<span className="cart-total-price">{item?.currency}{item?.line_subtotal}</span>
 						</div>
-						{ updatingProduct ? <img className="woo-next-cart-item-spinner" width="24" src="/cart-spinner.gif"  alt="spinner"/> : null }
+						{/* { updatingProduct ? <img className="woo-next-cart-item-spinner" width="24" src="/cart-spinner.gif"  alt="spinner"/> : null } */}
 						{/*Qty*/}
 						<div style={{ display: 'flex', alignItems: 'center' }}>
 							<button className="decrement-btn text-24px" onClick={( event ) => handleQtyChange( event, item?.cartKey, 'decrement' )} >-</button>
@@ -135,7 +105,7 @@ const CartItem = ( {
 							/>
 							<button className="increment-btn text-20px" onClick={( event ) => handleQtyChange( event, item?.cartKey, 'increment' )}>+</button>
 						</div>
-					</footer>
+					</div>
 				</div>
 			</div>
 		</div>
