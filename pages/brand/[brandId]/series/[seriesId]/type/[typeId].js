@@ -47,7 +47,7 @@ export default function Type(props) {
             }
 
         }
-        if (newProducts.length == 0) {
+        if (newProducts?.length == 0) {
             setCurrentProducts([])
         } else {
             newProducts = splitIntoPages(newProducts, perPage)

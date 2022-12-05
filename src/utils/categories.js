@@ -36,6 +36,8 @@ export async function getCategories(per_page, parent) {
   const { data: categories } = await getCategoriesData(per_page, parent);
   return categories ?? {}
 }
+
+//used for sitemap too
 export async function getSubCategoriesById(id, nameToBeExcluded) {
   if (id == 0) {
     const categories = await getCategories(100,id);
@@ -96,11 +98,19 @@ function findAllChildsOfCategories (categories, childCategories, nameToBeExclude
     return found
   })
 }
-export async function getBrandsAndSeriesPaths() {
+
+
+
+export async function getBrandsAndSeries() {
   const categories = await getAllCategories(100)
   const brandsCats = categories.filter(category => category.parent == 0 && category.slug != 'uncategorized' && category.slug != 'lamp' && category.slug != 'accessory' && category.slug != 'track') 
   const seriesAndTypesCats = categories.filter(category => category.parent !== 0) 
   const seriesCats = findAllChildsOfCategories(brandsCats, seriesAndTypesCats)
+  return {brandsCats, seriesCats}
+}
+
+export async function getBrandsAndSeriesPaths() {
+  const {brandsCats, seriesCats} = await getBrandsAndSeries()
   return seriesCats?.map(series => {
     let brand = brandsCats.find(brand => brand?.id == series.parent)
     return {
@@ -111,12 +121,16 @@ export async function getBrandsAndSeriesPaths() {
     }
   })
 }
-export async function getBrandsSeriesTypePaths() {
+export async function getBrandsSeriesType() {
   const categories = await getAllCategories(100)
   const brandsCats = categories.filter(category => category.parent == 0 && category.slug != 'uncategorized' && category.slug != 'lamp' && category.slug != 'accessory' && category.slug != 'track') 
   const seriesAndTypesCats = categories.filter(category => category.parent !== 0) 
   const seriesCats = findAllChildsOfCategories(brandsCats, seriesAndTypesCats)
   const typeCats = findAllChildsOfCategories(seriesCats, seriesAndTypesCats, 'Сопутствующие')
+  return {brandsCats, seriesCats, typeCats}
+}
+export async function getBrandsSeriesTypePaths() {
+  const {brandsCats, seriesCats, typeCats} = await getBrandsSeriesType()
   return typeCats?.map(type => {
     let slug = type?.slug?.slice(0, type?.slug?.indexOf('-'))
     let series = seriesCats.find(series => series?.id == type.parent)
@@ -135,3 +149,14 @@ export async function getBrandsSeriesTypePaths() {
 
 
 
+//used for sitemap only
+export async function getSeriesSTMP(brands) {
+  const categories = await getAllCategories(100)
+  const seriesAndTypesCats = categories.filter(category => category.parent !== 0) 
+  return findAllChildsOfCategories(brands, seriesAndTypesCats)
+}
+export async function getTypeSTMP(series) {
+  const categories = await getAllCategories(100)
+  const seriesAndTypesCats = categories.filter(category => category.parent !== 0) 
+  return findAllChildsOfCategories(series, seriesAndTypesCats, 'Сопутствующие')
+} 

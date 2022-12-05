@@ -15,8 +15,12 @@ const Product = ( { product } ) => {
 		return null;
 	}
 	const img = product?.images?.[0] ?? {};
-	let permalink = product?.permalink.replace('https', 'http')
-    permalink = decodeURI(permalink.split('http://localhost:3000')[1]) 
+	let permalink = product?.permalink || '/'
+    if (permalink) {
+        permalink = permalink.replace('https', 'http')
+        permalink = (permalink.split(process.env.NEXT_PUBLIC_SITE_URL)[1])
+    }
+    
 	return (
 		<div className="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/5 flex justify-center mb-7">
             <div className='flex-col flex-grow product-card-container'>

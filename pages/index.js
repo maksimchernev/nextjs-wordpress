@@ -10,7 +10,7 @@ import { HEADER_FOOTER_ENDPOINT} from '../src/utils/constants/endpoints';
 import { getSubCategoriesById } from '../src/utils/categories';
 
 export default function Home({headerFooter, brands}) {
-  /* console.warn('propsMain', headerFooter, brands) */
+  console.warn('propsMain', headerFooter, brands) 
 
   return (
     <Layout headerFooter={headerFooter} initialHeader={'white'} isBagYellow={false}>

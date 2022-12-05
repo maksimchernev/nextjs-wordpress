@@ -65,8 +65,13 @@ const Header = ({header, footer, initialHeader, isBagYellow}) => {
     return (
         <>
 		   <Head>
+		   		<meta charSet="UTF-8"></meta>
+				<meta name="description" content="Free Web tutorials"></meta>
+				<meta name="keywords" content="HTML, CSS, JavaScript"></meta>
+				<meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
 				<title>{siteTitle || 'Manually inserted title'}</title>
 				<link rel="icon" href={favicon || "/favicon.png"} />
+				
 			</Head>
 			<div className="fixed w-full top-0" id='header'>
 				<nav className={`p-4`} style={navStyle}>

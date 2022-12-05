@@ -46,7 +46,9 @@ export const getProductData = async (slug) => {
     }
   )
 }
-export const getAllProductsPaths = async() => {
+
+//used for sitemap too
+export const getAllProducts = async() => {
   const { headers } = await getProductsData(100)
   async function awaitAll(count, asyncFn) {
       const promises = [];
@@ -61,9 +63,12 @@ export const getAllProductsPaths = async() => {
   products = products.map(data => {
       return data.data
   })
-  products = products.reduce((acc, value)=> {
+  return products.reduce((acc, value)=> {
       return acc.concat(value)
   }) 
+}
+export const getAllProductsPaths = async() => {
+  const products = await getAllProducts()
  //console.logproducts)
   return products.map(product => {
     /*//console.log'pmlk', product?.permalink?.split('product/')[1].slice(0,-1)) */
