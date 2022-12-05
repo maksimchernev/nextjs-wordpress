@@ -35,9 +35,10 @@ export const addToCart = ( productId, qty = 1 , setCart, setIsAddedToCart, setLo
 			setIsAddedToCart(true);
 			setLoading(false); 
 			viewCart( setCart );
+			console.log( 'res', res );
 		} )
 		.catch( err => {
-			//console.log( 'err', err );
+			console.log( 'err', err );
 		} );
 };
 
@@ -47,20 +48,21 @@ export const addToCart = ( productId, qty = 1 , setCart, setIsAddedToCart, setLo
  * @param {Function} setCart Set Cart Function.
  * @param {Function} setProcessing Set Processing Function.
  */
-export const viewCart = ( setCart/* , setProcessing = () => {} */ ) => {
+export const viewCart = ( setCart, setProcessing = () => {} ) => {
 	
 	const addOrViewCartConfig = getApiCartConfig();
 	
 	axios.get( CART_ENDPOINT, addOrViewCartConfig )
 		.then( ( res ) => {
 			const formattedCartData = getFormattedCartData( res?.data ?? [] )
+			console.log('formattedCartData', formattedCartData)
 			setCart( formattedCartData );
-			/* setProcessing(false); */
-            //console.log('res', res)
+			setProcessing(false);
+            console.log('resView', res?.data)
 		} )
 		.catch( err => {
-			//console.log( 'err', err );
-			/* setProcessing(false); */
+			console.log( 'err', err );
+			setProcessing(false);
 		} );
 };
 
