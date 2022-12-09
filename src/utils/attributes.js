@@ -13,7 +13,11 @@ const api = new WooCommerceRestApi({
 
 export const getAttributesData = async () => {
     return await api.get(
-        'products/attributes'
+        'products/attributes',
+        {
+            hide_empty: true,
+            per_page: 100
+        }
     )
 }
 
@@ -24,13 +28,14 @@ export const getAttributeTermsByAttributeName = async (attrName) => {
     return await api.get(
         `products/attributes/${attrId}/terms`,
         {
-            hide_empty:true
+            hide_empty: true,
+            per_page: 100
         }
     )
 }
 
-export const getRelatedAttributesData = async (exampleProductAttributes) => {
-    //console.log('exampleProductAttributes', exampleProductAttributes)
+export const getRelatedAttributesData = async (products) => {
+    let exampleProductAttributes = products[0].attributes
     if (!(exampleProductAttributes.length && isArray(exampleProductAttributes)) ) {
         return ({relatedAttributes: [], filtersObj: {}})
     }
@@ -39,11 +44,34 @@ export const getRelatedAttributesData = async (exampleProductAttributes) => {
     const relatedAttributes = await Promise.all(exampleProductAttributes.map(async prAttr => {
         const attr = attributes.find(attr => prAttr.id == attr.id)
         const { data: attrTerms } = await api.get(
-            `products/attributes/${attr.id}/terms`
+            `products/attributes/${attr.id}/terms`,
+            {
+                per_page: 100,
+                hide_empty: true,
+            }
         )
-        attr.terms = attrTerms
+        let newAttrTerms = attrTerms.filter(term => {
+            let found = false
+            for (let product of products) {
+                for (let attribute of product.attributes) {
+                    if (attribute.options.includes(term.name)) {                        
+                        found = true
+                        break
+                    }
+                }
+                if (found) {
+                    break
+                }
+            }
+            return found
+        })
+        newAttrTerms.forEach(element => {
+            element.isVisible = true
+        });        
+        attr.terms = newAttrTerms
         return attr
     }))
+
     const filtersObj = getObjectOfArray(relatedAttributes, [])
     return({relatedAttributes, filtersObj})
 }

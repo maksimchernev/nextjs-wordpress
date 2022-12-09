@@ -15,29 +15,31 @@ import Pagination from '../../../../../../src/components/products/pagination';
 import { isEmpty } from 'lodash';
 
 export default function Type(props) {
-   //console.log'typeProps', props) 
-    const [perPage, setPerPage] = useState(30) 
+    const [products, setProducts] = useState(splitIntoPages(props.products, 30))
     const [page, setPage] = useState(1)
-    const [products, setProducts] = useState(splitIntoPages(props.products, perPage))
     const [currentProducts, setCurrentProducts] = useState(products[page-1])
     const [filters, setFilters] = useState(props?.relatedAttributes?.filtersObj || {})
-
+    const [attributes, setAttributes] = useState( props?.relatedAttributes?.relatedAttributes || [])
+    const [attrChosenLast, setAttrChosenLast] = useState([])
     useEffect(()=> {
-       //console.log'products', products)
-    }, [products])
-    useEffect(()=> {
-        //console.log('iam here')
         let newProducts = props.products
+        
         for (const filter in filters ) {
             if (filters[filter].length) {
                 let midNewproducts = newProducts.filter(product=> {
                     let condition 
                     for (const attribute of product.attributes) {
-                        if (attribute.id == filter && filters[filter].includes(attribute.options[0])) {
-                            condition = true
-                            break
+                        if (attribute.id == filter ) {
+                            for (let attributeTerm of attribute.options) {
+                                if(filters[filter].includes(attributeTerm)) {
+                                    condition = true
+                                    break
+                                }
+                            }
                         }
-                        
+                        if (condition) {
+                            break
+                        }  
                     }
                     if (condition) {
                         return product
@@ -47,24 +49,59 @@ export default function Type(props) {
             }
 
         }
-        if (newProducts?.length == 0) {
+        if (newProducts.length == 0) {
+            //когда ниче не нашел
+            let newAttributesArray = props.relatedAttributes.relatedAttributes
+            for (let attribute of newAttributesArray) {
+                for (let term of attribute.terms) {
+                    term.isVisible = true
+                }
+            }
+            setProducts(newProducts)
             setCurrentProducts([])
         } else {
-            newProducts = splitIntoPages(newProducts, perPage)
-           /*  //console.log('newProducts', newProducts)
-            //console.log('allProductsArrayLength_AfterFilterChange', newProducts.length)
-            //console.log('currentProductsLength_AfterFilterChange', newProducts[page-1].length) */
+            const isFiltersEmpty = Object.values(filters).every(value => {
+                if (!value.length) {
+                  return true;
+                }
+                return false;
+              });
+            if (!isFiltersEmpty) {
+                let newAttributesArray = props.relatedAttributes.relatedAttributes
+                for (let attribute of newAttributesArray) {
+                    if(attribute.id != attrChosenLast.at(-1)) {
+                        for (let term of attribute.terms) {
+                            term.isVisible = false
+                            
+                        } 
+                    }
+                }
+                for (let product of newProducts) {
+                    for (let productAttribute of product.attributes) {
+                        for (let attribute of newAttributesArray) {
+                            for (let term of attribute.terms) {
+                                if (productAttribute.options.includes(term.name)) {
+                                    term.isVisible = true   
+                                } 
+                            }
+                        }
+                    }
+                }
+                setAttributes([...newAttributesArray])
+            } else {
+                let newAttributesArray = props.relatedAttributes.relatedAttributes
+                for (let attribute of newAttributesArray) {
+                    for (let term of attribute.terms) {
+                        term.isVisible = true
+                    }
+                }
+            }
+            
+            newProducts = splitIntoPages(newProducts, 30)
             setProducts(newProducts)
             setCurrentProducts(newProducts[page-1])
-        /*     //console.log('products_AfterFilterChange', products)
-            //console.log('currentProducts_AfterFilterChange', currentProducts) */
         }
-    }, [filters, perPage])
-
-    useEffect(()=> {
-    setCurrentProducts(products[page-1])
-    }, [page] )
-    
+    }, [filters, page])
     
     /* function getWindowWidth() {
         return window.innerWidth;
@@ -93,16 +130,11 @@ export default function Type(props) {
           return () => window.removeEventListener('resize', handleResize);
     }, []); */
    
-    
-    
-    
     const router = useRouter()
     if (router.isFallback) {
         return <h1>Loading...</h1>
     }
     
-    
-
     const typeId = router.query.typeId
     let h1text 
     if (typeId == 'tracks') {
@@ -115,8 +147,10 @@ export default function Type(props) {
         <Layout headerFooter={props.headerFooter} initialHeader={'white'} isBagYellow={true}>
             <BackButton isMain={true}/>
             <Hero h1Content={h1text} isMain={false} brandData={props.brandData}/>
-            <Filters filters={filters} setFilters={setFilters} attributes={props.relatedAttributes.relatedAttributes}></Filters>
-            <ProductList products={currentProducts} ></ProductList>
+            <div className='flex container mx-auto mt-16 relative'>
+                <Filters filters={filters} setFilters={setFilters} attributes={attributes} attrChosenLast={attrChosenLast} setAttrChosenLast={setAttrChosenLast}></Filters>
+                <ProductList products={currentProducts} ></ProductList>
+            </div>
             <Pagination pagesNumber={products.length} page={page} setPage={setPage}></Pagination>
         </Layout>
     )
@@ -137,7 +171,6 @@ export async function getStaticProps({params}) {
 
     const typeSlug = params.typeId + '-' + params.seriesId
     const typeData = await getCategoryDataBySlug(typeSlug)
-    //console.log('typeSlug', typeSlug)
     const { headers } = await getProductsDataByCategoryId(100, typeData?.id)
     
     async function awaitAll(count, asyncFn) {
@@ -147,7 +180,6 @@ export async function getStaticProps({params}) {
         }
         return Promise.all(promises);
     }
-    //console.log(`Number(headers['x-wp-totalpages'])`, Number(headers['x-wp-totalpages']))
     let products = await awaitAll(Number(headers['x-wp-totalpages']), getProductsDataByCategoryId)
     
     products = products.map(data => {
@@ -162,7 +194,7 @@ export async function getStaticProps({params}) {
             notFound: true
         }
     } 
-    const relatedAttributes = await getRelatedAttributesData(productsConcated?.[0]?.attributes)
+    const relatedAttributes = await getRelatedAttributesData(productsConcated)
     return {
         props: {
             headerFooter: headerFooterData?.data ?? {},

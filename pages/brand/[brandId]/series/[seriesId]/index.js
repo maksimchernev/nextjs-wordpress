@@ -10,22 +10,21 @@ import Hero from '../../../../../src/components/hero';
 import { isArray } from 'lodash';
 
 export default function Series(props) {
- //console.log'propsSeries', props)
   const router = useRouter()
   if (router.isFallback) {
     return <h1>Loading...</h1>
   }  
   return (
     <Layout headerFooter={props.headerFooter} initialHeader={'white'} isBagYellow={true}>
-        <BackButton isMain={true}/>
+        <BackButton isMain={true} bgProduct={false}/>
         <Hero h1Content={props?.seriesData?.name} isMain={false} brandData={props.brandData}/>
-        <div className="w-full flex flex-wrap overflow-hidden container mx-auto py-24" id='series'>
+        <div className="w-full flex flex-wrap  container mx-auto py-20 md:py-24" id='series'>
           {props.typeCategoryData?.length && isArray(props.typeCategoryData) ? props.typeCategoryData.map((type)=> {
             const slug = type?.slug?.slice(0, type?.slug?.indexOf('-'))
             const img = type?.image
             return (
-              <div key={type.id} className='my-2 px-2 md:w-1/2 sm:w-full overflow-hidden'>
-                <h2 className='text-4xl uppercase mb-12'>{type.name}</h2>
+              <div key={type.id} className='p-3 w-full md:w-1/2 '>
+                <h2 className='text-4xl uppercase my-4 md:mb-12 font-sf-pro-display-medium'>{type.name}</h2>
                 <Link href={{
                         pathname: '/brand/[brandId]/series/[seriesId]/type/[typeId]',
                         query: { brandId: router.query.brandId, seriesId: router.query.seriesId, typeId: slug },
@@ -37,8 +36,9 @@ export default function Series(props) {
                         sourceUrl={ img?.src ?? '' }
                         altText={ img?.alt ?? ''}
                         title={ type?.name ?? '' }
-                        width="800"
-                        height="500"
+                        layout = 'fill'
+                        containerClassNames={'card series-card h-80 md:h-52 lg:h-80 xl:h-96'}
+                        className={'rounded-2xl'}
                       />
                     </div>
                   </a>

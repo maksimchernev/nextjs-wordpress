@@ -22,7 +22,6 @@ export default async function handler(req, res) {
         success: false,
         product: []
     }
-    ////console.log('req?.query', req?.query)
     const {slug} = req?.query ?? {};
     try {
         const {data} = await api.get(

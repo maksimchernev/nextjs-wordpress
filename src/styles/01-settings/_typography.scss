@@ -1,0 +1,102 @@
+@layer base {
+	body {
+		@apply bg-white text-brand-gray3E text-base overflow-x-hidden font-sf-pro-display;
+	}
+    .logo-text {
+        @apply text-brand-yellow uppercase font-sf-pro-display-bold
+    }
+	h1 {
+		@apply font-sf-pro-display-bold text-brand-gray3E ;
+	}
+    h2 {
+        @apply font-sf-pro-display-bold text-brand-gray3E
+    }
+
+	p {
+		@apply text-base mb-1 leading-22px;
+
+		@screen lg {
+			@apply text-18px leading-1.6;
+		}
+	}
+}
+
+// Mobile screen.
+
+h1 {
+	@apply text-4xl mb-5 leading-40px;
+}
+
+h2 {
+	@apply text-30px mb-5 leading-36px;
+}
+
+h3 {
+	@apply text-24px mb-5 leading-30px;
+}
+
+h4 {
+	@apply text-22px mb-5 leading-28px;
+}
+
+h5 {
+	@apply text-20px mb-5 leading-26px;
+}
+
+h6 {
+	@apply text-19px mb-5 leading-26px;
+}
+
+// Medium Screen
+@screen md {
+	h1 {
+		@apply text-5xl mb-5 leading-42px;
+	}
+
+	h2 {
+		@apply text-34px mb-5 leading-40px;
+	}
+
+	h3 {
+		@apply text-28px mb-5 leading-36px;
+	}
+
+	h4 {
+		@apply text-24px mb-5 leading-30px;
+	}
+
+	h5 {
+		@apply text-22px mb-5 leading-28px;
+	}
+
+	h6 {
+		@apply text-19px mb-5 leading-26px;
+	}
+}
+
+// Large Screen
+@screen lg {
+	h1 {
+		@apply text-6xl leading-50px;
+	}
+
+	h2 {
+		@apply text-40px mb-5 leading-42px;
+	}
+
+	h3 {
+		@apply text-32px mb-5 leading-40px;
+	}
+
+	h4 {
+		@apply text-28px mb-5 leading-36px;
+	}
+
+	h5 {
+		@apply text-24px mb-5 leading-30px;
+	}
+
+	h6 {
+		@apply text-20px mb-5 leading-28px;
+	}
+}

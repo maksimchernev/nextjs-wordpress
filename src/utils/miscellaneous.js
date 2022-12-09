@@ -35,3 +35,7 @@ export const getObjectOfArray = (arrayWithIds, baseValue) => {
     }
 	return obj
 }
+
+export const placeholderFunction = (array) => {
+	return array
+}

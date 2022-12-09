@@ -1,0 +1,49 @@
+/* normal */
+@font-face {
+	font-family: 'SF-Pro-Display';
+	font-style: normal;
+	font-weight: 400;
+	src: url('SF-Pro-Display-Regular.eot'); /* IE9 Compat Modes */
+	src: local(''),
+	url('SF-Pro-Display-Regular.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+	url('SF-Pro-Display-Regular.woff') format('woff'), /* Modern Browsers */
+	url('SF-Pro-Display-Regular.ttf') format('truetype'), /* Safari, Android, iOS */
+}
+/* Bold */
+@font-face {
+	font-family: 'SF-Pro-Display Bold';
+	font-style: normal;
+	font-weight: 700;
+	src: url('SF-Pro-Display-Bold.eot'); /* IE9 Compat Modes */
+	src: local(''),
+	url('SF-Pro-Display-Bold.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+	url('SF-Pro-Display-Bold.woff') format('woff'), /* Modern Browsers */
+	url('SF-Pro-Display-Bold.ttf') format('truetype'), /* Safari, Android, iOS */
+}
+
+/* medium  */
+@font-face {
+	font-family: 'SF-Pro-Display Medium';
+	font-style: normal;
+	font-weight: 500;
+	src: url('SF-Pro-Display-Medium.eot'); /* IE9 Compat Modes */
+	src: local(''),
+	url('SF-Pro-Display-Medium.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+	url('SF-Pro-Display-Medium.woff') format('woff'), /* Modern Browsers */
+	url('SF-Pro-Display-Medium.ttf') format('truetype'), /* Safari, Android, iOS */
+}
+
+/* light  */
+@font-face {
+	font-family: 'SF-Pro-Display Light';
+	font-style: normal;
+	font-weight: 300;
+	src: url('SF-Pro-Display-Light.eot'); /* IE9 Compat Modes */
+	src: local(''),
+	url('SF-Pro-Display-Light.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+	url('SF-Pro-Display-Light.woff') format('woff'), /* Modern Browsers */
+	url('SF-Pro-Display-Light.ttf') format('truetype'), /* Safari, Android, iOS */
+}
+
+/* medium */
+

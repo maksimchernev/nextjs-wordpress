@@ -76,7 +76,6 @@ export async function getCategoryDataById(id) {
 /////////////
 export async function getAllBrandsPaths() {
   const brands = await getSubCategoriesById(100, 0)
-  ////console.log('brands', brands)
   return brands.map(brand => {
       return {
         params: {

@@ -1,0 +1,9 @@
+footer {
+	@apply bg-brand-gray33;
+	li {
+		@apply no-dots-list;
+	}
+	* {
+		@apply font-sf-pro-display-light;
+	}
+}

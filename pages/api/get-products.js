@@ -22,7 +22,6 @@ export default async function handler(req, res) {
         success: false,
         products: [],
     }
-    //console.log('req?.query', req?.query)
     const {per_page, category, page, attribute, term} = req?.query ?? {};
     if (attribute && term) {
         try {

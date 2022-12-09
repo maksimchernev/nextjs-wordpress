@@ -1,23 +1,14 @@
+import _ from "lodash"
 import Image from "../image"
-
-const Hero = ({h1Content, text, button, isMain, brandData}) => {
-    let h1Style
-    let contStyle
-    let blockStyle
-    if (!isMain) {
-        h1Style = 'h1-color-yellow text-4xl md:text-5xl lg:text-6xl'
-        contStyle = 'mt-52 container mx-auto px-2 h1-color-yellow mb-20 md:mt-60 xl:mt-80'
-        blockStyle = 'hero-series'
-    } else {
-        contStyle = 'mt-52 mb-40 container mx-auto px-2 text-white md:my-60 xl:my-80'
-        h1Style = 'h1-color-white text-4xl md:text-5xl lg:text-6xl' 
-        blockStyle = 'hero-main'
+const Hero = ({h1Content, text, button, isMain, brandData, image}) => {
+    if (!h1Content) {
+        return null
     }
     return (
-        <div className={`flex items-center justify-content hero ${blockStyle}`}>
-            <div className={contStyle}>
+        <div className={`flex items-center justify-content bg-cover ${!isMain && `hero-series`}`} style={isMain ? {backgroundImage: `url(${image})`}: null}>
+            <div className={`${!isMain ? `text-brand-yellow mb-20 md:mt-56 xl:mt-72` : `mb-40 text-white md:my-60 xl:my-80`} mt-52 container mx-auto px-2 `}>
                 {brandData &&
-                <div className=" mb-7">
+                <div className="mb-7 md:mb-12 lg:mb-24">
                     <Image 
                     sourceUrl={brandData.image?.src ?? ''}
                     altText={brandData.image?.alt ?? ''}
@@ -30,7 +21,7 @@ const Hero = ({h1Content, text, button, isMain, brandData}) => {
                 }
                 
                 {h1Content && 
-                    <h1 className={`${h1Style}` }>
+                    <h1 className={`${!isMain ? `text-brand-yellow` : `text-white`} uppercase` }>
                         {h1Content}
                     </h1>}
                 {text && 
@@ -38,7 +29,7 @@ const Hero = ({h1Content, text, button, isMain, brandData}) => {
                         {text}
                     </p> }
                 {button && 
-                    <button className="mt-14 rounded-none border text-xl">
+                    <button className=" mt-14 text-xl button-form">
                         {button}
                     </button>
                 }   

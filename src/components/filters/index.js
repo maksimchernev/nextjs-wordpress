@@ -2,17 +2,19 @@
 import Filter from "./filter"
 import { useState } from "react"
 import { getObjectOfArray } from "../../utils/miscellaneous"
-const Filters = ({attributes, filters, setFilters}) => {
-    const [isOpened, setIsOpened] = useState(getObjectOfArray(attributes, false))
-    //console.log(isOpened)
+
+const Filters = ({attributes, filters, setFilters,attrChosenLast, setAttrChosenLast}) => {
+    const [isOpened, setIsOpened] = useState(getObjectOfArray([...attributes], false))
     return (
-        <div className="flex justify-center flex-wrap mt-14 mb-7 container mx-auto px-2 filter-color-gray">
-                {attributes?.length ? attributes.map( (attribute) => {
-                    return (
-                        <Filter key={attribute.id} attribute={attribute} filters={filters} setFilters={setFilters} isOpened={isOpened} setIsOpened={setIsOpened}></Filter>
-                    )
-                }) : null} 
-        </div>
+            <div className="w-1/3 md:w-1/4 flex flex-col flex-wrap mb-7 mx-auto pl-2 pr-3 relative">
+                <div className="sticky top-20">
+                    {attributes?.length ? attributes.map( (attribute, index) => {
+                        return (
+                            <Filter key={index} attribute={attribute} filters={filters} setFilters={setFilters} isOpened={isOpened} setIsOpened={setIsOpened} attrChosenLast={attrChosenLast} setAttrChosenLast={setAttrChosenLast}></Filter>
+                        )
+                    }) : null} 
+                </div>
+            </div>
     )
 }
 

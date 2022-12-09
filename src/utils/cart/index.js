@@ -17,7 +17,6 @@ export const addToCart = ( productId, qty = 1 , setCart, setIsAddedToCart, setLo
 
 	const storedSession = getSession();
 	const addOrViewCartConfig = getApiCartConfig();
-	/* //console.log('storedSession', storedSession) */
 	setLoading(true);
 	
 	axios.post( CART_ENDPOINT, {
@@ -29,16 +28,14 @@ export const addToCart = ( productId, qty = 1 , setCart, setIsAddedToCart, setLo
 		.then( ( res ) => {
 			
 			if ( isEmpty( storedSession ) ) {
-                /* //console.log(`res?.headers?.[ 'x-wc-session' ]`, res?.headers?.[ 'x-wc-session' ]) */
 				storeSession( res?.headers?.[ 'x-wc-session' ] );
 			}
 			setIsAddedToCart(true);
 			setLoading(false); 
 			viewCart( setCart );
-			console.log( 'res', res );
 		} )
 		.catch( err => {
-			console.log( 'err', err );
+			console.warn(err)
 		} );
 };
 
@@ -55,13 +52,11 @@ export const viewCart = ( setCart, setProcessing = () => {} ) => {
 	axios.get( CART_ENDPOINT, addOrViewCartConfig )
 		.then( ( res ) => {
 			const formattedCartData = getFormattedCartData( res?.data ?? [] )
-			console.log('formattedCartData', formattedCartData)
 			setCart( formattedCartData );
 			setProcessing(false);
-            console.log('resView', res?.data)
 		} )
 		.catch( err => {
-			console.log( 'err', err );
+			console.warn(err)
 			setProcessing(false);
 		} );
 };
@@ -82,7 +77,7 @@ export const updateCart = ( cartKey, qty = 1, setCart, setUpdatingProduct ) => {
 			viewCart( setCart, setUpdatingProduct );
 		} )
 		.catch( err => {
-			//console.log( 'err', err );
+			console.warn( 'err', err );
 			setUpdatingProduct(false);
 		} );
 };
@@ -110,7 +105,7 @@ export const deleteCartItem = ( cartKey, setCart, setRemovingProduct ) => {
 			viewCart( setCart, setRemovingProduct );
 		} )
 		.catch( err => {
-			//console.log( 'err', err );
+			console.warn( 'err', err );
 			setRemovingProduct(false);
 		} );
 };
@@ -131,7 +126,7 @@ export const clearCart = async ( setCart, setClearCartProcessing ) => {
 		const response = await axios.delete( CART_ENDPOINT, addOrViewCartConfig );
 		viewCart( setCart, setClearCartProcessing );
 	} catch ( err ) {
-		//console.log( 'err', err );
+		console.warn( 'err', err );		
 		setClearCartProcessing(false);
 	}
 };

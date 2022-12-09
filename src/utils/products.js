@@ -33,7 +33,7 @@ export const getProductsData = async (per_page, page) => {
     return await api.get(
       'products',
       {
-        per_page: per_page || 20,
+        per_page: per_page || 100,
         page: page || 1
       }
   )
@@ -69,9 +69,7 @@ export const getAllProducts = async() => {
 }
 export const getAllProductsPaths = async() => {
   const products = await getAllProducts()
- //console.logproducts)
   return products.map(product => {
-    /*//console.log'pmlk', product?.permalink?.split('product/')[1].slice(0,-1)) */
     return {
       params: {
         productId: decodeURI(product.permalink.split('product/')[1].slice(0,-1))

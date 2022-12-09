@@ -15,6 +15,8 @@ const Footer = ({footer, header}) => {
       <footer className="py-20 px-2">
 			<div className="container mx-auto flex flex-wrap justify-center">
 				<div className="lg:w-1/2 w-full">
+
+					{/*Logo*/}
 					<div className="flex items-center flex-shrink-0 mb-5">
 							{
 								siteLogoUrl ? (
@@ -26,32 +28,31 @@ const Footer = ({footer, header}) => {
 										height={'50px'}
 									/>
 								) : (
-									<span className="font-semibold text-xl tracking-tight">
-										<p className="logo-text text-4xl md:">Magnetic Light</p>
+									<span className="font-medium text-xl tracking-tight">
+										<p className="logo-text text-4xl uppercase font-sf-pro-display-medium">Magnetic Light</p>
 									</span>
 								)
 							}
 					</div>
 
-					{/*Logo*/}
 			
 
 					
-					<div className="flex flex-wrap overflow-hidden text-white text-base widgets leading-8">
+					<div className="flex flex-wrap overflow-hidden text-white text-base leading-8">
 						{/*Menu*/}
 						<div className="my-1 px-1  overflow-hidden w-1/2 ">
 							<Link href="/#About/">
-								<a className="block hover:text-gray-400 mr-10"
+								<a className="header-footer-link block mr-10"
 								>О нас
 								</a>
 							</Link>
 							<Link href="/#Brands/">
-								<a className="block hover:text-gray-400 mr-10"
+								<a className="header-footer-link block mr-10"
 								>Бренды
 								</a>
 							</Link>
 							<Link href="/#About/">
-								<a className="block hover:text-gray-400 mr-10"
+								<a className="header-footer-link block  mr-10"
 								>Контакты
 								</a>
 							</Link>
@@ -83,12 +84,12 @@ const Footer = ({footer, header}) => {
 
 				{/* form */}
 				<div className="my-1 px-1 overflow-hidden w-1/2 hidden lg:block text-white lg:mt-0 mt-10" >
-					<p className="text-xl xl:text-2xl uppercase mb-5 text-center md:text-left">Наш специалист поможет выбрать конфигурацию под Ваш проект!</p>
+					<p className="text-xl xl:text-2xl uppercase mb-5 text-center md:text-left font-sf-pro-display-medium">Наш специалист поможет выбрать конфигурацию под Ваш проект!</p>
 					<form action="/send-data-here" method="post" className="flex flex-col">
 						<input type="text" id="name" name="name" className="text-white bg-transparent border-b border-white py-2 mb-7" required placeholder="Имя"/>
 						<input type="phone" id="phone" name="phone" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" className="text-white bg-transparent border-b border-white py-2 mb-7" required placeholder="Телефон"/>
 
-						<button type="submit" className="rounded-none border submit-btn">Отправить</button>
+						<button type="submit" className="w-36 button-form">Отправить</button>
 						<p className="text-xs text-gray-400 my-3 text-center md:text-left">Нажимая кнопку “Отправить” я принимаю условия Политики приватности</p>
 					</form>
 				</div>

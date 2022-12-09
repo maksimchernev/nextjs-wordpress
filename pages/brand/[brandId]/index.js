@@ -17,7 +17,6 @@ export default function Brand(props) {
   if (router.isFallback) {
     return <h1>Loaddddd</h1>
   }
- //console.log'brandProps', props)
   const img = props?.brandData?.image ?? {}
   let pecOne
   if (props?.series?.length > 1) {
@@ -35,7 +34,6 @@ export default function Brand(props) {
       })
     }
   }) : null
-  //console.log('pecs', pecs)
 
   let availablePics = ['встраиваемый', 'накладной', 'профиль']
   
@@ -44,14 +42,12 @@ export default function Brand(props) {
     return descrArr[descrArr.indexOf('Варианты установки:')+1]
   }) : null
   options? options = options.join() : options = null
-  //////console.log('options', options)
   let instOptions = []
   for (let picName of availablePics) {
     if (options && options.includes(picName)) {
       instOptions.push(picName)
     } 
   }
-  //////console.log('instOptions', instOptions)
 
   return (
     <Layout headerFooter={props.headerFooter} initialHeader={'black'} isHeaderVisible={true} isBagYellow={false}>
@@ -63,23 +59,24 @@ export default function Brand(props) {
             title={props?.brandData?.name ?? ''}
             width={'250px'}
             height={'50px'}
+            className={' filter-red'}
           /> 
         </div>
 
         <div className="w-full flex flex-wrap overflow-hidden container mx-auto py-12">
           <div className='flex w-full pl-7 md:pl-0 md:w-1/2 h-86 bg-red flex-col text-xl leading-8'>
-            <p className='font-semibold'>Особенности:</p>
-              <ol className="pl-4 list-disc pt-7 overflow-visible">
-                {pecOne && <li>{pecOne}</li>}
+            <p className='pl-1 font-medium text-20px lg:text-26px uppercase'>Особенности:</p>
+              <ol className="pl-6 list-disc pt-4 overflow-visible">
+                {pecOne && <li className='text-base lg:text-20px mb-2'>{pecOne}</li>}
                 {pecs?.length ? pecs.map((pec, index) => {
                   return (
-                    <li key={ index }>{`${pec.name} - ${pec.peculiarity}`}</li>
+                    <li key={ index } className='text-base lg:text-20px mb-2'>{`${pec.name} - ${pec.peculiarity}`}</li>
                   )
                 }) : null}
               </ol>
           </div>
           <div className='flex w-full md:w-1/2 pt-7 md:pt-0 h-86 bg-red flex-col pl-7 md:pl-12  text-xl leading-8'>
-            <p className='font-semibold'>Варианты установки:</p>
+            <p className='font-medium text-20px lg:text-26px uppercase'>Варианты установки:</p>
               <div className='flex flex-row flex-wrap justify-between lg:justify-start '>
                 {instOptions?.length ? instOptions?.map((option, index) => {
                   let icon 
@@ -100,7 +97,7 @@ export default function Brand(props) {
                   return (
                     <div className='flex items-center pr-12 pt-7 flex-col lg:pr-28' key={ index }>
                       {icon}
-                      <p className='capitalize pt-2'>{option}</p>
+                      <p className='capitalize pt-2 text-brand-gray78'>{option}</p>
                     </div>
                   )
                 }) : null}
@@ -108,9 +105,9 @@ export default function Brand(props) {
           </div>
          
         </div>
-        <div className="w-full flex flex-wrap overflow-hidden container mx-auto py-12">
-          <p className='w-full flex justify-center uppercase text-xl font-semibold'>Выбрать серию</p>
-          <div className='flex w-full justify-center my-12'>
+        <div className="w-full flex flex-wrap overflow-hidden container mx-auto my-4">
+          <p className='w-full flex justify-center uppercase text-20px lg:text-26px font-sf-pro-display-medium'>Выбрать серию</p>
+          <div className='flex w-full justify-center my-4'>
             <Link href='#series'>
               <a className="flex mt-4 lg:inline-block lg:mt-0 text-black hover:text-black">
                 <span className="flex flex-row items-center lg:flex-col">
@@ -121,13 +118,13 @@ export default function Brand(props) {
           </div>
         </div>
         
-        <div className="w-full flex flex-wrap overflow-hidden container mx-auto py-24" id='series'>
-          <h1 className='w-full flex text-2xl font-semibold mb-12'>Магнитные трековые системы {props?.brandData?.name ?? ""}</h1>
+        <div className="w-full flex flex-wrap  container mx-auto py-12" id='series'>
+          <h1 className='w-full flex text-2xl font-sf-pro-display uppercase text-26px lg:text-40px mb-12 ml-1'>Магнитные трековые системы {props?.brandData?.name ?? ""}</h1>
           {
             props.series?.length ? props.series?.map ( name => {
               let img = name.image
               return (
-                <div className='my-2 px-2 w-1/2 overflow-hidden' key={name.id}>
+                <div className='w-full md:w-1/2 p-3' key={name.id}>
                   <Link href={{
                     pathname: '[brandId]/series/[seriesId]',
                     query: { brandId: router.query.brandId, seriesId: name?.slug },
@@ -138,8 +135,9 @@ export default function Brand(props) {
                           sourceUrl={ img?.src ?? '' }
                           altText={ img?.alt ?? ''}
                           title={ name?.name ?? '' }
-                          width="800"
-                          height="500"
+                          layout = 'fill'
+                          containerClassNames={'card series-card h-80 md:h-52 lg:h-80 xl:h-96'}
+                          className={'rounded-2xl'}
                         />
                         <p className='text-white uppercase self-end series-card-text'>{name?.name}</p>
                       </div>

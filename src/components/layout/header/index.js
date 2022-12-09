@@ -13,8 +13,8 @@ const Header = ({header, footer, initialHeader, isBagYellow}) => {
 	const [backgroundTransparacy, setBackgroundTransparacy] = useState(0);
 	const [padding, setPadding] = useState(30);
 	const [boxShadow, setBoxShadow] = useState(0);
-	const [fontColor, setFontColor] = useState('#fff');
-	const [bagColor, setBagColor] = useState('#fff');
+	const [fontColor, setFontColor] = useState('text-white');
+	const [bagColor, setBagColor] = useState('text-white');
 	const [isMenuVisible, setIsMenuVisible] = useState(false);
 	const [cart, setCart] = useContext(AppContext)
 	const handleScroll = () => {
@@ -89,7 +89,7 @@ const Header = ({header, footer, initialHeader, isBagYellow}) => {
 												height={'50px'}
 											/>
 										) : (
-											<span className="font-semibold tracking-tight">
+											<span className="font-medium tracking-tight">
 												<p className="logo-text text-3xl md:text-5xl">Magnetic Light</p>
 											</span>
 										)
@@ -108,32 +108,37 @@ const Header = ({header, footer, initialHeader, isBagYellow}) => {
 						</div>
 
 						<div className={`${isMenuVisible ? `max-h-full px-2` :  `h-0`} w-full overflow-hidden lg:h-full flex-grow lg:flex lg:items-center lg:w-auto`}>
-							<div className="text-sm lg:text-base font-medium uppercase lg:flex-grow lg:flex lg:justify-end">
+							<div className="text-14px font-medium uppercase lg:flex-grow lg:flex lg:justify-end duration-100">
 								<Link href="/#about">
-									<a className="block font-normal my-2 lg:my-auto lg:inline-block hover:text-black lg:mr-8 xl:mr-10"
+									<a className="block my-2 lg:my-auto lg:inline-block header-footer-link lg:mr-8 xl:mr-10 "
 									>О нас
 									</a>
 								</Link>
 								<Link href="/#brands">
-									<a className="block font-normal my-2 lg:my-auto lg:inline-block hover:text-black lg:mr-8 xl:mr-10"
+									<a className="block my-2 lg:my-auto lg:inline-block header-footer-link lg:mr-8 xl:mr-10 "
 									>Бренды
 									</a>
 								</Link>
 								<Link href="/contacts">
-									<a className="block font-normal my-2 lg:my-auto lg:inline-block hover:text-black lg:mr-8 xl:mr-10"
+									<a className="block my-2 lg:my-auto lg:inline-block header-footer-link lg:mr-8 xl:mr-10 "
 									>Контакты
+									</a>
+								</Link>
+								<Link href="/shop">
+									<a className="block my-2 lg:my-auto lg:inline-block header-footer-link lg:mr-8 xl:mr-10 " 
+									>Каталог
 									</a>
 								</Link>
 								
 							</div>
-							<div className='text-sm lg:text-2xl my-2 lg:mr-8 xl:mr-10 font-medium lg:my-auto' dangerouslySetInnerHTML={{ __html: sanitize( sidebarTwo ) }}/>
+							<div className='text-sm lg:text-2xl my-2 lg:mr-8 xl:mr-10 font-medium lg:my-auto header-footer-link duration-100' dangerouslySetInnerHTML={{ __html: sanitize( sidebarTwo ) }}/>
 							<div className="text-sm font-medium">
 								<Link href="/cart">
-									<a className="flex mt-4 lg:inline-block lg:mt-0 text-black">
-										<span className={`${cart?.totalQty ? 'pb-2 pr-2' : null} flex flex-row items-center lg:flex-col relative `}>
-											<Bag className="mr-1 lg:mr-0 fill-current h-7 w-7 bag" style={isMenuVisible ? {color: `#333`}:{color: `${bagColor}`}}/>
+									<a className="flex mt-4 lg:inline-block lg:mt-0">
+										<span className={`${cart?.totalQty && 'px-2 py-2' } flex flex-row items-center lg:flex-col relative rounded-full hover:bg-brand-gray99 duration-100`}>
+											<Bag className="mr-1 lg:mr-0 fill-current h-7 w-7" style={isMenuVisible ? {color: `#333`}:{color: `${bagColor}`}}/>
 											{cart?.totalQty  
-												? <span className='ml-1 cart-qty-span flex items-center justify-center text-xs absolute bottom-0 right-0'>{cart?.totalQty}</span>
+												? <span className='ml-1 cart-qty-span flex items-center justify-center text-11px font-sf-pro-display-bold absolute bottom-1 duration-100 right-1'>{cart?.totalQty}</span>
 												: null
 											}
 										</span>
