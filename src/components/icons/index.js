@@ -11,6 +11,8 @@ export { default as Loading } from "./Loading";
 export { default as Overhead } from "./Overhead";
 export { default as Profile } from "./Profile";
 export { default as SearchIcon } from "./SearchIcon";
+export { default as SliderLeft } from "./SliderLeft";
+export { default as SliderRight } from "./SliderRight";
 export { default as TailwindIcon } from "./TailwindIcon";
 export { default as Twitter } from "./Twitter";
 export { default as User } from "./User";

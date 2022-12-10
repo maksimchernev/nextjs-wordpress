@@ -35,7 +35,7 @@ const Filter = ({attribute, filters, setFilters, isOpened, setIsOpened, attrChos
     }
     
     return (
-        <div className="w-full flex flex-wrap relative py-2 mt-3 card">
+        <div className="w-full flex flex-wrap relative py-2 mt-3 card ">
             <a className="flex justify-between filter-btn w-full mx-4 gray3E font-sf-pro-display-medium" onClick={ () => handleOnClick(attribute.id) }><span dangerouslySetInnerHTML={{ __html: sanitize(attribute.name) }}></span><ArrowFilter className={`${isOpened[attribute.id] ? `rotate-180` :  null} mx-1 filter-arrow fill-current filter-color-gray`}></ArrowFilter></a>
             <div className={`${isOpened[attribute.id] ? `flex ` : `hidden`} flex-col w-full mt-2 mx-4 bg-white font-sf-pro-display-medium`}>
                 {attribute.terms?.length ? attribute.terms.map((term) => {

@@ -69,7 +69,7 @@ export default function Type(props) {
             if (!isFiltersEmpty) {
                 let newAttributesArray = props.relatedAttributes.relatedAttributes
                 for (let attribute of newAttributesArray) {
-                    if(attribute.id != attrChosenLast.at(-1)) {
+                    if(attribute.id != attrChosenLast[attrChosenLast.length-1]) {
                         for (let term of attribute.terms) {
                             term.isVisible = false
                             
@@ -202,7 +202,7 @@ export async function getStaticProps({params}) {
             relatedAttributes: relatedAttributes ?? {},
             brandData: brandData ?? {},
         },
-        revalidate: 100
+        revalidate: 1000
     };
 	
 }

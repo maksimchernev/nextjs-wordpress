@@ -185,6 +185,20 @@ $dotSize: 100px;
       .base-timeline__item::before {
         font-size: 60px;
       }
+      .product-card {
+        max-width: 50%;
+      }
+}
+
+@media (min-width: 1280px) {
+    .product-card {
+        max-width: 33%;
+      }
+}
+@media (min-width: 1536px) {
+    .product-card {
+        max-width: 25%;
+      }
 }
 
 .back-btn, .filter-btn {
@@ -363,7 +377,7 @@ $dotSize: 100px;
 }
 
 .carousel-content {
-    transition: all 250ms linear;
+    transition: all 180ms linear;
     -ms-overflow-style: none;  /* hide scrollbar in IE and Edge */
     scrollbar-width: none;  /* hide scrollbar in Firefox */
 }
@@ -379,6 +393,17 @@ $dotSize: 100px;
     flex-grow: 1;
 }
 
+.carousel-content.show-2 > * {
+    width: 50%;
+}
+
+.carousel-content.show-3 > * {
+    width: calc(100% / 3);
+}
+
+.carousel-content.show-4 > * {
+    width: calc(100% / 4);
+}
 
 .left-arrow, .right-arrow {
     position: absolute;
@@ -388,20 +413,13 @@ $dotSize: 100px;
     width: 48px;
     height: 48px;
     border-radius: 24px;
-    background-color: white;
-    border: 1px solid #ddd;
-}
-
-.left-arrow {
-    left: 24px;
-}
-
-.right-arrow {
-    right: 24px;
 }
 
 @media (hover: none) and (pointer: coarse) {
     .left-arrow, .right-arrow {
         display: none;
     }
+}
+.filters-container{
+    height: calc(100vh - 5rem);
 }

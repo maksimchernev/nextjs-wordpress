@@ -30,6 +30,6 @@ export async function getStaticProps() {
       brands: brands ?? {},
       hero: hero.heroSection ?? {}
 		},
-		revalidate: 1,
+		revalidate: 10,
 	};
 }

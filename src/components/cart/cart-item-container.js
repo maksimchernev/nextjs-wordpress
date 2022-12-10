@@ -23,11 +23,11 @@ const CartItemsContainer = () => {
 	};
 	
 	return (
-		<div className="content-wrap-cart container mx-auto">
+		<div className="container mx-auto">
 			{ cart ? (
-				<div className="woo-next-cart-table-row grid lg:grid-cols-3 gap-4">
+				<div className="grid lg:grid-cols-3 gap-4">
 					{/*Cart Items*/ }
-					<div className="woo-next-cart-table lg:col-span-2 mb-md-0 mb-5">
+					<div className="lg:col-span-2 mb-5">
 						{ cartItems.length &&
 						cartItems.map( ( item ) => (
 							<CartItem
@@ -40,28 +40,28 @@ const CartItemsContainer = () => {
 					</div>
 					
 					{/*Cart Total*/ }
-					<div className="woo-next-cart-total-container lg:col-span-1 p-5 pt-0">
+					<div className="lg:col-span-1 p-5 pt-0">
 						<h2>Итого</h2>
 						<div className="grid grid-cols-3 bg-gray-100 mb-4">
 							<p className="col-span-2 p-2 mb-0">Всего({totalQty})</p>
-							<p className="col-span-1 p-2 mb-0">{cartItems?.[0]?.currency ?? ''}{ totalPrice }</p>
+							<p className="col-span-1 p-2 mb-0">{ totalPrice }{cartItems?.[0]?.currency ?? ''}</p>
 						</div>
 						
 						<div className="flex justify-between">
 							{/*Clear entire cart*/}
-							<div className="clear-cart">
+							<div className="">
 								<button
-									className="text-gray-900 bg-white border border-gray-300 hover:bg-gray-100 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2 dark:bg-gray-600 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-700 dark:focus:ring-gray-800"
+									className="text-gray-900 bg-white border border-gray-300 hover:bg-gray-100 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2 "
 									onClick={(event) => handleClearCart(event)}
 									disabled={isClearCartProcessing}
 								>
-									<span className="woo-next-cart">{!isClearCartProcessing ? " Очистить корзину" : "Очищаю..."}</span>
+									<span className="">{!isClearCartProcessing ? " Очистить корзину" : "Очистка..."}</span>
 								</button>
 							</div>
 							{/*Checkout*/}
 							<Link href="/checkout">
-								<button className="text-white duration-500 bg-brand-orange hover:bg-brand-royal-blue focus:ring-4 focus:text-white font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2 dark:focus:ring-yellow-900">
-			                  <span className="woo-next-cart-checkout-txt">
+								<button className="text-white duration-500 focus:ring-4 focus:text-white font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2 ">
+			                  <span className="">
 			                    Перейти к оформлению
 			                  </span>
 									<i className="fas fa-long-arrow-alt-right"/>

@@ -78,7 +78,7 @@ export async function getStaticProps({params}) {
       brandData: brandData || {},
       typeCategoryData: typeCategoryData || {}
 		},
-    revalidate: 1,
+    revalidate: 10,
 	};
 } 
 

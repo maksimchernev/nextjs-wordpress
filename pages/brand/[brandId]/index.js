@@ -175,7 +175,7 @@ export async function getStaticProps({params}) {
       brandData: brandData ?? {},
       series: series ?? {}
 		},
-    revalidate: 1,
+    revalidate: 10,
 	};
 } 
 

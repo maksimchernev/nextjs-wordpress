@@ -3,12 +3,7 @@ import {isEmpty} from "lodash";
 import Image from '../image';
 import { deleteCartItem, updateCart } from '../../utils/cart';
 
-const CartItem = ( {
-	                   item,
-	                   products,
-	                   setCart
-                   } ) => {
-	
+const CartItem = ( {item,products,setCart} ) => {	
 	const [productCount, setProductCount] = useState( item.quantity );
 	const [updatingProduct, setUpdatingProduct] = useState( false );
 	const [removingProduct, setRemovingProduct] = useState( false );

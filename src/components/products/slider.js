@@ -1,5 +1,6 @@
 import { isArray } from "lodash"
 import { useState } from "react"
+import { SliderLeft, SliderRight } from "../icons"
 import Product from "./product"
 
 
@@ -52,15 +53,15 @@ const ProductSlider = ({products, show}) => {
             <div className="carousel-wrapper  w-full flex relative">
                 {
                     currentIndex > 0 &&
-                    <button onClick={prev} className="left-arrow">
-                        &lt;
+                    <button onClick={prev} className="left-arrow flex  items-center hover:bg-brand-grayCF left-0">
+                        <SliderLeft className="ml-2.5"/>
                     </button>
                 }       
-                <div className="carousel-content-wrapper  w-full h-full" 
+                <div className="carousel-content-wrapper overflow-hidden w-full " 
                     onTouchStart={handleTouchStart}
                     onTouchMove={handleTouchMove}
                     >
-                    <div className={`carousel-content flex`} style={{ transform: `translateX(-${currentIndex * (100 / 2)}%)` }}>
+                    <div className={`flex carousel-content my-3 show-${show}`} style={{ transform: `translateX(-${currentIndex * (100 / show)}%)` }}>
 
                         { products.length ? products.map(product => {
                             return (
@@ -70,9 +71,9 @@ const ProductSlider = ({products, show}) => {
                     </div>
                 </div>
                 {
-                    currentIndex < (length - 1) &&
-                    <button onClick={next} className="right-arrow">
-                        &gt;
+                    currentIndex < (length - show) &&
+                    <button onClick={next} className="right-arrow flex justify-end items-center hover:bg-brand-grayCF right-0">
+                        <SliderRight className="mr-2.5"/>
                     </button>
                 }
             </div>

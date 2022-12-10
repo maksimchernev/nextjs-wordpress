@@ -11,11 +11,41 @@ import { useState, useEffect } from "react";
 import ProductSlider from "../../src/components/products/slider";
 import { getCategoryDataById, getSubCategoriesById } from "../../src/utils/categories";
 import { isArray } from "lodash";
+
+function getWindowDimensions() {
+    const { innerWidth: width } = window;
+    return width
+  }
+  
 const ProductPage = (props) => {
-    const [isMounted, setIsMounted] = useState(false)
+    const [windowDimensions, setWindowDimensions] = useState();
+    const [showProducts, setShowProducts] = useState()
+    useEffect(() => {
+        
+            let width = getWindowDimensions()
+            if (width > 1536) {
+                setShowProducts(4)
+            } else if (width > 1280) {
+                setShowProducts(3)
+            } else if (width > 600) {
+                setShowProducts(2)
+            } else {
+                setShowProducts(1)
+            }
+            setWindowDimensions(getWindowDimensions());
+ 
+      }, [windowDimensions]);
     useEffect(()=> {
-        setIsMounted(true)
+        function handleResize() {
+            setWindowDimensions(getWindowDimensions());
+        }      
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
     }, [])
+    useEffect(()=> {
+        console.log(windowDimensions)
+        console.log(showProducts)
+    }, [showProducts])
     const router = useRouter()
     if (router.isFallback) {
         return <h1>Loading...</h1>
@@ -29,7 +59,7 @@ const ProductPage = (props) => {
                 <h1 className="text-center text-42px">{props.product?.name}</h1>
             </div>
             <div className="flex flex-wrap container mx-auto my-16">
-                <div className="w-1/2">
+                <div className="w-full md:w-1/2 px-2 ">
                     <Image
                         sourceUrl={ img?.src ?? '' }
                         altText={img?.alt ?? ''}
@@ -38,7 +68,7 @@ const ProductPage = (props) => {
                         height='480'
                     />
                 </div>
-                <div className="w-1/2 leading-6">
+                <div className="w-full md:w-1/2 px-2 leading-6 mt-5 md:mt-0">
                     <p className="mb-5"><span className="font-sf-pro-display-light text-20px">Артикул: </span><span className="font-sf-pro-display-medium">{sanitizeTags(props.product?.sku)} </span></p>
                     <p className="flex flex-col mb-5"><span>Цена:</span><span className="text-5xl font-sf-pro-display-bold"> {sanitizeTags(props.product?.price)}₽</span></p>
                     <p className="mb-5 font-sf-pro-display-light text-20px leading-7" ><span > {sanitizeTags(props.product?.description)}</span></p>
@@ -64,17 +94,17 @@ const ProductPage = (props) => {
                     </div>
                 </div>
             </div>
-            { props.accessories && isArray(props.accessories) && props?.accessories?.length ?
-                <div>
-                    <h2 className="flex justify-center text-40px">Аксессуары</h2>
-                    <ProductSlider products={props.accessories} show={4}></ProductSlider>
+            { props.accessories && isArray(props.accessories) && props?.accessories?.length && showProducts?
+                <div className="mb-12">
+                    <h2 className="flex justify-center text-40px my-3">Аксессуары</h2>
+                    <ProductSlider products={props.accessories} show={showProducts}></ProductSlider>
                 </div>
                 : null
             }
-            { props.supportingProducts && isArray(props.supportingProducts) && props?.supportingProducts?.length ? 
-                <div>
-                    <h2 className="flex justify-center text-40px">Сопутствующие товары</h2>
-                    <ProductSlider products={props.supportingProducts} show={4}></ProductSlider>
+            { props.supportingProducts && isArray(props.supportingProducts) && props?.supportingProducts?.length && showProducts ? 
+                <div className="mb-12">
+                    <h2 className="flex justify-center text-40px my-3">Сопутствующие товары</h2>
+                    <ProductSlider products={props.supportingProducts} show={showProducts}></ProductSlider>
                 </div>
                 : null
             }
@@ -150,7 +180,7 @@ export async function getStaticProps({params}) {
             accessories: accessories ?? [],
             supportingProducts: supportingProducts ?? []
 		},
-        revalidate: 1
+        revalidate: 10
 	};
 }
 export default ProductPage
