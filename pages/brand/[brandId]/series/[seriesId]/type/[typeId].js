@@ -12,9 +12,10 @@ import Filters from '../../../../../../src/components/filters';
 import { useState, useEffect } from 'react';
 import { splitIntoPages } from '../../../../../../src/utils/miscellaneous';
 import Pagination from '../../../../../../src/components/products/pagination';
-import { isEmpty } from 'lodash';
 
 export default function Type(props) {
+
+    //console.log('typeProps', props)
     const [products, setProducts] = useState(splitIntoPages(props.products, 30))
     const [page, setPage] = useState(1)
     const [currentProducts, setCurrentProducts] = useState(products[page-1])
@@ -147,7 +148,7 @@ export default function Type(props) {
         <Layout headerFooter={props.headerFooter} initialHeader={'white'} isBagYellow={true}>
             <BackButton isMain={true}/>
             <Hero h1Content={h1text} isMain={false} brandData={props.brandData}/>
-            <div className='flex container mx-auto mt-16 relative'>
+            <div className='flex container mx-auto mt-16 relative mb-10 md:mb-20'>
                 <Filters filters={filters} setFilters={setFilters} attributes={attributes} attrChosenLast={attrChosenLast} setAttrChosenLast={setAttrChosenLast}></Filters>
                 <ProductList products={currentProducts} ></ProductList>
             </div>

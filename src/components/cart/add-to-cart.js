@@ -39,10 +39,10 @@ const AddToCart = ( { product, isItemCard } ) => {
         return (
             <>
                     <div className="mb-5 flex flex-wrap">
-                        <div className="quantity-counter my-2 mr-3">
-                            <span className="minus" onClick={()=>decreaseQuantity()}>-</span>
+                        <div className="quantity-counter my-2 mr-3 border border-brand-gray88 text-brand-gray88">
+                            <span className="minus cursor-pointer" onClick={()=>decreaseQuantity()}>-</span>
                             <input type="text" readOnly={true} value={quantity}/>
-                            <span className="plus" onClick={()=>increaseQuantity()}>+</span>
+                            <span className="plus cursor-pointer" onClick={()=>increaseQuantity()}>+</span>
                         </div>
 
                         <button
@@ -68,11 +68,11 @@ const AddToCart = ( { product, isItemCard } ) => {
         return (
             <div className='flex'>
             <button
-                className={` ${addToCartBtnIconClasses}  add-to-cart-button-icon bg-brand-light-gray88 hover:bg-brand-gray78 duration-100 flex justify-center items-center`} 
+                className={` ${addToCartBtnIconClasses}  add-to-cart-button-icon ${!loading ? `bg-brand-light-gray88 hover:bg-brand-gray78` : `bg-white` }  duration-100 flex justify-center items-center`} 
                 onClick={ () => addToCart( product?.id ?? 0, quantity ?? 1, setCart, setIsAddedToCart, setLoading ) }
                 disabled={ loading }
                 >
-                { loading ? 'loading icon' :  <Bag className='text-brand-yellow  fill-current'></Bag>}  
+                { loading ? <img width="20" src="/cart-spinner.gif"  alt="spinner"/> :  <Bag className='text-brand-yellow  fill-current'></Bag>}  
             </button>
             </div>
         )

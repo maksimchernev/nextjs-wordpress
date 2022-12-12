@@ -11,7 +11,7 @@ const Hero = ({h1Content, text, button, isMain, brandData, image}) => {
                 <div className="mb-7 md:mb-12 lg:mb-24">
                     <Image 
                     sourceUrl={brandData.image?.src ?? ''}
-                    altText={brandData.image?.alt ?? ''}
+                    altText={brandData.image?.alt || brandData.image?.name}
                     title={brandData.image?.name ?? ''}
                     width={'250px'}
                     height={'50px'}

@@ -7,7 +7,7 @@ import {BurgerIcon} from '../../icons'
 import {Bag} from '../../icons' 
 import { AppContext } from '../../context';
 
-const Header = ({header, footer, initialHeader, isBagYellow}) => {
+const Header = ({header, footer, initialHeader, isBagYellow, metaData = []}) => {
 	const {sidebarTwo} = footer || {}
 	const [clientWindowHeight, setClientWindowHeight] = useState("");
 	const [backgroundTransparacy, setBackgroundTransparacy] = useState(0);
@@ -43,7 +43,7 @@ const Header = ({header, footer, initialHeader, isBagYellow}) => {
 		setBagColor(bagColorVar)
 	}, [clientWindowHeight, initialHeader, isBagYellow]);
 
-	const {siteTitle, siteLogoUrl, favicon} = header || {}
+	const {siteTitle, siteLogoUrl, favicon, siteDescription} = header || {}
 	let navStyle
 	if (!isMenuVisible) {
 		navStyle = {
@@ -60,16 +60,21 @@ const Header = ({header, footer, initialHeader, isBagYellow}) => {
 			color: `#000`
 		}
 	}
-	
+	let descriptionObj
+	let keywordsObj
+	if (metaData.length) {
+		descriptionObj = metaData.find(obj => obj.key == '_aioseo_description')
+		keywordsObj = metaData.find(obj => obj.key == '_aioseo_keywords')
+	}
 
     return (
         <>
 		   <Head>
 		   		<meta charSet="UTF-8"></meta>
-				<meta name="description" content="Free Web tutorials"></meta>
-				<meta name="keywords" content="HTML, CSS, JavaScript"></meta>
+				<meta name="description" content={ descriptionObj ? descriptionObj.value : siteDescription || ''}></meta>
+				<meta name="keywords" content={ keywordsObj ? keywordsObj.value : ''}></meta>
 				<meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
-				<title>{siteTitle || 'Manually inserted title'}</title>
+				<title>{siteTitle || ''}</title>
 				<link rel="icon" href={favicon || "/favicon.png"} />
 				
 			</Head>
@@ -82,9 +87,9 @@ const Header = ({header, footer, initialHeader, isBagYellow}) => {
 									{
 										siteLogoUrl ? (
 											<Image 
-												sourceUrl={siteLogoUrl ?? ''}
-												altText={`${siteTitle} logo` ?? ''}
-												title={`${siteTitle} logo` ?? ''}
+												sourceUrl={siteLogoUrl || ''}
+												altText={`${siteTitle} logo` || ''}
+												title={`${siteTitle} logo` || ''}
 												width={'328px'}
 												height={'50px'}
 											/>

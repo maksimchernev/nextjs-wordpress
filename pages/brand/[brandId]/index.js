@@ -55,7 +55,7 @@ export default function Brand(props) {
         <div className='w-full flex flex-wrap overflow-hidden container mx-auto px-12 justify-center'>
           <Image 
             sourceUrl={img?.src ?? ''}
-            altText={img?.alt ?? ''}
+            altText={img?.alt || props?.brandData?.name}
             title={props?.brandData?.name ?? ''}
             width={'250px'}
             height={'50px'}
@@ -133,7 +133,7 @@ export default function Brand(props) {
                       <div className='flex-col relative'>
                         <Image
                           sourceUrl={ img?.src ?? '' }
-                          altText={ img?.alt ?? ''}
+                          altText={ img?.alt || name?.name}
                           title={ name?.name ?? '' }
                           layout = 'fill'
                           containerClassNames={'card series-card h-80 md:h-52 lg:h-80 xl:h-96'}

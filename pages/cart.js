@@ -9,10 +9,7 @@ export default function Cart({ headerFooter }) {
 		<Layout headerFooter={headerFooter || {}} initialHeader={'black'} isBagYellow={true}>
 			<div className='mt-28 container mx-auto'>
 				<BackButton />
-				<div className='border-t border-brand-grayCF py-12'> 
-					<h1 className="uppercase tracking-0.5px text-4xl mb-10">Корзина</h1>
-					<CartItemsContainer/>
-				</div>
+				<CartItemsContainer/>
 			</div>
 		</Layout>
 	);

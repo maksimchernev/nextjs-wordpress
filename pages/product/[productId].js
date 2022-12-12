@@ -3,7 +3,7 @@ import BackButton from "../../src/components/backBtn";
 import Image from "../../src/components/image";
 import Layout from "../../src/components/layout";
 import { HEADER_FOOTER_ENDPOINT } from "../../src/utils/constants/endpoints";
-import { sanitize, sanitizeTags } from "../../src/utils/miscellaneous";
+import { sanitizeTags } from "../../src/utils/miscellaneous";
 import { getAllProductsPaths, getProductData, getProductsDataByCategoryId } from "../../src/utils/products";
 import { useRouter } from "next/router";
 import AddToCart from "../../src/components/cart/add-to-cart";
@@ -11,7 +11,7 @@ import { useState, useEffect } from "react";
 import ProductSlider from "../../src/components/products/slider";
 import { getCategoryDataById, getSubCategoriesById } from "../../src/utils/categories";
 import { isArray } from "lodash";
-import Link from "next/link";
+import { roundToTwo } from "../../src/utils/miscellaneous";
 
 function getWindowDimensions() {
     const { innerWidth: width } = window;
@@ -58,7 +58,7 @@ const ProductPage = (props) => {
      
     
     return (
-        <Layout headerFooter={props.headerFooter} initialHeader={'black'} isBagYellow={true} bgProduct={true}> 
+        <Layout headerFooter={props.headerFooter} initialHeader={'black'} isBagYellow={true} bgProduct={true} metaData={props?.product?.metaData ?? []}> 
             <BackButton isMain={false} bgProduct={true}/>
             <div className="container mx-auto">
                 <h1 className="text-center text-42px">{props.product?.name}</h1>
@@ -72,7 +72,7 @@ const ProductPage = (props) => {
                                     <a className="cursor-pointer mb-3 mr-7 duration-250 ease-in" key={img.id} onClick={()=> handleClickOnImage(img.id)}>
                                         <Image
                                             sourceUrl={ img?.src ?? '' }
-                                            altText={img?.alt ?? ''}
+                                            altText={img?.alt || props.product?.name}
                                             title={ props.product?.name ?? '' }
                                             layout='fill'
                                             containerClassNames={`border border-brand-gray78 product-image-preview`}
@@ -85,7 +85,7 @@ const ProductPage = (props) => {
                     <div className="duration-250 ease-in">
                         <Image
                             sourceUrl={ img?.src ?? '' }
-                            altText={img?.alt ?? ''}
+                            altText={img?.alt || props.product?.name}
                             title={ props.product?.name ?? '' }
                             layout='fill'
                             containerClassNames={`border border-brand-grayCF w-80 h-80 sm:w-96 sm:w-96 md:w-64 md:h-64 lg:w-96 lg:h-96`}
@@ -95,7 +95,7 @@ const ProductPage = (props) => {
 
                 <div className="w-full md:w-1/2 px-2 leading-6 mt-5 md:mt-0">
                     <p className="mb-5"><span className="font-sf-pro-display-light text-20px">Артикул: </span><span className="font-sf-pro-display-medium">{sanitizeTags(props.product?.sku)} </span></p>
-                    <p className="flex flex-col mb-5"><span>Цена:</span><span className="text-5xl font-sf-pro-display-bold"> {sanitizeTags(props.product?.price)}₽</span></p>
+                    <p className="flex flex-col mb-5"><span>Цена:</span><span className="text-5xl font-sf-pro-display-bold"> {roundToTwo(sanitizeTags(props.product?.price))}₽</span></p>
                     <p className="mb-5 font-sf-pro-display-light text-20px leading-7" ><span > {sanitizeTags(props.product?.description)}</span></p>
                     <div className="mb-5">
                         {/* {props.product?.attributes?.length ? props.product?.attributes?.map(attr => {

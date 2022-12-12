@@ -39,3 +39,7 @@ export const getObjectOfArray = (arrayWithIds, baseValue) => {
 export const placeholderFunction = (array) => {
 	return array
 }
+
+export const roundToTwo = (num) => {
+    return +(Math.round(num + "e+2")  + "e-2");
+}

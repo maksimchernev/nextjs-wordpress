@@ -21,9 +21,9 @@ const Footer = ({footer, header}) => {
 							{
 								siteLogoUrl ? (
 									<Image 
-										sourceUrl={siteLogoUrl ?? ''}
-										altText={`${siteTitle} logo` ?? ''}
-										title={`${siteTitle} logo` ?? ''}
+										sourceUrl={siteLogoUrl || ''}
+										altText={`${siteTitle} logo` || ''}
+										title={`${siteTitle} logo` || ''}
 										width={'328px'}
 										height={'50px'}
 									/>

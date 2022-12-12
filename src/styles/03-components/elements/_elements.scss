@@ -28,6 +28,17 @@
     
 }
 
+.button-form-black {
+    padding: 16px 32px;
+    transition: 0.2s;
+    @apply rounded-none border text-brand-gray33 border-brand-gray33 bg-white;
+}
+.button-form-black:hover {
+    color: #333333;
+    @apply bg-brand-gray33 text-brand-yellow
+    
+}
+
 .hero-series {
     background-image: url(../../../../public/bg-series.jpg);
 }
@@ -340,20 +351,16 @@ $dotSize: 100px;
 
 .quantity-counter {
     width: 130px;
-    border: 1px solid #888888;
     height: 52px;
     background-color: #FFFFFF;
-    color: rgba(136, 136, 136, 1);
     display: flex;
     align-items: center;
     justify-content: space-around;
     position: relative;
-    
 }
 
 .quantity-counter .minus, .quantity-counter .plus{
     position: absolute;
-    cursor: pointer;
     display: flex;
     align-items: center;
     margin:8px 5px 8px 5px;

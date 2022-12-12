@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import {isEmpty} from "lodash";
 import Image from '../image';
 import { deleteCartItem, updateCart } from '../../utils/cart';
+import { roundToTwo } from '../../utils/miscellaneous';
 
 const CartItem = ( {item,products,setCart} ) => {	
 	const [productCount, setProductCount] = useState( item.quantity );
@@ -45,10 +46,10 @@ const CartItem = ( {item,products,setCart} ) => {
 			
 			if ( !isEmpty( type ) ) {
 				newQty = 'increment' === type ? productCount + 1 : productCount - 1;
-			} else {
+			} /* else {
 				// If the user tries to delete the count of product, set that to 1 by default ( This will not allow him to reduce it less than zero )
 				newQty = ( event.target.value ) ? parseInt( event.target.value ) : 1;
-			}
+			} */
 			
 			// Set the new qty in state.
 			setProductCount( newQty );
@@ -61,13 +62,13 @@ const CartItem = ( {item,products,setCart} ) => {
 	};
 	
 	return (
-		<div className="cart-item-wrap grid grid-cols-3 gap-6 mb-5 border border-brand-bright-grey p-5">
-			<div className="col-span-1 cart-left-col">
+		<div className="grid grid-cols-3 gap-6  border-y pt-5 px-5 mx-2">
+			<div className="col-span-1">
 				<figure >
 					<Image
 						width="300"
 						height="300"
-						altText={productImg?.alt ?? ''}
+						altText={productImg?.alt || item?.data?.name}
 						sourceUrl={! isEmpty( productImg?.src ) ? productImg?.src : ''} // use normal <img> attributes as props
 					/>
 				</figure>
@@ -75,30 +76,44 @@ const CartItem = ( {item,products,setCart} ) => {
 			
 			<div className="col-span-2 cart-right-col">
 				<div className="flex justify-between flex-col h-full">
-					<div className="cart-product-title-wrap relative">
-						<h3 className="cart-product-title text-brand-orange font-bold mr-14 mb-5">{ item?.data?.name }</h3>
-						{item?.data?.description ? <p>{item?.data?.description}</p> : ''}
-						<button className="cart-remove-item absolute right-0 top-0 px-4 py-2 flex items-center text-22px leading-22px bg-transparent border border-brand-bright-grey" onClick={ ( event ) => handleRemoveProductClick( event, item?.key ) }>&times;</button>
+					<div className="relative">
+						<h3 className="mr-14 mb-5 text-26px">{ item?.data?.name }</h3>
+						{item?.data?.description ? <p className='mb-5'>{item?.data?.description}</p> : ''}
+						<button className="absolute right-0 top-0 px-4 py-2 flex items-center text-22px leading-22px bg-transparent border " onClick={ ( event ) => handleRemoveProductClick( event, item?.key ) }>&times;</button>
 					</div>
 					
-					<div className="cart-product-footer flex justify-between p-4 border-t">
-						<div className="">
-							<span className="cart-total-price">{item?.currency}{item?.line_subtotal}</span>
+					<div className=" flex justify-between p-2 border-t">
+						<div className="flex flex-col justify-center">
+							<span className="text-18px">{roundToTwo(item?.line_subtotal)} {item?.currency}</span>
 						</div>
-						{/* { updatingProduct ? <img className="woo-next-cart-item-spinner" width="24" src="/cart-spinner.gif"  alt="spinner"/> : null } */}
-						{/*Qty*/}
-						<div style={{ display: 'flex', alignItems: 'center' }}>
-							<button className="decrement-btn text-24px" onClick={( event ) => handleQtyChange( event, item?.cartKey, 'decrement' )} >-</button>
+						
+						<div className='flex items-center'>
+							<div className="quantity-counter">
+								<span className={`${ updatingProduct ? 'cursor-not-allowed' : 'cursor-pointer' }  minus `} onClick={( event ) => handleQtyChange( event, item?.cartKey, 'decrement' )}>-</span>
+								<input type="text" 
+									/* type="number" */
+									/* onChange={ ( event ) => handleQtyChange( event, item?.cartKey, '' ) } */
+									min="1" 
+									value={ productCount } 
+									readOnly={true} 
+									data-cart-key={ item?.data?.cartKey } 
+									className={ `${ updatingProduct ? 'cursor-not-allowed' : '' } ` }
+									disabled={updatingProduct}
+								/>
+								<span  className={`${ updatingProduct ? 'cursor-not-allowed' : 'cursor-pointer' }  plus `} onClick={( event ) => handleQtyChange( event, item?.cartKey, 'increment' )}>+</span>
+							</div>
+
+							{/* <button className="text-24px" onClick={( event ) => handleQtyChange( event, item?.cartKey, 'decrement' )} >-</button>
 							<input
-								type="number"
+								
 								min="1"
 								style={{ textAlign: 'center', width: '50px', paddingRight: '0' }}
 								data-cart-key={ item?.data?.cartKey }
-								className={ `woo-next-cart-qty-input ml-3 ${ updatingProduct ? 'disabled' : '' } ` }
+								className={ ` ml-3 ${ updatingProduct ? 'disabled bg-brand-grayCF' : '' } ` }
 								value={ productCount }
-								onChange={ ( event ) => handleQtyChange( event, item?.cartKey, '' ) }
+								
 							/>
-							<button className="increment-btn text-20px" onClick={( event ) => handleQtyChange( event, item?.cartKey, 'increment' )}>+</button>
+							<button className=" text-20px" onClick={( event ) => handleQtyChange( event, item?.cartKey, 'increment' )}>+</button> */}
 						</div>
 					</div>
 				</div>

@@ -33,9 +33,9 @@ export default function Series(props) {
                     <div className='flex-col relative'
                       >
                       <Image
-                        sourceUrl={ img?.src ?? '' }
-                        altText={ img?.alt ?? ''}
-                        title={ type?.name ?? '' }
+                        sourceUrl={ img?.src || '' }
+                        altText={ img?.alt || type?.name}
+                        title={ type?.name || '' }
                         layout = 'fill'
                         containerClassNames={'card series-card h-80 md:h-52 lg:h-80 xl:h-96'}
                         className={'rounded-2xl'}

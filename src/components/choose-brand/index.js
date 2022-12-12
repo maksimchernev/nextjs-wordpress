@@ -28,7 +28,7 @@ const ChooseBrand = ({brands}) => {
                                         <a>
                                             <Image 
                                                 sourceUrl={img?.src ?? ''}
-                                                altText={img?.alt ?? ''}
+                                                altText={img?.alt || brand?.name}
                                                 title={brand?.name ?? ''}
                                                 width={'250px'}
                                                 height={'50px'}

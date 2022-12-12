@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import Image from '../image';
-import { sanitize } from '../../utils/miscellaneous'
+import { roundToTwo, sanitize } from '../../utils/miscellaneous'
 import { isEmpty } from 'lodash';
 import { useState ,useEffect } from 'react';
 import AddToCart from '../cart/add-to-cart';
@@ -30,7 +30,7 @@ const Product = ( { product } ) => {
                                 <div className='flex justify-center'>
                                     <Image
                                         sourceUrl={ img?.src ?? '' }
-                                        altText={ img?.alt ?? ''}
+                                        altText={ img?.alt || product?.name}
                                         title={ product?.name ?? '' }
                                         layout = 'fill'
                                         containerClassNames={'product-image-card'}
@@ -42,7 +42,7 @@ const Product = ( { product } ) => {
                             <div className='flex flex-col justify-between'>
                             
                             <div className='flex justify-between mt-auto mx-3'>
-                                <p className='uppercase font-sf-pro-display-medium align-middle mb-0 flex flex-col justify-center'>{product?.price+' РУБ.' ?? ''}</p>
+                                <p className='uppercase font-sf-pro-display-medium align-middle mb-0 flex flex-col justify-center'>{roundToTwo(product?.price)+' ₽' ?? ''}</p>
                                 <AddToCart product={product} isItemCard={true}></AddToCart>
                             </div>
                         </div>

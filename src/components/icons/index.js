@@ -2,6 +2,7 @@ export { default as ArrowFilter } from "./ArrowFilter";
 export { default as ArrowDown } from "./ArrowDown";
 export { default as Back } from "./Back";
 export { default as Bag } from "./Bag";
+export { default as Bin } from "./Bin";
 export { default as BurgerIcon } from "./BurgerIcon";
 export { default as Down } from "./Down";
 export { default as Embedded } from "./Embedded";
