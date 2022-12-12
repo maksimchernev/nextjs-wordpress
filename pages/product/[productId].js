@@ -11,6 +11,7 @@ import { useState, useEffect } from "react";
 import ProductSlider from "../../src/components/products/slider";
 import { getCategoryDataById, getSubCategoriesById } from "../../src/utils/categories";
 import { isArray } from "lodash";
+import Link from "next/link";
 
 function getWindowDimensions() {
     const { innerWidth: width } = window;
@@ -18,8 +19,10 @@ function getWindowDimensions() {
   }
   
 const ProductPage = (props) => {
+    //console.log('productProps', props)
     const [windowDimensions, setWindowDimensions] = useState();
     const [showProducts, setShowProducts] = useState()
+    const [currentImgIndex, setCurrentImgIndex] = useState(props.product?.images?.[0]?.id)
     useEffect(() => {
         
             let width = getWindowDimensions()
@@ -42,32 +45,54 @@ const ProductPage = (props) => {
         window.addEventListener('resize', handleResize);
         return () => window.removeEventListener('resize', handleResize);
     }, [])
-    useEffect(()=> {
-        console.log(windowDimensions)
-        console.log(showProducts)
-    }, [showProducts])
     const router = useRouter()
     if (router.isFallback) {
         return <h1>Loading...</h1>
     }
+    let imgs = props.product?.images ?? [];
+    let img = imgs.length ? imgs.find(img =>img.id == currentImgIndex) : null
+    const handleClickOnImage = (id) => {
+        setCurrentImgIndex(id)
+        imgs = imgs.length ? imgs.filter(img => img.id !== currentImgIndex) : []
+    }
+     
     
-    const img = props.product?.images?.[0] ?? {};
     return (
         <Layout headerFooter={props.headerFooter} initialHeader={'black'} isBagYellow={true} bgProduct={true}> 
             <BackButton isMain={false} bgProduct={true}/>
             <div className="container mx-auto">
                 <h1 className="text-center text-42px">{props.product?.name}</h1>
             </div>
-            <div className="flex flex-wrap container mx-auto my-16">
-                <div className="w-full md:w-1/2 px-2 ">
-                    <Image
-                        sourceUrl={ img?.src ?? '' }
-                        altText={img?.alt ?? ''}
-                        title={ props.product?.name ?? '' }
-                        width='480'
-                        height='480'
-                    />
+            <div className="flex flex-wrap container mx-auto my-16 justify-center">
+                <div className="md:w-1/2 px-2 flex flex-col-reverse  flex-wrap sm:flex-row  sm:flex-nowrap sm:justify-center">
+                    <div className="flex items-stretch sm:flex-col mt-3 sm:mt-0">
+                        {imgs.length ? imgs.map(img => {
+                            if (img.id != currentImgIndex) {
+                                return (
+                                    <a className="cursor-pointer mb-3 mr-7 duration-250 ease-in" key={img.id} onClick={()=> handleClickOnImage(img.id)}>
+                                        <Image
+                                            sourceUrl={ img?.src ?? '' }
+                                            altText={img?.alt ?? ''}
+                                            title={ props.product?.name ?? '' }
+                                            layout='fill'
+                                            containerClassNames={`border border-brand-gray78 product-image-preview`}
+                                        />
+                                    </a>
+                                )
+                            }
+                        }) : null}
+                    </div>
+                    <div className="duration-250 ease-in">
+                        <Image
+                            sourceUrl={ img?.src ?? '' }
+                            altText={img?.alt ?? ''}
+                            title={ props.product?.name ?? '' }
+                            layout='fill'
+                            containerClassNames={`border border-brand-grayCF w-80 h-80 sm:w-96 sm:w-96 md:w-64 md:h-64 lg:w-96 lg:h-96`}
+                        />
+                    </div>
                 </div>
+
                 <div className="w-full md:w-1/2 px-2 leading-6 mt-5 md:mt-0">
                     <p className="mb-5"><span className="font-sf-pro-display-light text-20px">Артикул: </span><span className="font-sf-pro-display-medium">{sanitizeTags(props.product?.sku)} </span></p>
                     <p className="flex flex-col mb-5"><span>Цена:</span><span className="text-5xl font-sf-pro-display-bold"> {sanitizeTags(props.product?.price)}₽</span></p>
@@ -96,14 +121,14 @@ const ProductPage = (props) => {
             </div>
             { props.accessories && isArray(props.accessories) && props?.accessories?.length && showProducts?
                 <div className="mb-12">
-                    <h2 className="flex justify-center text-40px my-3">Аксессуары</h2>
+                    <h2 className="flex justify-center text-40px my-3 px-2">Аксессуары</h2>
                     <ProductSlider products={props.accessories} show={showProducts}></ProductSlider>
                 </div>
                 : null
             }
             { props.supportingProducts && isArray(props.supportingProducts) && props?.supportingProducts?.length && showProducts ? 
                 <div className="mb-12">
-                    <h2 className="flex justify-center text-40px my-3">Сопутствующие товары</h2>
+                    <h2 className="flex justify-center text-40px my-3 ">Сопутствующие товары</h2>
                     <ProductSlider products={props.supportingProducts} show={showProducts}></ProductSlider>
                 </div>
                 : null

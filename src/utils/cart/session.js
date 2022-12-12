@@ -20,7 +20,18 @@ export const getSession = () => {
 	if (!sessionObj) {
 		return null
 	}
-	sessionObj= JSON.parse(sessionObj)
+	function isJson(str) {
+		try {
+			JSON.parse(str);
+		} catch (e) {
+			return false;
+		}
+		return true;
+	}	
+	if (isJson(sessionObj)) {
+		sessionObj= JSON.parse(sessionObj)
+	}
+	
 	const now = new Date()
 	if (now.getTime() > sessionObj.expiry) {
 		localStorage.removeItem('x-wc-session')

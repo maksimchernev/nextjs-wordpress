@@ -298,10 +298,9 @@ $dotSize: 100px;
     flex: auto;
 }
 
-.product-image {
+.product-image-card {
     width: 210px;
     height: 210px;
-
 }
 
 .truncate-p {
@@ -422,4 +421,10 @@ $dotSize: 100px;
 }
 .filters-container{
     height: calc(100vh - 5rem);
+}
+
+
+.product-image-preview {
+    width: 80px;
+    height: 80px;
 }

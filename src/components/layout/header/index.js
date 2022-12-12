@@ -135,7 +135,7 @@ const Header = ({header, footer, initialHeader, isBagYellow}) => {
 							<div className="text-sm font-medium">
 								<Link href="/cart">
 									<a className="flex mt-4 lg:inline-block lg:mt-0">
-										<span className={`${cart?.totalQty && 'px-2 py-2' } flex flex-row items-center lg:flex-col relative rounded-full hover:bg-brand-gray99 duration-100`}>
+										<span className={`${cart?.totalQty && 'px-2 py-2 hover:bg-brand-gray99' } flex flex-row items-center lg:flex-col relative rounded-full  duration-100`}>
 											<Bag className="mr-1 lg:mr-0 fill-current h-7 w-7" style={isMenuVisible ? {color: `#333`}:{color: `${bagColor}`}}/>
 											{cart?.totalQty  
 												? <span className='ml-1 cart-qty-span flex items-center justify-center text-11px font-sf-pro-display-bold absolute bottom-1 duration-100 right-1'>{cart?.totalQty}</span>
