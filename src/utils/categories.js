@@ -125,7 +125,7 @@ export async function getBrandsSeriesType() {
   const brandsCats = categories.filter(category => category.parent == 0 && category.slug != 'uncategorized' && category.slug != 'lamp' && category.slug != 'accessory' && category.slug != 'track') 
   const seriesAndTypesCats = categories.filter(category => category.parent !== 0) 
   const seriesCats = findAllChildsOfCategories(brandsCats, seriesAndTypesCats)
-  const typeCats = findAllChildsOfCategories(seriesCats, seriesAndTypesCats, 'Сопутствующие')
+  const typeCats = findAllChildsOfCategories(seriesCats, seriesAndTypesCats)
   return {brandsCats, seriesCats, typeCats}
 }
 export async function getBrandsSeriesTypePaths() {

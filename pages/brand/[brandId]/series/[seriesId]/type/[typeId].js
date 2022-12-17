@@ -15,7 +15,7 @@ import Pagination from '../../../../../../src/components/products/pagination';
 import {isEmpty} from 'lodash'
 
 export default function Type(props) {
-
+    console.log('propsType', props)
     const [products, setProducts] = useState(splitIntoPages(props.products, 30))
     const [page, setPage] = useState(1)
     const [currentProducts, setCurrentProducts] = useState(products[page-1])
@@ -55,8 +55,10 @@ export default function Type(props) {
             //когда ниче не нашел
             let newAttributesArray = props.relatedAttributes.relatedAttributes
             for (let attribute of newAttributesArray) {
-                for (let term of attribute.terms) {
-                    term.isVisible = true
+                if (attribute.hasOwnProperty('terms')){
+                    for (let term of attribute.terms) {
+                        term.isVisible = true
+                    }
                 }
             }
             setProducts(newProducts)
@@ -73,19 +75,23 @@ export default function Type(props) {
                 let newAttributesArray = props.relatedAttributes.relatedAttributes
                 for (let attribute of newAttributesArray) {
                     if(attribute.id != attrChosenLast[attrChosenLast.length-1]) {
-                        for (let term of attribute.terms) {
-                            term.isVisible = false
-                            
-                        } 
+                        if (attribute.hasOwnProperty('terms')){
+                            for (let term of attribute.terms) {
+                                term.isVisible = false
+                                
+                            } 
+                        }
                     }
                 }
                 for (let product of newProducts) {
                     for (let productAttribute of product.attributes) {
                         for (let attribute of newAttributesArray) {
-                            for (let term of attribute.terms) {
-                                if (productAttribute.options.includes(term.name)) {
-                                    term.isVisible = true   
-                                } 
+                            if (attribute.hasOwnProperty('terms')){
+                                for (let term of attribute.terms) {
+                                    if (productAttribute.options.includes(term.name)) {
+                                        term.isVisible = true   
+                                    } 
+                                }
                             }
                         }
                     }
@@ -94,8 +100,10 @@ export default function Type(props) {
             } else {
                 let newAttributesArray = props.relatedAttributes.relatedAttributes
                 for (let attribute of newAttributesArray) {
-                    for (let term of attribute.terms) {
-                        term.isVisible = true
+                    if (attribute.hasOwnProperty('terms')){
+                        for (let term of attribute.terms) {
+                            term.isVisible = true
+                        }
                     }
                 }
             }
@@ -141,6 +149,9 @@ export default function Type(props) {
         return <h1>Loading...</h1>
     }
     
+    useEffect(()=> {
+        console.log('filters', filters)
+    }, [filters])
     const typeId = router.query.typeId
     let h1text 
     if (typeId == 'tracks') {

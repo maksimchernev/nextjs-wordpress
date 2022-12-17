@@ -440,3 +440,11 @@ $dotSize: 80px;
     width: 80px;
     height: 80px;
 }
+
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+

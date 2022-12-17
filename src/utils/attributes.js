@@ -39,9 +39,12 @@ export const getRelatedAttributesData = async (products) => {
     if (!(exampleProductAttributes.length && isArray(exampleProductAttributes)) ) {
         return ({relatedAttributes: [], filtersObj: {}})
     }
+    //фильтрация основных аттрибутов
     exampleProductAttributes = exampleProductAttributes.filter(attr => !(attr.name == 'Тип товара' || attr.name == 'Модельный ряд' || attr.id == 2 || attr.id ==7) )
+    //получение данных по всем возможным аттрибутам для получения id
     const {data: attributes} = await getAttributesData()
-    const relatedAttributes = await Promise.all(exampleProductAttributes.map(async prAttr => {
+    //получение всех возможных значений для аттрибутов
+    let relatedAttributes = await Promise.all(exampleProductAttributes.map(async prAttr => {
         const attr = attributes.find(attr => prAttr.id == attr.id)
         const { data: attrTerms } = await api.get(
             `products/attributes/${attr.id}/terms`,
@@ -50,6 +53,7 @@ export const getRelatedAttributesData = async (products) => {
                 hide_empty: true,
             }
         )
+        //фильтрация неиспользуемых значений
         let newAttrTerms = attrTerms.filter(term => {
             let found = false
             for (let product of products) {
@@ -65,13 +69,40 @@ export const getRelatedAttributesData = async (products) => {
             }
             return found
         })
+        //добавление в массив значения для фильтрации значений аттрибутов
         newAttrTerms.forEach(element => {
             element.isVisible = true
-        });        
+        });     
+
         attr.terms = newAttrTerms
         return attr
     }))
-
+    let exampleProductDimentions = []
+    for (let product of products) {
+        for (let productDim in product.dimensions) {
+            if (exampleProductDimentions.length) {
+                let foundAlready = false
+                for (let dim of exampleProductDimentions) {
+                    if (dim.name == productDim) {
+                        foundAlready = true
+                    }
+                } 
+                if (!foundAlready) {
+                    exampleProductDimentions.push({name: productDim})
+                }
+            } else {
+                exampleProductDimentions.push({name: productDim})
+            }
+            if (exampleProductDimentions.length >2) {
+                break
+            }
+        }
+        if (exampleProductDimentions.length >2) {
+            break
+        }   
+    }
+    console.log('exampleProductDimentions', exampleProductDimentions)
+    relatedAttributes = relatedAttributes.concat(exampleProductDimentions)
     const filtersObj = getObjectOfArray(relatedAttributes, [])
     return({relatedAttributes, filtersObj})
 }

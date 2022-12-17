@@ -31,7 +31,11 @@ export const splitIntoPages = (array, perPage) => {
 export const getObjectOfArray = (arrayWithIds, baseValue) => {
 	const obj = {}
     for (let i=0; i<arrayWithIds.length; i++) {
-        obj[arrayWithIds[i].id] = baseValue
+		if (arrayWithIds[i].hasOwnProperty('id')) {
+			obj[arrayWithIds[i].id] = baseValue
+		} else {
+			obj[arrayWithIds[i].name] = baseValue
+		}
     }
 	return obj
 }
