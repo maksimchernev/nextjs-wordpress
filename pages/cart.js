@@ -2,13 +2,13 @@ import Layout from '../src/components/layout';
 import { HEADER_FOOTER_ENDPOINT } from '../src/utils/constants/endpoints';
 import axios from 'axios';
 import CartItemsContainer from '../src/components/cart/cart-item-container';
-import BackButton from '../src/components/backBtn';
+import BreadCrumb from '../src/components/breadcrumb';
 
 export default function Cart({ headerFooter }) {
 	return (
 		<Layout headerFooter={headerFooter || {}} initialHeader={'black'} isBagYellow={true}>
 			<div className='mt-28 container mx-auto'>
-				<BackButton />
+				<BreadCrumb />
 				<CartItemsContainer/>
 			</div>
 		</Layout>

@@ -5,11 +5,19 @@ import { roundToTwo } from '../../utils/miscellaneous';
 import Link from 'next/link';
 import { clearCart } from '../../utils/cart';
 import { Bin } from '../icons';
+import CheckoutForm from '../checkout/checkout-form';
+import cx from 'classnames';
+
 
 const CartItemsContainer = () => {
 	const [ cart, setCart ] = useContext( AppContext );
 	const { cartItems, totalPrice, totalQty } = cart || {};
 	const [ isClearCartProcessing, setClearCartProcessing ] = useState( false );
+	const [ isOrderProcessing, setIsOrderProcessing ] = useState( false );
+	const [ requestError, setRequestError ] = useState( null );
+	const [ orderSuccessful, setOrderSuccessful] = useState (null)
+	const [shippingType, setShippingType] = useState(null)
+	const [paymentType, setPaymentType] = useState(null)
 	let totalQtyText
 	if(totalQty >4) {
 		totalQtyText = 'товаров на сумму'
@@ -31,19 +39,19 @@ const CartItemsContainer = () => {
 	};
 	
 	return (
-		<div className="container mx-auto  mb-7">
+		<div className="container mx-auto">
 			<div >
 				
 				{ cart ? (
-					<div className="grid lg:grid-cols-3 gap-4 border-t border-brand-grayCF">
+					<div className="grid lg:grid-cols-3 gap-4 border-t border-brand-grayCF relative">
 						{/*Cart Items*/ }
-						<div className="lg:col-span-2 pb-5 border-r-0 lg:border-r border-b border-brand-grayCF">
-							<div className='flex justify-between items-center'>
-								<h1 className="uppercase tracking-0.5px text-4xl my-10">Корзина</h1>
+						<div className="lg:col-span-2 pb-5 border-r-0 lg:border-r  border-brand-grayCF">
+							<div className='flex justify-between items-center flex-wrap'>
+								<h1 className="uppercase tracking-0.5px sm:text-4xl my-10 text-3xl">Корзина</h1>
 								{/*Clear entire cart*/}
-								<div className="">
+								<div>
 									<button
-										className={`flex items-center ${ isClearCartProcessing ? 'cursor-not-allowed' : 'cursor-pointer' }`}
+										className={`flex items-center w-full justify-end ${ isClearCartProcessing ? 'cursor-not-allowed' : 'cursor-pointer' }`}
 										onClick={(event) => handleClearCart(event)}
 										disabled={isClearCartProcessing}
 									>	{ !isClearCartProcessing ? <Bin/> : null
@@ -54,42 +62,70 @@ const CartItemsContainer = () => {
 									</button>
 								</div>
 							</div>
-						
-							{ cartItems.length &&
-							cartItems.map( ( item ) => (
-								<CartItem
-									key={ item.product_id }
-									item={ item }
-									products={ cartItems }
-									setCart={setCart}
-								/>
-							) ) }
+							<div className='mb-14 border-b border-brand-grayCF'>
+								{ cartItems.length &&
+								cartItems.map( ( item ) => (
+									<CartItem
+										key={ item.product_id }
+										item={ item }
+										products={ cartItems }
+										setCart={setCart}
+									/>
+								) ) }
+							</div>
+							<CheckoutForm 
+								cart={cart} setCart={setCart} 
+								isOrderProcessing={isOrderProcessing} setIsOrderProcessing={setIsOrderProcessing}
+								requestError={requestError} setRequestError={setRequestError}
+								orderSuccessful={orderSuccessful} setOrderSuccessful={setOrderSuccessful}
+								shippingType={shippingType} setShippingType={setShippingType}
+								paymentType={paymentType} setPaymentType={setPaymentType}
+							/>
 						</div>
 						
+						
 						{/*Cart Total*/ }
-						<div className="lg:col-span-1 p-5 pt-0">
+						<div className="lg:col-span-1 p-5 pt-0 sticky top-20 overflow-auto h-96 ">
 							<h2 className='my-10'>Итого</h2>
 							<div className="grid grid-cols-3  mb-4">
-								<p className="col-span-2 p-2 mb-0">{totalQty} {totalQtyText}</p>
-								<p className="col-span-1 p-2 mb-0 flex justify-end ">{roundToTwo(totalPrice)  } {cartItems?.[0]?.currency ?? ''}</p>
+								<p className="col-span-2 p-1 mb-0">{totalQty} {totalQtyText}</p>
+								<p className="col-span-1 p-1 mb-0 flex justify-end text-end">{roundToTwo(totalPrice)  } {cartItems?.[0]?.currency ?? ''}</p>
+								{shippingType? <p className="col-span-2 p-1 mb-0">Способ доставки</p>: null }
+								{shippingType? <p className="col-span-1 p-1 mb-0 flex justify-end text-end">{shippingType}</p>: null }
+								{paymentType? <p className="col-span-2 p-1 mb-0">Способ оплаты</p>: null }
+								{paymentType? <p className="col-span-1 p-1 mb-0 flex justify-end text-end">{paymentType}</p>: null }
+
 							</div>
 							
 							<div className="flex justify-between">
 								
 								{/*Checkout*/}
-								<Link href="/checkout">
-									<button className="button-form-black">
-											Оформить заказ
+								<div>
+									{/* Order */ }
+									<button
+										disabled={ isOrderProcessing }
+										className={ cx(
+											'button-form-black',
+											{ 'opacity-50 cursor-not-allowed ': isOrderProcessing },
+											{ ' cursor-pointer': !isOrderProcessing },
+										) }
+										form='my-form'
+										type="submit"
+									>
+										{ isOrderProcessing ? 'Обработка...' : 'Оформить заказ' }
 									</button>
-								</Link>
+									{/* Checkout Loading*/ }
+									{ requestError && <p>Error : { requestError } :( Please try again</p> }
+								</div>
 							</div>
 						</div>
 					</div>
 					
-				) : (
+				) : ( 
 					<div className="mt-14">
 						<h1 className="uppercase tracking-0.5px text-4xl my-10">Корзина</h1>
 						<h2>В корзине пусто</h2>
+						{orderSuccessful && <p>Ваш заказ оформлен! В ближайшее время с вами свяжется оператор!</p>}
 						<Link href="/#brands">
 							<button className="button-form-black my-5">
 								Перейти в каталог

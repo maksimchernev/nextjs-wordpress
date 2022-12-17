@@ -3,9 +3,7 @@ import {isEmpty, isArray} from 'lodash';
 import { sanitize } from "../../../utils/miscellaneous";
 import {getIconComponentByName} from '../../../utils/iconsMap'
 import Image from '../../image';
-
-
-
+import ContactForm from "../../contact-form";
 
 const Footer = ({footer, header}) => {
 
@@ -15,7 +13,6 @@ const Footer = ({footer, header}) => {
       <footer className="py-20 px-2">
 			<div className="container mx-auto flex flex-wrap justify-center">
 				<div className="lg:w-1/2 w-full">
-
 					{/*Logo*/}
 					<div className="flex items-center flex-shrink-0 mb-5">
 							{
@@ -34,10 +31,6 @@ const Footer = ({footer, header}) => {
 								)
 							}
 					</div>
-
-			
-
-					
 					<div className="flex flex-wrap overflow-hidden text-white text-base leading-8">
 						{/*Menu*/}
 						<div className="my-1 px-1  overflow-hidden w-1/2 ">
@@ -77,22 +70,11 @@ const Footer = ({footer, header}) => {
 							<div dangerouslySetInnerHTML={{ __html: sanitize( sidebarOne ) }}/>
 							<div dangerouslySetInnerHTML={{ __html: sanitize( sidebarTwo ) }}/>
 						</div>
-
-						
 					</div>
 				</div>
 
 				{/* form */}
-				<div className="my-1 px-1 overflow-hidden w-1/2 hidden lg:block text-white lg:mt-0 mt-10" >
-					<p className="text-xl xl:text-2xl uppercase mb-5 text-center md:text-left font-sf-pro-display-medium">Наш специалист поможет выбрать конфигурацию под Ваш проект!</p>
-					<form action="/send-data-here" method="post" className="flex flex-col">
-						<input type="text" id="name" name="name" className="text-white bg-transparent border-b border-white py-2 mb-7" required placeholder="Имя"/>
-						<input type="phone" id="phone" name="phone" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" className="text-white bg-transparent border-b border-white py-2 mb-7" required placeholder="Телефон"/>
-
-						<button type="submit" className="w-36 button-form">Отправить</button>
-						<p className="text-xs text-gray-400 my-3 text-center md:text-left">Нажимая кнопку “Отправить” я принимаю условия Политики приватности</p>
-					</form>
-				</div>
+				<ContactForm></ContactForm>
 
 
 				<div className="mt-8 w-full flex flex-wrap">

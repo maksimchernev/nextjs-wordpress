@@ -4,7 +4,7 @@ import {HEADER_FOOTER_ENDPOINT} from '../../../src/utils/constants/endpoints'
 import axios from 'axios'
 import Image from '../../../src/components/image' 
 import Link from "next/link"
-import BackButton from '../../../src/components/backBtn';
+import BreadCrumb from '../../../src/components/breadcrumb';
 import { ArrowDown } from '../../../src/components/icons';
 import { Embedded } from '../../../src/components/icons';
 import { Overhead } from '../../../src/components/icons';
@@ -15,8 +15,8 @@ import {useRouter} from 'next/router'
 export default function Brand(props) {
   const router = useRouter()
   if (router.isFallback) {
-    return <h1>Loaddddd</h1>
-  }
+    return <h1>Loading...</h1>
+  }  
   const img = props?.brandData?.image ?? {}
   let pecOne
   if (props?.series?.length > 1) {
@@ -51,7 +51,7 @@ export default function Brand(props) {
 
   return (
     <Layout headerFooter={props.headerFooter} initialHeader={'black'} isHeaderVisible={true} isBagYellow={false}>
-        <BackButton isHeaderVisible={true}/>
+        <BreadCrumb/>
         <div className='w-full flex flex-wrap overflow-hidden container mx-auto px-12 justify-center'>
           <Image 
             sourceUrl={img?.src ?? ''}
@@ -124,22 +124,22 @@ export default function Brand(props) {
             props.series?.length ? props.series?.map ( name => {
               let img = name.image
               return (
-                <div className='w-full md:w-1/2 p-3' key={name.id}>
+                <div className='w-full md:w-1/2 lg:w-1/4 p-3' key={name.id}>
                   <Link href={{
                     pathname: '[brandId]/series/[seriesId]',
                     query: { brandId: router.query.brandId, seriesId: name?.slug },
                   }}>
                     <a>
-                      <div className='flex-col relative'>
+                      <div className='flex-col relative '>
                         <Image
                           sourceUrl={ img?.src ?? '' }
                           altText={ img?.alt || name?.name}
                           title={ name?.name ?? '' }
                           layout = 'fill'
-                          containerClassNames={'card series-card h-80 md:h-52 lg:h-80 xl:h-96'}
-                          className={'rounded-2xl'}
+                          containerClassNames={'card series-card h-80 md:h-52 lg:h-80 xl:h-96 '}
+                          className={'rounded-2xl brightness-50'}
                         />
-                        <p className='text-white uppercase self-end series-card-text'>{name?.name}</p>
+                        <p className='text-white uppercase series-card-text font-sf-pro-display-medium cursor-pointer text-center w-full'>{name?.name}</p>
                       </div>
                     </a>
                   </Link>

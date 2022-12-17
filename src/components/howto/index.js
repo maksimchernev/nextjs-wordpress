@@ -4,7 +4,7 @@ const Howto = () => {
             <div className="flex justify-content flex-wrap py-3 container mx-auto px-2" >
                 <div className="w-full pr-12">
                     <h2>
-                        Как это работает?
+                        Как мы работаем?
                     </h2>
                 </div>
                 <div className="w-full my-7 md:my-12 xl:my-24 text-brand-gray78">

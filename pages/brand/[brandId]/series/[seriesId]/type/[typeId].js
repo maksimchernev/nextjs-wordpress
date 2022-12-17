@@ -4,7 +4,7 @@ import {getProductsDataByCategoryId} from '../../../../../../src/utils/products'
 import {getBrandsSeriesTypePaths, getCategoryDataBySlug, getCategoryDataById} from '../../../../../../src/utils/categories'
 import axios from 'axios'
 import { useRouter } from 'next/router';
-import BackButton from '../../../../../../src/components/backBtn';
+import BreadCrumb from '../../../../../../src/components/breadcrumb';
 import Hero from '../../../../../../src/components/hero';
 import { getRelatedAttributesData } from '../../../../../../src/utils/attributes';
 import ProductList from '../../../../../../src/components/products';
@@ -12,16 +12,17 @@ import Filters from '../../../../../../src/components/filters';
 import { useState, useEffect } from 'react';
 import { splitIntoPages } from '../../../../../../src/utils/miscellaneous';
 import Pagination from '../../../../../../src/components/products/pagination';
+import {isEmpty} from 'lodash'
 
 export default function Type(props) {
 
-    //console.log('typeProps', props)
     const [products, setProducts] = useState(splitIntoPages(props.products, 30))
     const [page, setPage] = useState(1)
     const [currentProducts, setCurrentProducts] = useState(products[page-1])
     const [filters, setFilters] = useState(props?.relatedAttributes?.filtersObj || {})
     const [attributes, setAttributes] = useState( props?.relatedAttributes?.relatedAttributes || [])
     const [attrChosenLast, setAttrChosenLast] = useState([])
+    
     useEffect(()=> {
         let newProducts = props.products
         
@@ -60,6 +61,7 @@ export default function Type(props) {
             }
             setProducts(newProducts)
             setCurrentProducts([])
+            
         } else {
             const isFiltersEmpty = Object.values(filters).every(value => {
                 if (!value.length) {
@@ -100,6 +102,9 @@ export default function Type(props) {
             
             newProducts = splitIntoPages(newProducts, 30)
             setProducts(newProducts)
+            if(isEmpty(newProducts[page-1])) {
+                setPage(1)
+            }
             setCurrentProducts(newProducts[page-1])
         }
     }, [filters, page])
@@ -146,8 +151,8 @@ export default function Type(props) {
 
     return (
         <Layout headerFooter={props.headerFooter} initialHeader={'white'} isBagYellow={true}>
-            <BackButton isMain={true}/>
-            <Hero h1Content={h1text} isMain={false} brandData={props.brandData}/>
+            <BreadCrumb isMain={true}/>
+            <Hero h1Content={h1text} isMain={false} image={typeId == 'tracks' ? '/tracks.jpg' : '/lamps.jpg'}/>
             <div className='flex container mx-auto mt-16 relative mb-10 md:mb-20'>
                 <Filters filters={filters} setFilters={setFilters} attributes={attributes} attrChosenLast={attrChosenLast} setAttrChosenLast={setAttrChosenLast}></Filters>
                 <ProductList products={currentProducts} ></ProductList>

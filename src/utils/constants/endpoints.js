@@ -5,3 +5,4 @@ export const GET_CATEGORIES_ENDPOINT = `${process.env.NEXT_PUBLIC_SITE_URL}/api/
 export const GET_PRODUCT_ENDPOINT = `${process.env.NEXT_PUBLIC_SITE_URL}/api/get-product`;
 
 export const CART_ENDPOINT = `${process.env.NEXT_PUBLIC_WORDPRESS_SITE_URL}/wp-json/rae/v1/cart/items/`;
+export const SENT_EMAIL_ENDPOINT = `${process.env.NEXT_PUBLIC_WORDPRESS_SITE_URL}/wp-json/contact-form-7/v1/contact-forms/3514/feedback`

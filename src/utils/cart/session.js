@@ -35,6 +35,7 @@ export const getSession = () => {
 	const now = new Date()
 	if (now.getTime() > sessionObj.expiry) {
 		localStorage.removeItem('x-wc-session')
+		localStorage.setItem('next-cart', '');
 		return null
 	}
 

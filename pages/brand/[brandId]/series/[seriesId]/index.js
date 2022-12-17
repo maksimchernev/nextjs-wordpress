@@ -5,7 +5,7 @@ import Layout from '../../../../../src/components/layout';
 import {getBrandsAndSeriesPaths, getSubCategoriesById, getCategoryDataBySlug, getCategoryDataById} from '../../../../../src/utils/categories'
 import {HEADER_FOOTER_ENDPOINT} from '../../../../../src/utils/constants/endpoints'
 import Image from '../../../../../src/components/image' 
-import BackButton from '../../../../../src/components/backBtn';
+import BreadCrumb from '../../../../../src/components/breadcrumb';
 import Hero from '../../../../../src/components/hero';
 import { isArray } from 'lodash';
 
@@ -16,8 +16,8 @@ export default function Series(props) {
   }  
   return (
     <Layout headerFooter={props.headerFooter} initialHeader={'white'} isBagYellow={true}>
-        <BackButton isMain={true} bgProduct={false}/>
-        <Hero h1Content={props?.seriesData?.name} isMain={false} brandData={props.brandData}/>
+        <BreadCrumb isMain={true} bgProduct={false}/>
+        <Hero h1Content={props?.seriesData?.name} isMain={false} />
         <div className="w-full flex flex-wrap  container mx-auto py-20 md:py-24" id='series'>
           {props.typeCategoryData?.length && isArray(props.typeCategoryData) ? props.typeCategoryData.map((type)=> {
             const slug = type?.slug?.slice(0, type?.slug?.indexOf('-'))

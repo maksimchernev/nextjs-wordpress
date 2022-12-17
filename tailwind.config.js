@@ -48,7 +48,10 @@ module.exports = {
 				'34px': '34px',
 				'36px': '36px',
 				'40px': '40px',
-				'42px': '42px',
+				'44px': '44px',
+				'48px': '48px',
+				'52px': '52px',
+				'56px': '56px',
 				'60px': '60px',
 			},
 			minHeight: {

@@ -1,3 +1,4 @@
+import Image from "../image"
 const About = () => {
     return (
         <div className="flex justify-content flex-wrap my-28 container mx-auto px-2" id="about">
@@ -9,8 +10,14 @@ const About = () => {
                 Повседневная практика показывает,  новая модель организационной деятельности играет важную роль в формировании существенных и административных.
                 </p>
             </div>
-            <div className="md:w-1/2 w-full h-96 bg-gray-500 md:pl-12 mt-7 md:mt-0">
-                
+            <div className="md:w-1/2 w-full">
+                <Image 
+                sourceUrl="/about-picture.jpg"
+                altText={"Magnetic_light about"}
+                title={ "Magnetic_light about"}
+                width="566"
+                height="500"
+                />
             </div>
         </div>
     )

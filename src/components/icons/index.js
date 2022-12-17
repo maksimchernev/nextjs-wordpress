@@ -4,6 +4,7 @@ export { default as Back } from "./Back";
 export { default as Bag } from "./Bag";
 export { default as Bin } from "./Bin";
 export { default as BurgerIcon } from "./BurgerIcon";
+export { default as Cross } from "./Cross";
 export { default as Down } from "./Down";
 export { default as Embedded } from "./Embedded";
 export { default as Facebook } from "./Facebook";

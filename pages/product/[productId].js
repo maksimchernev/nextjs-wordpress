@@ -1,5 +1,5 @@
 import axios from "axios";
-import BackButton from "../../src/components/backBtn";
+import BreadCrumb from "../../src/components/breadcrumb";
 import Image from "../../src/components/image";
 import Layout from "../../src/components/layout";
 import { HEADER_FOOTER_ENDPOINT } from "../../src/utils/constants/endpoints";
@@ -19,7 +19,6 @@ function getWindowDimensions() {
   }
   
 const ProductPage = (props) => {
-    //console.log('productProps', props)
     const [windowDimensions, setWindowDimensions] = useState();
     const [showProducts, setShowProducts] = useState()
     const [currentImgIndex, setCurrentImgIndex] = useState(props.product?.images?.[0]?.id)
@@ -59,7 +58,7 @@ const ProductPage = (props) => {
     
     return (
         <Layout headerFooter={props.headerFooter} initialHeader={'black'} isBagYellow={true} bgProduct={true} metaData={props?.product?.metaData ?? []}> 
-            <BackButton isMain={false} bgProduct={true}/>
+            <BreadCrumb isMain={false} bgProduct={true}/>
             <div className="container mx-auto">
                 <h1 className="text-center text-42px">{props.product?.name}</h1>
             </div>
@@ -119,17 +118,17 @@ const ProductPage = (props) => {
                     </div>
                 </div>
             </div>
-            { props.accessories && isArray(props.accessories) && props?.accessories?.length && showProducts?
-                <div className="mb-12">
-                    <h2 className="flex justify-center text-40px my-3 px-2">Аксессуары</h2>
-                    <ProductSlider products={props.accessories} show={showProducts}></ProductSlider>
-                </div>
-                : null
-            }
             { props.supportingProducts && isArray(props.supportingProducts) && props?.supportingProducts?.length && showProducts ? 
                 <div className="mb-12">
                     <h2 className="flex justify-center text-40px my-3 ">Сопутствующие товары</h2>
                     <ProductSlider products={props.supportingProducts} show={showProducts}></ProductSlider>
+                </div>
+                : null
+            }
+            { props.accessories && isArray(props.accessories) && props?.accessories?.length && showProducts?
+                <div className="mb-12">
+                    <h2 className="flex justify-center text-40px my-3 px-2">Аксессуары</h2>
+                    <ProductSlider products={props.accessories} show={showProducts}></ProductSlider>
                 </div>
                 : null
             }

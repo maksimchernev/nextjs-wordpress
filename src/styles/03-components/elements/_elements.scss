@@ -64,10 +64,14 @@
 .series-card-text {
     z-index: 10;
     position: absolute;
-    bottom: 1.25rem;
-    left: 1.25rem;
+    top: 50%;
+    transform: translateY(-50%);
+    left: 50%;
+    transform: translateX(-50%);
+
 }
-$dotSize: 100px;
+
+$dotSize: 80px;
 
 .base-timeline {
     list-style-type: none;
@@ -75,7 +79,7 @@ $dotSize: 100px;
     position: relative;
     display: block;
     z-index: 2;
-    width: 80%;
+    width: 85%;
 }
 
 .base-timeline__item {
@@ -194,7 +198,7 @@ $dotSize: 100px;
         height: $dotSize;
       }
       .base-timeline__item::before {
-        font-size: 60px;
+        font-size: 45px;
       }
       .product-card {
         max-width: 50%;
@@ -427,7 +431,8 @@ $dotSize: 100px;
     }
 }
 .filters-container{
-    height: calc(100vh - 5rem);
+    min-height: 400px;
+    padding-bottom: 12px;
 }
 
 
