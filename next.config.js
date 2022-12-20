@@ -2,7 +2,7 @@ const path = require('path');
 const allowedImageWordPressDomain = new URL( process.env.NEXT_PUBLIC_WORDPRESS_SITE_URL ).hostname;
 
 module.exports = {
-	trailingSlash: false,
+	trailingSlash: true,
 	sassOptions: {
 		includePaths: [path.join(__dirname, 'styles')]
 	},

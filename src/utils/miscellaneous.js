@@ -30,20 +30,31 @@ export const splitIntoPages = (array, perPage) => {
 }
 export const getObjectOfArray = (arrayWithIds, baseValue) => {
 	const obj = {}
-    for (let i=0; i<arrayWithIds.length; i++) {
-		if (arrayWithIds[i].hasOwnProperty('id')) {
-			obj[arrayWithIds[i].id] = baseValue
-		} else {
-			obj[arrayWithIds[i].name] = baseValue
+	if (arrayWithIds?.length) {
+		for (let i=0; i<arrayWithIds.length; i++) {
+			if (arrayWithIds[i].hasOwnProperty('id')) {
+				obj[arrayWithIds[i].id] = baseValue
+			} else {
+				obj[arrayWithIds[i].name] = baseValue
+			}
 		}
-    }
+	}
 	return obj
 }
 
-export const placeholderFunction = (array) => {
-	return array
-}
-
+export default function inpNum(e) {
+	e = e || window.event;
+	var charCode = (typeof e.which == "undefined") ? e.keyCode : e.which;
+	var charStr = String.fromCharCode(charCode);
+	if (!charStr.match(/^[0-9]+$/))
+	  e.preventDefault();
+  }
 export const roundToTwo = (num) => {
     return +(Math.round(num + "e+2")  + "e-2");
 }
+
+
+export function getWindowDimensions() {
+    const { innerWidth: width, innerHeight: height } = window;
+    return {width, height}
+  }

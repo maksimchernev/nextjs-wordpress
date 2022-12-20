@@ -7,7 +7,7 @@ import {BurgerIcon} from '../../icons'
 import {Bag} from '../../icons' 
 import { AppContext } from '../../context';
 
-const Header = ({header, footer, initialHeader, isBagYellow, metaData = []}) => {
+const Header = ({header, footer, initialHeader, isBagYellow, metaData = [], title}) => {
 	const {sidebarTwo} = footer || {}
 	const [clientWindowHeight, setClientWindowHeight] = useState("");
 	const [backgroundTransparacy, setBackgroundTransparacy] = useState(0);
@@ -66,7 +66,6 @@ const Header = ({header, footer, initialHeader, isBagYellow, metaData = []}) => 
 		descriptionObj = metaData.find(obj => obj.key == '_aioseo_description')
 		keywordsObj = metaData.find(obj => obj.key == '_aioseo_keywords')
 	}
-
     return (
         <>
 		   <Head>
@@ -74,7 +73,7 @@ const Header = ({header, footer, initialHeader, isBagYellow, metaData = []}) => 
 				<meta name="description" content={ descriptionObj ? descriptionObj.value : siteDescription || ''}></meta>
 				<meta name="keywords" content={ keywordsObj ? keywordsObj.value : ''}></meta>
 				<meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
-				<title>{siteTitle || ''}</title>
+				<title>{title ? title : siteTitle}</title>
 				<link rel="icon" href={favicon || "/favicon.png"} />
 				
 			</Head>
@@ -124,7 +123,7 @@ const Header = ({header, footer, initialHeader, isBagYellow, metaData = []}) => 
 									>Бренды
 									</a>
 								</Link>
-								<Link href="/contacts">
+								<Link href="#footer">
 									<a className="block my-2 lg:my-auto lg:inline-block header-footer-link lg:mr-8 xl:mr-10 "
 									>Контакты
 									</a>

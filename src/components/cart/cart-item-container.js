@@ -43,13 +43,13 @@ const CartItemsContainer = () => {
 			<div >
 				
 				{ cart ? (
-					<div className="grid lg:grid-cols-3 gap-4 border-t border-brand-grayCF relative">
+					<div className="grid lg:grid-cols-3 gap-4 border-t border-brand-grayCF relative px-2">
 						{/*Cart Items*/ }
 						<div className="lg:col-span-2 pb-5 border-r-0 lg:border-r  border-brand-grayCF">
 							<div className='flex justify-between items-center flex-wrap'>
 								<h1 className="uppercase tracking-0.5px sm:text-4xl my-10 text-3xl">Корзина</h1>
 								{/*Clear entire cart*/}
-								<div>
+								<div className='mr-1'>
 									<button
 										className={`flex items-center w-full justify-end ${ isClearCartProcessing ? 'cursor-not-allowed' : 'cursor-pointer' }`}
 										onClick={(event) => handleClearCart(event)}
@@ -58,7 +58,7 @@ const CartItemsContainer = () => {
 
 										}
 										
-										<span className="ml-1 mr-4">{!isClearCartProcessing ? " Очистить корзину" : "Очистка..."}</span>
+										<span className='ml-1 mr-4 hidden sm:block'>{!isClearCartProcessing ? " Очистить корзину" : "Очистка..."}</span>
 									</button>
 								</div>
 							</div>
@@ -85,7 +85,7 @@ const CartItemsContainer = () => {
 						
 						
 						{/*Cart Total*/ }
-						<div className="lg:col-span-1 p-5 pt-0 sticky top-20 overflow-auto h-96 ">
+						<div className="lg:col-span-1 p-5 pt-0 totals-container top-20 overflow-auto self-start ">
 							<h2 className='my-10'>Итого</h2>
 							<div className="grid grid-cols-3  mb-4">
 								<p className="col-span-2 p-1 mb-0">{totalQty} {totalQtyText}</p>

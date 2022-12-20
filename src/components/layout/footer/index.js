@@ -10,7 +10,7 @@ const Footer = ({footer, header}) => {
 	const {siteTitle, siteLogoUrl} = header || {}
 	const {copyrightText, sidebarOne, socialLinks, sidebarTwo} = footer || {}
     return (
-      <footer className="py-20 px-2">
+      <footer className="py-20 px-2" id='footer'>
 			<div className="container mx-auto flex flex-wrap justify-center">
 				<div className="lg:w-1/2 w-full">
 					{/*Logo*/}

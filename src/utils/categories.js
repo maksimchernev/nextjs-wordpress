@@ -1,5 +1,6 @@
 import { isEmpty, isArray } from "lodash";
 import { func } from "prop-types";
+import { getObjectOfArray } from "./miscellaneous";
 const WooCommerceRestApi = require("@woocommerce/woocommerce-rest-api").default;
 
 const api = new WooCommerceRestApi({
@@ -44,7 +45,7 @@ export async function getSubCategoriesById(id, nameToBeExcluded) {
     const brands = []
     if (categories.length && isArray(categories)) {
       for (let i=0; i<categories.length; i++ ) {
-        if (categories[i].slug !== 'uncategorized' && categories[i].slug !== 'lamp' && categories[i].slug !== 'accessory' && categories[i].slug !== 'track') {
+        if (categories[i].slug !== 'uncategorized' && categories[i].slug !== 'lamps' && categories[i].slug !== 'accessory' && categories[i].slug !== 'tracks') {
           brands.push(categories[i])
         }
       }
@@ -69,6 +70,33 @@ export async function getCategoryDataById(id) {
   return await api.get(
     `products/categories/${id}`
   )
+}
+
+export async function getDataForInitialFilters() {
+  const {brandsCats, seriesCats, typeCats} = await getBrandsSeriesType()
+  let relatedAttributes = [{id: 'brands', name: 'Бренд', terms: []}, {id: 'type', name: 'Тип товара', oneAtATime: true, terms: []}]
+  for (let brand of brandsCats) {
+    for (let series of seriesCats) {
+      if (series.parent == brand.id) {
+        let childrenObject = {}
+        for (let type of typeCats) {
+          if (type.parent == series.id) {
+            childrenObject[type.name] = type.id
+          }
+        }
+        relatedAttributes[0].terms.push({id: series.id, name: `${brand.name} ${series.name}`, brand: brand.name, isVisible:true, ...childrenObject})
+      }
+    }
+  }
+
+  const categories = await getAllCategories(100)
+  const allTypeCats = categories.filter(category => category.parent == 0 && category.slug != 'uncategorized' && (category.slug == 'lamps' || category.slug == 'accessory' || category.slug == 'tracks')) 
+
+  for (let type of allTypeCats) {
+      relatedAttributes[1].terms.push({id: type.id, name: type.name, isVisible:true})
+  }
+  const filtersObj = getObjectOfArray(relatedAttributes, [])
+  return({relatedAttributes, filtersObj})
 }
 
 /////////////
@@ -102,7 +130,7 @@ function findAllChildsOfCategories (categories, childCategories, nameToBeExclude
 
 export async function getBrandsAndSeries() {
   const categories = await getAllCategories(100)
-  const brandsCats = categories.filter(category => category.parent == 0 && category.slug != 'uncategorized' && category.slug != 'lamp' && category.slug != 'accessory' && category.slug != 'track') 
+  const brandsCats = categories.filter(category => category.parent == 0 && category.slug != 'uncategorized' && category.slug != 'lamps' && category.slug != 'accessory' && category.slug != 'tracks') 
   const seriesAndTypesCats = categories.filter(category => category.parent !== 0) 
   const seriesCats = findAllChildsOfCategories(brandsCats, seriesAndTypesCats)
   return {brandsCats, seriesCats}
@@ -131,14 +159,13 @@ export async function getBrandsSeriesType() {
 export async function getBrandsSeriesTypePaths() {
   const {brandsCats, seriesCats, typeCats} = await getBrandsSeriesType()
   return typeCats?.map(type => {
-    let slug = type?.slug?.slice(0, type?.slug?.indexOf('-'))
     let series = seriesCats.find(series => series?.id == type.parent)
     let brand = brandsCats.find(brand => brand?.id == series.parent)
     return {
       params: {
         brandId: brand?.slug,
         seriesId: series?.slug,
-        typeId: slug
+        typeId: type?.slug
       }
     }
   })

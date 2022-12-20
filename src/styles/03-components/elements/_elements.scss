@@ -6,11 +6,18 @@
 	}
 }
 
+main {
+    min-height: 50vh;
+}
 
 .card {
     box-shadow: 3px 5px 10px rgba(0, 0, 0, 0.25);
     border-radius: 16px;
     max-height: 400px;
+}
+.popup {
+    box-shadow: 3px 5px 10px rgba(0, 0, 0, 0.25);
+    border-radius: 16px;
 }
 .series-card {
     min-width: 200px;
@@ -65,10 +72,8 @@
     z-index: 10;
     position: absolute;
     top: 50%;
-    transform: translateY(-50%);
     left: 50%;
-    transform: translateX(-50%);
-
+    transform: translate(-50%, -50%);
 }
 
 $dotSize: 80px;
@@ -253,7 +258,6 @@ $dotSize: 80px;
     display: block;
     position: relative;
     padding-left: 25px;
-    margin-bottom: 12px;
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
@@ -270,7 +274,6 @@ $dotSize: 80px;
   
   .checkmark {
     position: absolute;
-    top: 0.15rem;
     left: 0;
     height: 1.2rem;
     width: 1.2rem;
@@ -430,9 +433,11 @@ $dotSize: 80px;
         display: none;
     }
 }
-.filters-container{
-    min-height: 400px;
+.filters-container, .totals-container{
     padding-bottom: 12px;
+    position: -webkit-sticky;
+    position: sticky;
+    max-height: calc(100vh - 5rem);
 }
 
 
@@ -447,4 +452,5 @@ input::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
+
 

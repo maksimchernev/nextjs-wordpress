@@ -101,8 +101,12 @@ export const getRelatedAttributesData = async (products) => {
             break
         }   
     }
-    console.log('exampleProductDimentions', exampleProductDimentions)
     relatedAttributes = relatedAttributes.concat(exampleProductDimentions)
     const filtersObj = getObjectOfArray(relatedAttributes, [])
+    filtersObj['length'] = {from: 0, till: 99999999}
+    filtersObj['width'] = {from: 0, till: 99999999}
+    filtersObj['height'] = {from: 0, till: 99999999}
     return({relatedAttributes, filtersObj})
 }
+
+

@@ -15,6 +15,10 @@ export default async function handler(req, res) {
     try {
         const {data} = await api.get(
             'products/attributes/',
+            {
+                hide_empty: true,
+                per_page: 100
+            }
         )
         responseData.success = true;
         responseData.attributes = data

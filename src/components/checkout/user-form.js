@@ -14,7 +14,7 @@ const UserForm = ({input, handleOnChange, handleShippingChange , handlePaymentCh
 		<>	
 			<SectionLabel
 				number={1}
-				label="Выберите город"
+				label="Ваш город"
 				containerClassNames={'mb-6 lg:mr-10 '}
 			/>
 			<InputField

@@ -1,6 +1,13 @@
 import _ from "lodash"
-import Image from "../image"
+import { useState } from "react"
+import Popup from "../contact-form/pop-up"
+
+
 const Hero = ({h1Content, text, button, isMain, brandData, image}) => {
+    const [showPopup, setShowPopup] = useState(false)
+    const handleOnClick = () => {
+        setShowPopup(prev => !prev)
+    }
     if (!h1Content) {
         return null
     }
@@ -16,10 +23,21 @@ const Hero = ({h1Content, text, button, isMain, brandData, image}) => {
                         {text}
                     </p> }
                 {button && 
-                    <button className=" mt-14 text-xl button-form">
+                    <button className=" mt-14 text-xl button-form"
+                        onClick={()=>handleOnClick()}>
                         {button}
                     </button>
                 }   
+                {button ? 
+                    <div style={{
+                        opacity: !showPopup ? "0" : "1",
+                        transition: "all .1s",
+                        visibility: !showPopup ? "hidden" : "visible",                        
+                    }}>
+                        <Popup handleOnClick={handleOnClick}/>
+                    </div>
+                    : null
+                }
             </div>
         </div>
     )

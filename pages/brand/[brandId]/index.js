@@ -50,7 +50,7 @@ export default function Brand(props) {
   }
 
   return (
-    <Layout headerFooter={props.headerFooter} initialHeader={'black'} isHeaderVisible={true} isBagYellow={false}>
+    <Layout headerFooter={props.headerFooter} initialHeader={'black'} isHeaderVisible={true} isBagYellow={false} title={props?.brandData?.name}>
         <BreadCrumb/>
         <div className='w-full flex flex-wrap overflow-hidden container mx-auto px-12 justify-center'>
           <Image 
@@ -139,7 +139,7 @@ export default function Brand(props) {
                           containerClassNames={'card series-card h-80 md:h-52 lg:h-80 xl:h-96 '}
                           className={'rounded-2xl brightness-50'}
                         />
-                        <p className='text-white uppercase series-card-text font-sf-pro-display-medium cursor-pointer text-center w-full'>{name?.name}</p>
+                        <h3 className='text-white uppercase series-card-text mb-0 font-sf-pro-display-medium cursor-pointer text-center w-full text-26px'>{name?.name}</h3>
                       </div>
                     </a>
                   </Link>

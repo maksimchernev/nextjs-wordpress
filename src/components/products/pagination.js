@@ -11,7 +11,7 @@ const Pagination = ({pagesNumber, page, setPage}) => {
         mapArray.push(i)
     }
     return (
-        <div className="flex flex-wrap justify-center mx-auto overflow-hidden container mb-10 md:mb-20">
+        <div className="flex flex-wrap justify-center mx-auto overflow-hidden self-end container mb-10 md:mb-20">
             {mapArray?.length ? mapArray.map((num) => {
                 return (
                     <a key={num} onClick={()=>handleOnClick(num)} className={`${num == page ? `pointer-events-none bg-gray-200` : 'cursor-pointer'}  w-8 h-8 border-spacing-1 pagination-button flex justify-center items-center mr-2`}>{num}</a>

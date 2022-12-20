@@ -63,20 +63,18 @@ const CartItem = ( {item,products,setCart} ) => {
 	};
 	
 	return (
-		<div className="flex items-center mb-6">
-			<div >
-				<figure className='w-20 h-20 flex justify-center items-center'>
-					<Image
-						layout='fill'
-						altText={productImg?.alt || item?.data?.name}
-						sourceUrl={! isEmpty( productImg?.src ) ? productImg?.src : ''} // use normal <img> attributes as props
-						containerClassNames='border border-brand-grayCF product-image-preview'
-					/>
-				</figure>
-			</div>
-			<div className="relative flex items-end md:items-center ml-3 flex-col md:flex-row">
-				<h3 className="mb-2 md:mb-0 text-20px leading-7 mr-12 md:mr-2">{ item?.data?.name }</h3>
-				<div className='flex items-center'>
+		<div className="flex  mb-6 w-full">
+			<figure className='w-20 h-20 flex '>
+				<Image
+					layout='fill'
+					altText={productImg?.alt || item?.data?.name}
+					sourceUrl={! isEmpty( productImg?.src ) ? productImg?.src : ''} // use normal <img> attributes as props
+					containerClassNames='border border-brand-grayCF product-image-preview'
+				/>
+			</figure>
+			<div className="flex items-end md:items-center ml-3 flex-col md:flex-row w-full relative">
+				<h3 className="mb-2 md:mb-0 text-20px leading-7 pr-12 md:pr-2 w-full">{ item?.data?.name }</h3>
+				<div className='flex items-center justify-end '>
 					<div className="quantity-counter mr-2 text-brand-gray88 border-brand-grayCF border">
 						<span className={`${ updatingProduct ? 'cursor-not-allowed' : 'cursor-pointer' }  minus `} onClick={( event ) => handleQtyChange( event, item?.cartKey, 'decrement' )}>-</span>
 						<input type="text" 
@@ -89,7 +87,7 @@ const CartItem = ( {item,products,setCart} ) => {
 							className={ `${ updatingProduct ? 'cursor-not-allowed' : '' } ` }
 							disabled={updatingProduct}
 						/>
-						<span  className={`${ updatingProduct ? 'cursor-not-allowed' : 'cursor-pointer' }  plus `} onClick={( event ) => handleQtyChange( event, item?.cartKey, 'increment' )}>+</span>
+						<span className={`${ updatingProduct ? 'cursor-not-allowed' : 'cursor-pointer' }  plus `} onClick={( event ) => handleQtyChange( event, item?.cartKey, 'increment' )}>+</span>
 					</div>
 					<button className="w-14 mx-2 aspect-square hidden md:flex items-center justify-center text-22px leading-22px bg-transparent  " onClick={ ( event ) => handleRemoveProductClick( event, item?.key ) }><Cross/></button>
 				</div>

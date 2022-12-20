@@ -1,4 +1,5 @@
 import { getAttributeTermsByAttributeName } from "./attributes";
+import { GET_PRODUCTS_ENDPOINT } from "./constants/endpoints";
 
 const WooCommerceRestApi = require("@woocommerce/woocommerce-rest-api").default;
 
@@ -46,27 +47,27 @@ export const getProductData = async (slug) => {
     }
   )
 }
-
+  
 //used for sitemap too
 export const getAllProducts = async() => {
-  const { headers } = await getProductsData(100)
   async function awaitAll(count, asyncFn) {
       const promises = [];
       for (let i = 1; i <= count; i++) {
-          promises.push(asyncFn(100, i));
+        promises.push(asyncFn(100, i));
       }
       return Promise.all(promises);
   }
-
+  const { headers } = await getProductsData(100)
   let products = await awaitAll(Number(headers['x-wp-totalpages']), getProductsData)
-  
   products = products.map(data => {
-      return data.data
+    return data.data
   })
   return products.reduce((acc, value)=> {
       return acc.concat(value)
   }) 
 }
+
+
 export const getAllProductsPaths = async() => {
   const products = await getAllProducts()
   return products.map(product => {

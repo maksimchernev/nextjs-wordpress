@@ -7,7 +7,7 @@ import { useState, useEffect} from 'react';
 
 
 
-const ContactForm = () => { 
+const ContactForm = ({bgWhite}) => { 
     const initialState = {
         name: '',
 		phone: '',
@@ -44,7 +44,7 @@ const ContactForm = () => {
     useEffect(()=> {
     }, [input])
     return (
-        <div className="my-1 px-1 overflow-hidden w-1/2 hidden lg:block text-white lg:mt-0 mt-10" >
+        <div className={`${bgWhite ? 'text-brand-gray3E py-10 w-4/5 sm:w-3/4 lg:w-3/5 2xl:w-1/2' : 'text-white lg:mt-0 mt-10 my-1 hidden  lg:block overflow-hidden w-1/2'} px-1 `} >
             {createdFormSubmitData 
                 ?   <>
                         <p className="text-xl xl:text-2xl mb-5 text-center md:text-left font-sf-pro-display-bold">Спасибо за обращение!</p>
@@ -56,7 +56,7 @@ const ContactForm = () => {
                         </button>
                     </>
                 :   <>
-                        <p className="text-xl xl:text-2xl uppercase mb-5 text-center md:text-left font-sf-pro-display-medium">Наш специалист поможет выбрать конфигурацию под Ваш проект!</p>
+                        <p className={`${bgWhite ? 'text-brand-gray3E text-center' : 'text-white text-center md:text-left'} text-xl xl:text-2xl uppercase mb-5  font-sf-pro-display-medium`}>Наш специалист поможет выбрать конфигурацию под Ваш проект!</p>
                         <form onSubmit={ handleSubmit } className="flex flex-col">
                         <input 
                             name="name"  
@@ -65,7 +65,7 @@ const ContactForm = () => {
                             onChange={( event ) => handleOnChange( event )}
                             type="text" 
                             id="name" 
-                            className="text-white bg-transparent border-b border-white py-2 mb-7" 
+                            className={`${bgWhite ? 'text-brand-gray3E border-brand-gray3E' : 'text-white border-white'} bg-transparent focus:outline-none border-b  py-2 mb-3 `}
                             />  
                         <Error errors={input.errors} fieldName='name'></Error>
                         <input 
@@ -76,20 +76,23 @@ const ContactForm = () => {
                             type="text" 
                             id="phone" 
                             /* pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"  */
-                            className="text-white bg-transparent border-b border-white py-2 mb-7"  
+                            className={`${bgWhite ? 'text-brand-gray3E border-brand-gray3E' : 'text-white border-white'} bg-transparent focus:outline-none border-b  py-2 mb-3 mt-4`}
                         />
                         <Error errors={input.errors} fieldName='phone'></Error>
-
-                        <button type="submit" 
-                            disabled={ isFormSumbitProcessing ? true : false }
-                            className={ cx(
-                                'w-36 button-form',
-                                { 'opacity-50 cursor-not-allowed ': isFormSumbitProcessing },
-                                { ' cursor-pointer': !isFormSumbitProcessing },
-                            ) }>
-                            { isFormSumbitProcessing ? 'Обработка...' : 'Отправить' }
-                            
-                        </button>
+                        <div className={`${bgWhite ? 'flex justify-center': 'block'} mt-4`}>
+                            <button type="submit" 
+                                disabled={ isFormSumbitProcessing ? true : false }
+                                className={ cx(
+                                    'w-36 ',
+                                    { 'button-form': !bgWhite},
+                                    { 'button-form-black': bgWhite},
+                                    { 'opacity-50 cursor-not-allowed ': isFormSumbitProcessing },
+                                    { ' cursor-pointer': !isFormSumbitProcessing },
+                                ) }>
+                                { isFormSumbitProcessing ? 'Обработка...' : 'Отправить' }
+                                
+                            </button>
+                        </div>
                         <p className="text-xs text-gray-400 my-3 text-center md:text-left">Нажимая кнопку “Отправить” я принимаю условия Политики приватности</p>
                     </form>
                     </>

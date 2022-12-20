@@ -5,6 +5,7 @@ import { AppContext } from '../context';
 import Link from 'next/link';
 import cx from 'classnames';
 import { Bag } from '../icons';
+import Image from 'next/image';
 
 const AddToCart = ( { product, isItemCard } ) => {
     
@@ -72,7 +73,7 @@ const AddToCart = ( { product, isItemCard } ) => {
                 onClick={ () => addToCart( product?.id ?? 0, quantity ?? 1, setCart, setIsAddedToCart, setLoading ) }
                 disabled={ loading }
                 >
-                { loading ? <img width="20" src="/cart-spinner.gif"  alt="spinner"/> :  <Bag className='text-brand-yellow  fill-current'></Bag>}  
+                { loading ? <Image width="20" height="20" src="/cart-spinner.gif"  alt="spinner"/> :  <Bag className='text-brand-yellow  fill-current'></Bag>}  
             </button>
             </div>
         )

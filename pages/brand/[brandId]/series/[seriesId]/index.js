@@ -15,31 +15,32 @@ export default function Series(props) {
     return <h1>Loading...</h1>
   }  
   return (
-    <Layout headerFooter={props.headerFooter} initialHeader={'white'} isBagYellow={true}>
+    <Layout headerFooter={props.headerFooter} initialHeader={'white'} isBagYellow={true} title={props?.seriesData?.name}>
         <BreadCrumb isMain={true} bgProduct={false}/>
         <Hero h1Content={props?.seriesData?.name} isMain={false} />
-        <div className="w-full flex flex-wrap  container mx-auto py-20 md:py-24" id='series'>
+        <div className="w-full flex flex-wrap justify-center container mx-auto py-20 md:py-24" id='series'>
           {props.typeCategoryData?.length && isArray(props.typeCategoryData) ? props.typeCategoryData.map((type)=> {
-            const slug = type?.slug?.slice(0, type?.slug?.indexOf('-'))
+            const slug = type?.slug
             const img = type?.image
             return (
-              <div key={type.id} className='p-3 w-full md:w-1/2 '>
-                <h2 className='text-4xl uppercase my-4 md:mb-12 font-sf-pro-display-medium'>{type.name}</h2>
+              <div key={type.id} className='w-full sm:w-1/2 lg:w-1/3 p-3'>
                 <Link href={{
                         pathname: '/brand/[brandId]/series/[seriesId]/type/[typeId]',
                         query: { brandId: router.query.brandId, seriesId: router.query.seriesId, typeId: slug },
                       }}>
-                  <a>
+                  <a>                 
                     <div className='flex-col relative'
                       >
                       <Image
-                        sourceUrl={ img?.src || '' }
+                        sourceUrl={ img?.src || '/lamps.jpg' }
                         altText={ img?.alt || type?.name}
                         title={ type?.name || '' }
                         layout = 'fill'
-                        containerClassNames={'card series-card h-80 md:h-52 lg:h-80 xl:h-96'}
-                        className={'rounded-2xl'}
+                        containerClassNames={'card series-card h-80 md:h-52 lg:h-80 xl:h-96 '}
+                        className={'rounded-2xl brightness-50'}
                       />
+                      <h3 className='text-white uppercase series-card-text mb-0 font-sf-pro-display-medium cursor-pointer text-center w-full text-26px'>{type.name}</h3>
+
                     </div>
                   </a>
                 </Link>
@@ -63,20 +64,27 @@ export async function getStaticPaths() {
 export async function getStaticProps({params}) {
   const { data: headerFooterData } = await axios.get( HEADER_FOOTER_ENDPOINT );
   const seriesData = await getCategoryDataBySlug(params.seriesId)
-  const {data: brandData} = await getCategoryDataById(seriesData?.parent)
-  const typeCategoryData = await getSubCategoriesById(seriesData?.id, 'Сопутствующие')
   if (!seriesData?.id) {
     return {
       notFound: true
     }
   }
-  
+  const {data: brandData} = await getCategoryDataById(seriesData?.parent)
+  const typeCategoryData = await getSubCategoriesById(seriesData?.id)
+  typeCategoryData.sort((one, two) => {
+    if (one.name == 'Шинопроводы') {
+      return -1
+    } else {
+      return 1
+    }
+
+  }) 
 	return {
 		props: {
       headerFooter: headerFooterData?.data ?? {},
       seriesData: seriesData ?? {},
       brandData: brandData || {},
-      typeCategoryData: typeCategoryData || {}
+      typeCategoryData: typeCategoryData || []
 		},
     revalidate: 10,
 	};

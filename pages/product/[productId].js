@@ -3,7 +3,7 @@ import BreadCrumb from "../../src/components/breadcrumb";
 import Image from "../../src/components/image";
 import Layout from "../../src/components/layout";
 import { HEADER_FOOTER_ENDPOINT } from "../../src/utils/constants/endpoints";
-import { sanitizeTags } from "../../src/utils/miscellaneous";
+import { getWindowDimensions, sanitizeTags } from "../../src/utils/miscellaneous";
 import { getAllProductsPaths, getProductData, getProductsDataByCategoryId } from "../../src/utils/products";
 import { useRouter } from "next/router";
 import AddToCart from "../../src/components/cart/add-to-cart";
@@ -13,18 +13,14 @@ import { getCategoryDataById, getSubCategoriesById } from "../../src/utils/categ
 import { isArray } from "lodash";
 import { roundToTwo } from "../../src/utils/miscellaneous";
 
-function getWindowDimensions() {
-    const { innerWidth: width } = window;
-    return width
-  }
+
   
 const ProductPage = (props) => {
     const [windowDimensions, setWindowDimensions] = useState();
     const [showProducts, setShowProducts] = useState()
     const [currentImgIndex, setCurrentImgIndex] = useState(props.product?.images?.[0]?.id)
     useEffect(() => {
-        
-            let width = getWindowDimensions()
+            let {width} = getWindowDimensions()
             if (width > 1536) {
                 setShowProducts(4)
             } else if (width > 1280) {
@@ -34,12 +30,13 @@ const ProductPage = (props) => {
             } else {
                 setShowProducts(1)
             }
-            setWindowDimensions(getWindowDimensions());
+            setWindowDimensions(width);
  
       }, [windowDimensions]);
     useEffect(()=> {
         function handleResize() {
-            setWindowDimensions(getWindowDimensions());
+            let {width} = getWindowDimensions()
+            setWindowDimensions(width);
         }      
         window.addEventListener('resize', handleResize);
         return () => window.removeEventListener('resize', handleResize);
@@ -57,7 +54,13 @@ const ProductPage = (props) => {
      
     
     return (
-        <Layout headerFooter={props.headerFooter} initialHeader={'black'} isBagYellow={true} bgProduct={true} metaData={props?.product?.metaData ?? []}> 
+        <Layout headerFooter={props.headerFooter} 
+            initialHeader={'black'} 
+            isBagYellow={true} 
+            bgProduct={true} 
+            metaData={props?.product?.metaData ?? []} 
+            title={props?.product?.name}
+            > 
             <BreadCrumb isMain={false} bgProduct={true}/>
             <div className="container mx-auto">
                 <h1 className="text-center text-42px">{props.product?.name}</h1>
@@ -120,7 +123,7 @@ const ProductPage = (props) => {
             </div>
             { props.supportingProducts && isArray(props.supportingProducts) && props?.supportingProducts?.length && showProducts ? 
                 <div className="mb-12">
-                    <h2 className="flex justify-center text-40px my-3 ">Сопутствующие товары</h2>
+                    <h2 className="flex justify-center text-40px my-3 px-2">Сопутствующие товары</h2>
                     <ProductSlider products={props.supportingProducts} show={showProducts}></ProductSlider>
                 </div>
                 : null
