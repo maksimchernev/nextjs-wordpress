@@ -81,8 +81,8 @@ const Filter = ({attribute, filters, setFilters, isOpened, setIsOpened, attrChos
                                     <span dangerouslySetInnerHTML={{ __html: sanitize(term.name) }}></span>
                                     {!attribute.oneAtATime ? 
                                         <input type="checkbox" 
-                                            disabled={!term.isVisible || isLoading} 
-                                            value={term.id} 
+                                        disabled={!term.isVisible || isLoading} 
+                                        value={term.id} 
                                             id={term.name} 
                                             name={attribute.name} 
                                             onChange={() => handleOnChange(attribute.id, attrTerm)}
@@ -96,7 +96,7 @@ const Filter = ({attribute, filters, setFilters, isOpened, setIsOpened, attrChos
                                             onChange={() => handleOnChange(attribute.id, attrTerm, true)}
                                             />
                                     }
-                                    <span className="checkmark top-0.5"></span>
+                                    {!attribute.oneAtATime ? <span className="checkmark top-0.5"></span> : <span className="checkmark-rounded top-0.5"></span>}
                                     {/* <label dangerouslySetInnerHTML={{ __html: sanitize(term.name) }} ></label>    */} 
                                 </label>
                             )
@@ -108,25 +108,25 @@ const Filter = ({attribute, filters, setFilters, isOpened, setIsOpened, attrChos
                     <a className="flex justify-between filter-btn w-full mx-4 gray3E font-sf-pro-display-medium" onClick={ () => handleOnClick(attribute.name) }><span>{attributeName}</span><ArrowFilter className={`${isOpened[attribute.id] ? `rotate-180` :  null} mx-1 filter-arrow fill-current filter-color-gray`}></ArrowFilter></a>
                     <div className={`${isOpened[attribute.name] ? `flex ` : `hidden`} flex-col w-full mt-2 mx-4 bg-white font-sf-pro-display-medium`}>
                         <div className="flex flex-col font-sf-pro-display-light">
-                            <div className="flex my-2">
-                                <span className=" mr-2">От</span>
+                            <div className="flex mb-2 mt-1">
+                                <span className="mr-2 leading-6">От</span>
                                 <input type='number' 
-                                    className="w-3/5 border-b focus:outline-none" 
+                                    className="w-2/5 border-b focus:outline-none leading-5 flex self-end" 
                                     onChange={(e)=>handleOnDimentionsChange(e, attribute.name, true)}
                                     onKeyDown={e => exceptThisSymbols.includes(e.key) && e.preventDefault()}
 
                                     ></input>
-                                <span className=" ml-2">мм</span>
+                                <span className="ml-2 leading-6">мм</span>
                             </div>
                             <div className="flex my-2">
-                                <span className=" mr-2">До</span>
+                                <span className="mr-2 leading-6">До</span>
                                 <input type='number' 
-                                    className="w-3/5 border-b focus:outline-none" 
+                                    className="w-2/5 border-b focus:outline-none leading-5 flex self-end" 
                                     onChange={(e)=>handleOnDimentionsChange(e, attribute.name, false)}
                                     onKeyDown={e => exceptThisSymbols.includes(e.key) && e.preventDefault()}
 
                                 ></input>
-                                <span className=" ml-2">мм</span>
+                                <span className="ml-2 leading-6">мм</span>
                             </div>
                         </div>
                     </div>

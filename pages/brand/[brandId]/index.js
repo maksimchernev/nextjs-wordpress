@@ -77,7 +77,7 @@ export default function Brand(props) {
           </div>
           <div className='flex w-full md:w-1/2 pt-7 md:pt-0 h-86 bg-red flex-col pl-7 md:pl-12  text-xl leading-8'>
             <p className='font-medium text-20px lg:text-26px uppercase'>Варианты установки:</p>
-              <div className='flex flex-row flex-wrap justify-between lg:justify-start '>
+              <div className='flex flex-row flex-wrap justify-start '>
                 {instOptions?.length ? instOptions?.map((option, index) => {
                   let icon 
 
@@ -95,7 +95,7 @@ export default function Brand(props) {
                       icon = null
                   }
                   return (
-                    <div className='flex items-center pr-12 pt-7 flex-col lg:pr-28' key={ index }>
+                    <div className='flex items-center justify-center sm:justify-start flex-col pl-2 pt-7 pr-12 lg:pr-28' key={ index }>
                       {icon}
                       <p className='capitalize pt-2 text-brand-gray78'>{option}</p>
                     </div>
@@ -124,7 +124,7 @@ export default function Brand(props) {
             props.series?.length ? props.series?.map ( name => {
               let img = name.image
               return (
-                <div className='w-full md:w-1/2 lg:w-1/4 p-3' key={name.id}>
+                <div className='w-full sm:w-1/2 lg:w-1/4 p-3' key={name.id}>
                   <Link href={{
                     pathname: '[brandId]/series/[seriesId]',
                     query: { brandId: router.query.brandId, seriesId: name?.slug },

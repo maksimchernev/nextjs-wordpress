@@ -8,14 +8,14 @@ const Filters = ({attributes, filters, setFilters,attrChosenLast, setAttrChosenL
         <div >
             {attributes?.length ? attributes.map( (attribute, index) => {
                 return (
-                        <Filter key={index} 
-                            attribute={attribute} 
-                            filters={filters} setFilters={setFilters} 
-                            isOpened={isOpened} setIsOpened={setIsOpened} 
-                            attrChosenLast={attrChosenLast} setAttrChosenLast={setAttrChosenLast}
-                            useIdForFilters={useIdForFilters}
-                            isLoading={isLoading}
-                        ></Filter>
+                    <Filter key={index} 
+                        attribute={attribute} 
+                        filters={filters} setFilters={setFilters} 
+                        isOpened={isOpened} setIsOpened={setIsOpened} 
+                        attrChosenLast={attrChosenLast} setAttrChosenLast={setAttrChosenLast}
+                        useIdForFilters={useIdForFilters}
+                        isLoading={isLoading}
+                    ></Filter>
                 )
             }) : null} 
         </div>

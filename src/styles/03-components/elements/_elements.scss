@@ -84,12 +84,11 @@ $dotSize: 80px;
     position: relative;
     display: block;
     z-index: 2;
-    width: 85%;
+
 }
 
 .base-timeline__item {
     position: relative;
-    width: calc(100% / 2 - 15px);
 }
 
 .base-timeline__item::before {
@@ -109,27 +108,29 @@ $dotSize: 80px;
         
 }
 
-.base-timeline__item:last-child {
-    width: 0;
-}
+
 
 .base-timeline__summary-text_container {
     display: flex;
     position: absolute;
     top: 0;
     left: $dotSize+20px;
-    width: $dotSize*2;
 }
-@media (max-width: 639px) {
-    $dotSize: $dotSize/2;
+@media (max-width: 450px) {
+    $dotSize: $dotSize/1.5;
     h2 {
         font-size: 35px;
+    }
+    .base-timeline {
+        width: 85%;
     }
     .base-timeline__item {
         display: block;
         margin-top: 20px;
+        width: calc(100% - $dotSize/2);
     }
     .base-timeline__summary-text_container {
+        font-size: 18px;
         height: $dotSize;
         left: $dotSize+20px; 
         margin: auto 0;
@@ -144,40 +145,18 @@ $dotSize: 80px;
     font-size: 30px;
     }
 }
-@media (min-width: 640px) {
-    $dotSize: $dotSize/2;
-    h2 {
-        font-size: 48px;
-    }
-    .base-timeline__item {
-        display: block;
-        margin-top: 20px;
-    }
-    .base-timeline__summary-text_container {
-        height: $dotSize;
-        left: $dotSize+20px; 
-        margin: auto 0;
-        align-items: center;
-    }
-    .base-timeline__item--data::before {
-        content: attr(num);
-        width: $dotSize;
-        height: $dotSize;
-      }
-      .base-timeline__item::before {
-        font-size: 30px;
-      }
-}
-@media (min-width: 768px) {
-    h2 {
-        font-size: 56px;
+@media (min-width: 451px) {
+    .base-timeline__item:last-child {
+        width: 0;
     }
     .base-timeline {
         margin: 0 5% ;
+        width: 85%;
     }
     .base-timeline__item {
         display: inline-block;
         margin-top: 0;
+        width: calc(100% / 2 - $dotSize/2);
     }
     .base-timeline::before {
         content: '';
@@ -192,7 +171,8 @@ $dotSize: 80px;
         height: $dotSize/2;
         left: -$dotSize/2; 
         top: 7em;
-        justify-content: center;        
+        justify-content: center;   
+        width: $dotSize*2;     
     }
     .base-timeline__summary-text {
         text-align: center;
@@ -205,17 +185,42 @@ $dotSize: 80px;
       .base-timeline__item::before {
         font-size: 45px;
       }
-      .product-card {
+
+    .product-card {
         max-width: 50%;
-      }
+    }
+}
+@media (min-width: 640px) {
+    h2 {
+        font-size: 48px;
+    }
+    
+}
+@media (min-width: 768px) {
+    h2 {
+        font-size: 56px;
+    }
+    
 }
 
 @media (min-width: 1280px) {
+    .base-timeline {
+        width: 85%;
+    }
+    .base-timeline__item {
+        width: calc(100% / 2 - $dotSize/2);
+    }
     .product-card {
         max-width: 33%;
       }
 }
 @media (min-width: 1536px) {
+    .base-timeline {
+        width: 70%;
+    }
+    .base-timeline__item {
+        width: calc(100% / 2 - $dotSize/2);
+    }
     .product-card {
         max-width: 25%;
       }
@@ -272,7 +277,7 @@ $dotSize: 80px;
     width: 0;
   }
   
-  .checkmark {
+  .checkmark, .checkmark-rounded {
     position: absolute;
     left: 0;
     height: 1.2rem;
@@ -280,14 +285,19 @@ $dotSize: 80px;
     background-color: #eee;
   }
   
-  .checkbox-wrapper-hover:hover input ~ .checkmark {
+  .checkbox-wrapper-hover:hover input ~ .checkmark ,   .checkbox-wrapper-hover:hover input ~ .checkmark-rounded {
     background-color: #ccc;
   }
   
-  .checkbox-wrapper input:checked ~ .checkmark {
+  .checkbox-wrapper input:checked ~ .checkmark,   .checkbox-wrapper input:checked ~ .checkmark-rounded {
     background-color: #FFDF38;
   }
   
+  .checkmark-rounded {
+    border-radius: 50%;
+    border: #CECECE solid 1px;
+  }
+
   .checkmark:after {
     content: '';
     position: absolute;

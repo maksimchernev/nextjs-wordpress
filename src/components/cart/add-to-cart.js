@@ -4,7 +4,7 @@ import { useContext, useEffect, useState } from 'react';
 import { AppContext } from '../context';
 import Link from 'next/link';
 import cx from 'classnames';
-import { Bag } from '../icons';
+import { Bag, Success } from '../icons';
 import Image from 'next/image';
 
 const AddToCart = ( { product, isItemCard } ) => {
@@ -69,11 +69,12 @@ const AddToCart = ( { product, isItemCard } ) => {
         return (
             <div className='flex'>
             <button
-                className={` ${addToCartBtnIconClasses}  add-to-cart-button-icon ${!loading ? `bg-brand-light-gray88 hover:bg-brand-gray78` : `bg-white` }  duration-100 flex justify-center items-center`} 
+                className={` ${addToCartBtnIconClasses}  add-to-cart-button-icon ${!loading && !isAddedToCart ? `bg-brand-light-gray88 hover:bg-brand-gray78` : `bg-white` }  duration-100 flex justify-center items-center`} 
                 onClick={ () => addToCart( product?.id ?? 0, quantity ?? 1, setCart, setIsAddedToCart, setLoading ) }
                 disabled={ loading }
                 >
-                { loading ? <Image width="20" height="20" src="/cart-spinner.gif"  alt="spinner"/> :  <Bag className='text-brand-yellow  fill-current'></Bag>}  
+                { loading ? <Image width="20" height="20" src="/cart-spinner.gif"  alt="spinner"/> : !isAddedToCart ? <Bag className='text-brand-yellow  fill-current'></Bag> : <Success className='text-brand-yellow  fill-current'></Success>} 
+                 
             </button>
             </div>
         )

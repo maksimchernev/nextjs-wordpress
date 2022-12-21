@@ -3,6 +3,7 @@ const Pagination = ({pagesNumber, page, setPage}) => {
 		return null;
 	}
     const handleOnClick = (num) => {
+        window.scrollTo(0, 0)
         setPage(num)
     }
     

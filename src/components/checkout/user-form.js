@@ -56,7 +56,7 @@ const UserForm = ({input, handleOnChange, handleShippingChange , handlePaymentCh
 					handleOnChange={handleOnChange}
 					placeholder="Адрес"
 					errors={input.shipping.errors}
-					containerClassNames="mb-4"
+					containerClassNames="mb-4 lg:mr-10"
 					/>
 				</div>
 			

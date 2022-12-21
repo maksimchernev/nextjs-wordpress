@@ -16,8 +16,8 @@ const CartItemsContainer = () => {
 	const [ isOrderProcessing, setIsOrderProcessing ] = useState( false );
 	const [ requestError, setRequestError ] = useState( null );
 	const [ orderSuccessful, setOrderSuccessful] = useState (null)
-	const [shippingType, setShippingType] = useState(null)
-	const [paymentType, setPaymentType] = useState(null)
+	const [shippingType, setShippingType] = useState('Самовывоз')
+	const [paymentType, setPaymentType] = useState('Наличными')
 	let totalQtyText
 	if(totalQty >4) {
 		totalQtyText = 'товаров на сумму'
@@ -87,13 +87,13 @@ const CartItemsContainer = () => {
 						{/*Cart Total*/ }
 						<div className="lg:col-span-1 p-5 pt-0 totals-container top-20 overflow-auto self-start ">
 							<h2 className='my-10'>Итого</h2>
-							<div className="grid grid-cols-3  mb-4">
-								<p className="col-span-2 p-1 mb-0">{totalQty} {totalQtyText}</p>
+							<div className="grid grid-cols-2  mb-4">
+								<p className="col-span-1 p-1 mb-0">{totalQty} {totalQtyText}</p>
 								<p className="col-span-1 p-1 mb-0 flex justify-end text-end">{roundToTwo(totalPrice)  } {cartItems?.[0]?.currency ?? ''}</p>
-								{shippingType? <p className="col-span-2 p-1 mb-0">Способ доставки</p>: null }
-								{shippingType? <p className="col-span-1 p-1 mb-0 flex justify-end text-end">{shippingType}</p>: null }
-								{paymentType? <p className="col-span-2 p-1 mb-0">Способ оплаты</p>: null }
-								{paymentType? <p className="col-span-1 p-1 mb-0 flex justify-end text-end">{paymentType}</p>: null }
+								<p className="col-span-1 p-1 mb-0">Способ доставки</p>
+								<p className="col-span-1 p-1 mb-0 flex justify-end text-end">{shippingType}</p>
+								<p className="col-span-1 p-1 mb-0">Способ оплаты</p>
+								<p className="col-span-1 p-1 mb-0 flex justify-end text-end">{paymentType}</p>
 
 							</div>
 							
@@ -122,11 +122,11 @@ const CartItemsContainer = () => {
 					</div>
 					
 				) : ( 
-					<div className="mt-14">
+					<div className="mt-14 px-2">
 						<h1 className="uppercase tracking-0.5px text-4xl my-10">Корзина</h1>
 						<h2>В корзине пусто</h2>
 						{orderSuccessful && <p>Ваш заказ оформлен! В ближайшее время с вами свяжется оператор!</p>}
-						<Link href="/#brands">
+						<Link href="/shop">
 							<button className="button-form-black my-5">
 								Перейти в каталог
 							</button>

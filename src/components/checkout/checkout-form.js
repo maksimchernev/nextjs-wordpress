@@ -1,4 +1,4 @@
-import { useState, useEffect} from 'react';
+import { useState} from 'react';
 import validateAndSanitizeCheckoutForm from '../../validator/checkout';
 import { handleCheckout } from '../../utils/checkout';
 import UserForm from './user-form';

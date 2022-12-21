@@ -2,7 +2,7 @@ import Image from "../image"
 const About = () => {
     return (
         <div className="flex justify-content flex-wrap my-28 container mx-auto px-2" id="about">
-            <div className="md:w-1/2 w-full md:pr-12">
+            <div className="md:w-1/2 w-full">
                 <h2>
                     О нас
                 </h2>
@@ -10,7 +10,7 @@ const About = () => {
                 Повседневная практика показывает,  новая модель организационной деятельности играет важную роль в формировании существенных и административных.
                 </p>
             </div>
-            <div className="md:w-1/2 w-full">
+            <div className="md:w-1/2 w-full flex justify-center">
                 <Image 
                 sourceUrl="/about-picture.jpg"
                 altText={"Magnetic_light about"}

@@ -4,10 +4,11 @@ import Error from "../checkout/error";
 import InputField from "../checkout/form-elements/input-field";
 import cx from 'classnames';
 import { useState, useEffect} from 'react';
+import { Cross } from "../icons"
 
 
 
-const ContactForm = ({bgWhite}) => { 
+const ContactForm = ({bgWhite, handleOnClick}) => { 
     const initialState = {
         name: '',
 		phone: '',
@@ -41,17 +42,29 @@ const ContactForm = ({bgWhite}) => {
 		const newState = { ...input, [ target.name ]: target.value };
 		setInput( newState );
 	};
-    useEffect(()=> {
-    }, [input])
+    const handleClose = () => {
+        handleOnClick()
+        setCreatedFormSubmitData(null)
+        setInput(initialState)
+    }
+
+    const handleSentMore = () => {
+        setCreatedFormSubmitData(null)
+        setInput(initialState)
+    }
+
     return (
-        <div className={`${bgWhite ? 'text-brand-gray3E py-10 w-4/5 sm:w-3/4 lg:w-3/5 2xl:w-1/2' : 'text-white lg:mt-0 mt-10 my-1 hidden  lg:block overflow-hidden w-1/2'} px-1 `} >
+        <div className={`${bgWhite ? 'text-brand-gray3E py-10 w-4/5 sm:w-3/4 lg:w-3/5 2xl:w-1/2' : 'text-white lg:mt-0 mb-10 my-1 w-full sm:w-3/4 mx-auto overflow-hidden md:w-1/2 lg:w-2/5'} px-1 `} >
+            {bgWhite && <button className="absolute top-5 right-5 w-8 hover:bg-brand-yellow mx-2 aspect-square flex items-center justify-center text-22px leading-22px bg-transparent"
+                onClick={()=>handleClose()}
+            ><Cross/></button>}
             {createdFormSubmitData 
                 ?   <>
                         <p className="text-xl xl:text-2xl mb-5 text-center md:text-left font-sf-pro-display-bold">Спасибо за обращение!</p>
                         <p className="text-xl xl:text-xl mb-5 text-center md:text-left font-sf-pro-display-light">В ближайшее время с Вами свяжется наш менеджер!</p>
                         <button 
                             className='w-44 button-form cursor-pointer'
-                            onClick={()=>setCreatedFormSubmitData(null)}>
+                            onClick={()=>handleSentMore()}>
                                 Отправить еще
                         </button>
                     </>
