@@ -11,7 +11,7 @@ const Layout = ({children, headerFooter, initialHeader, isBagYellow, bgProduct, 
 				<main>
 					{children}
 				</main>
-				<Footer footer={footer}/>
+				<Footer footer={footer} header={header}/>
 			</div>
 		</AppProvider>
 	)

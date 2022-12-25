@@ -3,26 +3,27 @@ import Layout from '../src/components/layout';
 import { GET_ALL_PRODUCTS_ENDPOINT, GET_ATTRIBUTES_ENDPOINT, GET_PRODUCTS_ENDPOINT, GET_TERMS_ENDPOINT, HEADER_FOOTER_ENDPOINT } from '../src/utils/constants/endpoints';
 import axios from 'axios';
 import BreadCrumb from '../src/components/breadcrumb';
-import { getBrandsSeriesType, getDataForInitialFilters } from '../src/utils/categories';
-import { useEffect, useRef, useState } from 'react';
+import { getDataForInitialFilters } from '../src/utils/categories';
+import { useEffect, useState } from 'react';
 import Filters from '../src/components/filters';
 import ProductList from '../src/components/products';
 import Pagination from '../src/components/products/pagination';
 import { useRouter } from 'next/router';
 import { getObjectOfArray, getWindowDimensions, splitIntoPages } from '../src/utils/miscellaneous';
 import ChosenFilters from '../src/components/filters/chosen-filters';
-import _, { isArray, isEmpty } from 'lodash';
+import _, { filter, isArray, isEmpty } from 'lodash';
 import useDidMountEffect from '../src/hooks/useDidMountEffect';
 import Image from 'next/image';
 
 
 const getRelatedAttributesDataFromAPi = async (products) => {
+    let isAccessory = products[0].categories.find(category => category.name.includes('Сопутствующие') || category.slug.includes('accessory')) ? true : false
     let exampleProductAttributes = products[0].attributes
     if (!(exampleProductAttributes.length && isArray(exampleProductAttributes)) ) {
         return ({relatedAttributes: [], filtersObj: {}})
     }
     //фильтрация основных аттрибутов
-    exampleProductAttributes = exampleProductAttributes.filter(attr => !(attr.name == 'Тип товара' || attr.name == 'Модельный ряд' || attr.id == 2 || attr.id ==7) )
+    exampleProductAttributes = exampleProductAttributes.filter(attr => !(isAccessory ? attr.name == 'Модельный ряд' || attr.id == 7 : attr.name == 'Тип товара' || attr.name == 'Модельный ряд' || attr.id == 2 || attr.id == 7) )
     //получение данных по всем возможным аттрибутам для получения id
     let {data: attributes} = await axios.get( `${GET_ATTRIBUTES_ENDPOINT}`)
     attributes = attributes.attributes
@@ -85,8 +86,15 @@ const getRelatedAttributesDataFromAPi = async (products) => {
     filtersObj['height'] = {from: 0, till: 99999999}
     return({relatedAttributes, filtersObj})
 }
-
-
+const getProductsOfSiblingCategoriesFromApi = async (idsArray, productsPerPage,initialPage, setInitialPagesNumber,setCurrentProducts) => {
+    let query = []
+    for (let term of idsArray) {
+        query.push(term)
+    }
+    const { data: productsData } = await axios.get( `${GET_PRODUCTS_ENDPOINT}?category=${query.join(',')}&per_page=${productsPerPage}&page=${initialPage}`);
+    setInitialPagesNumber(productsData.headers['x-wp-totalpages'])
+    setCurrentProducts(productsData?.products || [])
+}
 export default function Shop(props) {
     const [initialFilters, setInitialFilters] = useState(props?.initialFiltersData?.filtersObj || {})
     const [filters, setFilters] = useState({})
@@ -95,6 +103,8 @@ export default function Shop(props) {
     const [attributes, setAttributes] = useState([])
 
     const [attrChosenLast, setAttrChosenLast] = useState([])
+    const [initialChosenLast, setInitialChosenLast] = useState([])
+
     const [allProducts, setAllProducts] = useState([])
     const [currentProducts, setCurrentProducts] = useState(props.products)
 
@@ -109,7 +119,6 @@ export default function Shop(props) {
     const [isLoading, setIsLoading] = useState(false)
     const [isInitialOpened, setIsInitialOpened] = useState(getObjectOfArray(props?.initialFiltersData?.relatedAttributes, false))
     const [isOpened, setIsOpened] = useState({})
-
     useEffect(() => {
         let {width} = getWindowDimensions()
         if (width >= 1536) {
@@ -119,36 +128,82 @@ export default function Shop(props) {
 
     useEffect(() => {
         (async () => {
-            //if one ot two changed
-            if ((initialFilters.brands.length && !initialFilters.type.length) || (!initialFilters.brands.length && initialFilters.type.length)) {
-                setIsLoading(true)
-                for (let filter in initialFilters) {
-                    if (initialFilters[filter].length) {
-                        let query = []
-                        for (let term of initialFilters[filter]) {
-                            query.push(term)
+            let numOfChosen =0
+            for (let filter in initialFilters) {
+                if (initialFilters[filter].length) {
+                    numOfChosen+=1
+                }
+            }
+            if (numOfChosen >0) {
+                let newAttributesArray = [...initialFiltersData]
+                if (newAttributesArray && isArray(newAttributesArray) && newAttributesArray.length) {
+                    for (let attribute of newAttributesArray) {
+                        if(attribute.id != initialChosenLast[initialChosenLast.length-1] && attribute.id != 'type') {
+                            if (attribute.hasOwnProperty('terms')){
+                                for (let term of attribute.terms) {
+                                    term.isVisible = false
+                                } 
+                            }
                         }
-                        const { data: productsData } = await axios.get( `${GET_PRODUCTS_ENDPOINT}?category=${query.join(',')}&per_page=${productsPerPage}&page=${initialPage}`);
-                        setInitialPagesNumber(productsData.headers['x-wp-totalpages'])
-                        setCurrentProducts(productsData?.products || [])
                     }
                 }
-                setIsLoading(false)
-            } else if (initialFilters.brands.length && initialFilters.type.length){
+                if (initialChosenLast[initialChosenLast.length-1] == 'series') {
+                    let brandsAvailable = []
+                    if (newAttributesArray[1].hasOwnProperty('terms')){
+                        for (let term of newAttributesArray[1].terms) {
+                            if (!brandsAvailable.includes(term.brand)) {
+                                brandsAvailable.push(term.brand)
+                            }
+                        }
+                    }
+                    if (brandsAvailable.length) {
+                        for (let brand of brandsAvailable) {
+                            for (let term of newAttributesArray[0].terms) { 
+                                if (term.id == brand) {
+                                    term.isVisible = true
+                                }
+                            }
+                        }
+                    }
+                } else if (initialChosenLast[initialChosenLast.length-1] == 'brands') {
+                    if (newAttributesArray[1].hasOwnProperty('terms')){
+                        for (let term of newAttributesArray[1].terms) {
+                            if (initialFilters['brands'].includes(term.brand)) {
+                                term.isVisible = true
+                            }
+                        }
+                    }
+                }
+                setInitialFiltersData([...newAttributesArray])
+            } else {
+                let newAttributesArray = [...initialFiltersData]
+                if (newAttributesArray && isArray(newAttributesArray) && newAttributesArray.length) {
+                    for (let attribute of newAttributesArray) {
+                        if (attribute.hasOwnProperty('terms')){
+                            for (let term of attribute.terms) {
+                                term.isVisible = true
+                            } 
+                        }
+                    }
+                }
+                setInitialFiltersData([...newAttributesArray])
+            }
+            if (numOfChosen==3 || (initialFilters.series.length && initialFilters.type.length)){
                 setIsLoading(true)
-                //if both changed
+                
+                //if all changed
                 let namesOfTypes = []
                 for (let chosenTypeId of initialFilters.type) {
-                    for (let term of initialFiltersData[1].terms) {
+                    for (let term of initialFiltersData[2].terms) {
                         if (term.id == chosenTypeId) {
                             namesOfTypes.push(term.name)
                         }
                     }
                 }
                 let categoryIds = []
-                for (let chosenBrandId of initialFilters.brands) {
-                    for (let term of initialFiltersData[0].terms) {
-                        if (term.id == chosenBrandId) {
+                for (let chosenSeriesId of initialFilters.series) {
+                    for (let term of initialFiltersData[1].terms) {
+                        if (term.id == chosenSeriesId) {
                             if (namesOfTypes.length) {
                                 for (let name of namesOfTypes) {
                                     if (term.hasOwnProperty(name)) {
@@ -195,7 +250,48 @@ export default function Shop(props) {
                 }
                 setIsLoading(false)
 
-            } else {
+            } else if (numOfChosen == 2) {
+                //if some changed
+                setIsLoading(true)
+                if (initialFilters.brands.length && initialFilters.series.length && !initialFilters.type.length) {
+                    await getProductsOfSiblingCategoriesFromApi(initialFilters.series, productsPerPage, initialPage, setInitialPagesNumber, setCurrentProducts)
+                } else if (initialFilters.brands.length && !initialFilters.series.length && initialFilters.type.length) {
+                    let nameOfType
+                    for (let chosenTypeId of initialFilters.type) {
+                        for (let term of initialFiltersData[2].terms) {
+                            if (term.id == chosenTypeId) {
+                                nameOfType = term.name
+                                break
+                            }
+                            
+                        }
+                        if (nameOfType) {
+                            break
+                        }
+                    }
+                    let categoryIds = []
+                    if (initialFiltersData[1]?.terms?.length) {
+                        for (let term of initialFiltersData[1].terms) {
+                            if (term.hasOwnProperty(nameOfType)) {
+                                categoryIds.push(term[nameOfType])
+                            }
+                        }
+                    }
+                    await getProductsOfSiblingCategoriesFromApi(categoryIds, productsPerPage, initialPage, setInitialPagesNumber, setCurrentProducts)
+                }
+                setIsLoading(false)
+            } else if (numOfChosen==1) {
+                setIsLoading(true)
+                for (let filter in initialFilters) {
+                    if (initialFilters[filter].length) {
+                        await getProductsOfSiblingCategoriesFromApi(initialFilters[filter], productsPerPage, initialPage, setInitialPagesNumber, setCurrentProducts)
+                    }
+                }
+                setIsLoading(false)
+            } 
+            
+            else {
+                //if none
                 setIsLoading(true)
                 const {headers, data: productsData} = await axios.get(`${GET_ALL_PRODUCTS_ENDPOINT}?per_page=${productsPerPage}&page=${initialPage}`)
                 setInitialPagesNumber(productsData.headers['x-wp-totalpages'])
@@ -205,7 +301,6 @@ export default function Shop(props) {
 
         })()
     }, [initialFilters, initialPage, productsPerPage])
-
     useDidMountEffect(()=> {
         let newProducts = [...allProducts]
         setIsLoading(true)
@@ -371,6 +466,7 @@ export default function Shop(props) {
                                     useIdForFilters={true}
                                     isOpened={isInitialOpened} setIsOpened={setIsInitialOpened} 
                                     isLoading={isLoading}
+                                    attrChosenLast={initialChosenLast} setAttrChosenLast={setInitialChosenLast}
                                 ></Filters>
                                 :
                                 <ChosenFilters 
@@ -419,16 +515,12 @@ export async function getStaticProps() {
 	const { data: headerFooterData } = await axios.get( HEADER_FOOTER_ENDPOINT );
 	const { headers, data: products } = await getProductsData(30)
     const initialFiltersData = await getDataForInitialFilters()
-    const {brandsCats, seriesCats, typeCats} = await getBrandsSeriesType()
 	return {
 		props: {
 			headerFooter: headerFooterData?.data ?? {},
             pages: headers['x-wp-totalpages'] || '',
             products: products || {},
-            initialFiltersData: initialFiltersData || {},
-            brandsCats: brandsCats || [], 
-            seriesCats: seriesCats || [], 
-            typeCats:typeCats || []
+            initialFiltersData: initialFiltersData || {}
 		},
 		revalidate: 10,
 	};

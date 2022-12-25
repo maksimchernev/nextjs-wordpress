@@ -11,9 +11,8 @@ const Footer = ({footer, header}) => {
 	const {copyrightText, sidebarOne, socialLinks, sidebarTwo} = footer || {}
     return (
       <footer className="py-20 px-2" id='footer'>
-			<div className="container mx-auto flex flex-wrap justify-center">
-				<div className="flex flex-wrap flex-col-reverse md:flex-row">
-
+			<div className="container mx-auto flex flex-wrap">
+				<div className="flex flex-wrap flex-col-reverse md:flex-row w-full">
 					<div className="md:w-1/2 w-full">
 						{/*Logo*/}
 						<div className="flex items-center flex-shrink-0 mb-5">
@@ -28,7 +27,7 @@ const Footer = ({footer, header}) => {
 										/>
 									) : (
 										<span className="font-medium text-xl tracking-tight">
-											<p className="logo-text text-4xl uppercase font-sf-pro-display-medium">Magnetic Light</p>
+											<p className="logo-text text-3xl sm:text-4xl uppercase font-sf-pro-display-medium">Magnetic Light</p>
 										</span>
 									)
 								}
@@ -76,7 +75,10 @@ const Footer = ({footer, header}) => {
 					</div>
 
 					{/* form */}
-					<ContactForm></ContactForm>
+				
+					<div className="w-full md:w-1/2 flex">
+						<ContactForm></ContactForm>
+					</div>
 				</div>
 
 				<div className="mt-8 w-full flex flex-wrap">

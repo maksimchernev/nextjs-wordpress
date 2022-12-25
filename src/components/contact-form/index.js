@@ -54,7 +54,7 @@ const ContactForm = ({bgWhite, handleOnClick}) => {
     }
 
     return (
-        <div className={`${bgWhite ? 'text-brand-gray3E py-10 w-4/5 sm:w-3/4 lg:w-3/5 2xl:w-1/2' : 'text-white lg:mt-0 mb-10 my-1 w-full sm:w-3/4 mx-auto overflow-hidden md:w-1/2 lg:w-2/5'} px-1 `} >
+        <div className={`${bgWhite ? 'text-brand-gray3E py-10 w-4/5 sm:w-3/4 lg:w-3/5 2xl:w-1/2' : 'text-white lg:mt-0 mb-10 my-1 w-full sm:w-3/4 mx-auto overflow-hidden md:w-full lg:w-4/5'} px-1 `} >
             {bgWhite && <button className="absolute top-5 right-5 w-8 hover:bg-brand-yellow mx-2 aspect-square flex items-center justify-center text-22px leading-22px bg-transparent"
                 onClick={()=>handleClose()}
             ><Cross/></button>}
@@ -69,7 +69,7 @@ const ContactForm = ({bgWhite, handleOnClick}) => {
                         </button>
                     </>
                 :   <>
-                        <p className={`${bgWhite ? 'text-brand-gray3E text-center' : 'text-white text-center md:text-left'} text-xl xl:text-2xl uppercase mb-5  font-sf-pro-display-medium`}>Наш специалист поможет выбрать конфигурацию под Ваш проект!</p>
+                        <p className={`${bgWhite ? 'text-brand-gray3E text-center' : "text-left"} text-xl xl:text-2xl uppercase mb-5  font-sf-pro-display-medium`}>Наш специалист поможет выбрать конфигурацию под Ваш проект!</p>
                         <form onSubmit={ handleSubmit } className="flex flex-col">
                         <input 
                             name="name"  
@@ -106,7 +106,7 @@ const ContactForm = ({bgWhite, handleOnClick}) => {
                                 
                             </button>
                         </div>
-                        <p className="text-xs text-gray-400 my-3 text-center md:text-left">Нажимая кнопку “Отправить” я принимаю условия Политики приватности</p>
+                        <p className={`${bgWhite ? 'text-center' : 'text-left'} text-xs text-gray-400 my-3`}>Нажимая кнопку “Отправить” я принимаю условия Политики приватности</p>
                     </form>
                     </>
             }

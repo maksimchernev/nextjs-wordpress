@@ -16,9 +16,9 @@ export default function Series(props) {
   }  
   return (
     <Layout headerFooter={props.headerFooter} initialHeader={'white'} isBagYellow={true} title={props?.seriesData?.name}>
-        <BreadCrumb isMain={true} bgProduct={false}/>
+        <BreadCrumb isAbs={true} bgProduct={false}/>
         <Hero h1Content={props?.seriesData?.name} isMain={false} />
-        <div className="w-full flex flex-wrap justify-center container mx-auto py-20 md:py-24" id='series'>
+        <div className="w-full flex flex-wrap justify-center container mx-auto py-14 md:py-24 category-card" id='series'>
           {props.typeCategoryData?.length && isArray(props.typeCategoryData) ? props.typeCategoryData.map((type)=> {
             const slug = type?.slug
             const img = type?.image
@@ -36,7 +36,7 @@ export default function Series(props) {
                         altText={ img?.alt || type?.name}
                         title={ type?.name || '' }
                         layout = 'fill'
-                        containerClassNames={'card series-card h-80 md:h-52 lg:h-80 xl:h-96 '}
+                        containerClassNames={'card series-card h-24 sm:h-80 md:h-52 lg:h-80 xl:h-96 '}
                         className={'rounded-2xl brightness-50'}
                       />
                       <h3 className='text-white uppercase series-card-text mb-0 font-sf-pro-display-medium cursor-pointer text-center w-full text-26px'>{type.name}</h3>
@@ -63,14 +63,25 @@ export async function getStaticPaths() {
 
 export async function getStaticProps({params}) {
   const { data: headerFooterData } = await axios.get( HEADER_FOOTER_ENDPOINT );
-  const seriesData = await getCategoryDataBySlug(params.seriesId)
+  let seriesData = await getCategoryDataBySlug(params.seriesId)
+ 
   if (!seriesData?.id) {
     return {
       notFound: true
     }
   }
   const {data: brandData} = await getCategoryDataById(seriesData?.parent)
+  if (!brandData.id) {
+    return {
+        notFound: true
+    }
+  }
   const typeCategoryData = await getSubCategoriesById(seriesData?.id)
+  if (!typeCategoryData?.[0].id) {
+    return {
+        notFound: true
+    }
+  }
   typeCategoryData.sort((one, two) => {
     if (one.name == 'Шинопроводы') {
       return -1

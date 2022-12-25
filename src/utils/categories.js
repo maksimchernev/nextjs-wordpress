@@ -74,8 +74,9 @@ export async function getCategoryDataById(id) {
 
 export async function getDataForInitialFilters() {
   const {brandsCats, seriesCats, typeCats} = await getBrandsSeriesType()
-  let relatedAttributes = [{id: 'brands', name: 'Бренд', terms: []}, {id: 'type', name: 'Тип товара', oneAtATime: true, terms: []}]
+  let relatedAttributes = [{id: 'brands', name: 'Бренд', terms: []}, {id: 'series', name: 'Серия', terms: []}, {id: 'type', name: 'Категория товара', oneAtATime: true, terms: []}]
   for (let brand of brandsCats) {
+    relatedAttributes[0].terms.push({id: brand.id, name: brand.name, isVisible:true})
     for (let series of seriesCats) {
       if (series.parent == brand.id) {
         let childrenObject = {}
@@ -84,7 +85,7 @@ export async function getDataForInitialFilters() {
             childrenObject[type.name] = type.id
           }
         }
-        relatedAttributes[0].terms.push({id: series.id, name: `${brand.name} ${series.name}`, brand: brand.name, isVisible:true, ...childrenObject})
+        relatedAttributes[1].terms.push({id: series.id, name: series.name, brand: brand.id, brandName: brand.name, isVisible:true, ...childrenObject})
       }
     }
   }
@@ -93,7 +94,7 @@ export async function getDataForInitialFilters() {
   const allTypeCats = categories.filter(category => category.parent == 0 && category.slug != 'uncategorized' && (category.slug == 'lamps' || category.slug == 'accessory' || category.slug == 'tracks')) 
 
   for (let type of allTypeCats) {
-      relatedAttributes[1].terms.push({id: type.id, name: type.name, isVisible:true})
+      relatedAttributes[2].terms.push({id: type.id, name: type.name, isVisible:true})
   }
   const filtersObj = getObjectOfArray(relatedAttributes, [])
   return({relatedAttributes, filtersObj})
@@ -150,11 +151,44 @@ export async function getBrandsAndSeriesPaths() {
 }
 export async function getBrandsSeriesType() {
   const categories = await getAllCategories(100)
-  const brandsCats = categories.filter(category => category.parent == 0 && category.slug != 'uncategorized' && category.slug != 'lamp' && category.slug != 'accessory' && category.slug != 'track') 
+  const brandsCats = categories.filter(category => category.parent == 0 && category.slug != 'uncategorized' && category.slug != 'lamps' && category.slug != 'accessory' && category.slug != 'tracks') 
   const seriesAndTypesCats = categories.filter(category => category.parent !== 0) 
   const seriesCats = findAllChildsOfCategories(brandsCats, seriesAndTypesCats)
   const typeCats = findAllChildsOfCategories(seriesCats, seriesAndTypesCats)
   return {brandsCats, seriesCats, typeCats}
+}
+
+export async function getLinkToSubCatalog(id) {
+  const {brandsCats, seriesCats, typeCats} = await getBrandsSeriesType()
+  let typeSlug
+  let typeParent
+  for (let type of typeCats) {
+    if (type.id == id) {
+      typeSlug = type.slug
+      typeParent = type.parent
+    }
+  }
+  let seriesSlug
+  let seriesParent
+  for (let series of seriesCats) {
+    if (series.id == typeParent) {
+      seriesSlug = series.slug
+      seriesParent = series.parent
+    }
+  }
+  let brandSlug
+  for (let brand of brandsCats) {
+    if (brand.id == seriesParent) {
+      brandSlug = brand.slug
+    }
+  }
+  if (typeSlug && seriesSlug && brandSlug) {
+    return `/brand/${brandSlug}/series/${seriesSlug}/type/${typeSlug}`
+  } else {
+    return ''
+  }
+
+
 }
 export async function getBrandsSeriesTypePaths() {
   const {brandsCats, seriesCats, typeCats} = await getBrandsSeriesType()

@@ -65,7 +65,7 @@ const ProductSlider = ({products, show}) => {
 
                         { products.length ? products.map(product => {
                             return (
-                                <Product key={product.id} product={product}></Product>
+                                <Product key={product.id} product={product} slider="true"></Product>
                             )
                         }):null}
                     </div>

@@ -1,9 +1,10 @@
 import _ from "lodash"
 import { useState } from "react"
 import Popup from "../contact-form/pop-up"
+import Image from "../image";
 
 
-const Hero = ({h1Content, text, button, isMain, brandData, image}) => {
+const Hero = ({h1Content, text, button, isMain, image, header}) => {
     const [showPopup, setShowPopup] = useState(false)
     const handleOnClick = () => {
         setShowPopup(prev => !prev)
@@ -11,22 +12,42 @@ const Hero = ({h1Content, text, button, isMain, brandData, image}) => {
     if (!h1Content) {
         return null
     }
+    const {siteTitle, siteLogoUrl} = header || {}
     return (
-        <div className={`${!isMain ? `` : ``}flex items-center justify-content bg-cover ${!image ? `hero-series` : ``} `} style={image ? {backgroundImage: `url(${image})`}: null}>
-            <div className={`${!isMain ? `text-brand-yellow mb-10 md:mt-48` : `mb-40 text-white md:my-60 xl:my-80`} mt-52 container mx-auto px-2 `}>
+        <div className={`flex items-center justify-content bg-cover ${isMain ? 'h-screen lg:h-fit' : ``} ${!image ? `hero-series` : ``} `} style={image ? {backgroundImage: `url(${image})`, backgroundPosition: '70% 50%'}: null}>
+            <div className={`${!isMain ? `text-brand-yellow md:mb-10 mb-5 md:mt-48 mt-36` : `mb-40 text-white md:my-48 xl:my-64 mt-60`}  container mx-auto px-2`}>
+                {header && <div className="flex lg:hidden">
+                    {
+                        siteLogoUrl ? (
+                            <Image 
+                                sourceUrl={siteLogoUrl || ''}
+                                altText={`${siteTitle} logo` || ''}
+                                title={`${siteTitle} logo` || ''}
+                                width={'328px'}
+                                height={'50px'}
+                            />
+                        ) : (
+                            <span className="font-medium text-xl tracking-tight flex w-full justify-center px-2">
+                                <p className="logo-text text-4xl uppercase font-sf-pro-display-bold text-center">Magnetic Light</p>
+                            </span>
+                        )
+                    }
+                </div>}
                 {h1Content && 
-                    <h1 className={`${!isMain ? `text-brand-yellow` : `text-white`} uppercase text-48px` }>
+                    <h1 className={`${!isMain ? `text-brand-yellow mb-0` : `text-white mt-14 mb-3 md:mb-5 text-center lg:text-left`} uppercase text-24px sm:text-36px lg:text-48px` }>
                         {h1Content}
                     </h1>}
                 {text && 
-                    <p className="mt-7 text-4xl md:text-5xl">
+                    <p className={`${isMain ? 'text-center lg:text-left font-sf-pro-display-light lg:font-sf-pro-display-medium' : ''} mt-2 lg:mt-7 text-base lg:text-4xl sm:text-28px sm:mt-4`}>
                         {text}
                     </p> }
                 {button && 
-                    <button className=" mt-14 text-xl button-form"
-                        onClick={()=>handleOnClick()}>
-                        {button}
-                    </button>
+                    <div className="text-center lg:text-left">
+                        <button className="mt-14 text-xl button-form text-center"
+                            onClick={()=>handleOnClick()}>
+                            {button}
+                        </button>
+                    </div>
                 }   
                 {button ? 
                     <div style={{

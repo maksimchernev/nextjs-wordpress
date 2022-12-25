@@ -12,7 +12,7 @@ const AddToCart = ( { product, isItemCard } ) => {
     const [ cart, setCart ] = useContext( AppContext );
     const [ isAddedToCart, setIsAddedToCart ] = useState( false );
 	const [ loading, setLoading ] = useState( false ); 
-	const [quantity, setQuantity] = useState(1)
+	const [quantity, setQuantity] = useState(product?.purchase_note ? 2 : 1)
     if ( isEmpty( product ) ) {
 		return null;
 	}
@@ -21,7 +21,7 @@ const AddToCart = ( { product, isItemCard } ) => {
         
     }
     const decreaseQuantity = () => {
-        setQuantity(prevQuantity => prevQuantity-1)
+        quantity > (product?.purchase_note ? 2 : 1) && setQuantity(prevQuantity => prevQuantity-1)
     }
 	
 	const addToCartBtnClasses = cx(
@@ -39,30 +39,30 @@ const AddToCart = ( { product, isItemCard } ) => {
     if (!isItemCard) {
         return (
             <>
-                    <div className="mb-5 flex flex-wrap">
-                        <div className="quantity-counter my-2 mr-3 border border-brand-gray88 text-brand-gray88">
-                            <span className="minus cursor-pointer" onClick={()=>decreaseQuantity()}>-</span>
-                            <input type="text" readOnly={true} value={quantity}/>
-                            <span className="plus cursor-pointer" onClick={()=>increaseQuantity()}>+</span>
-                        </div>
-
-                        <button
-                            className={` ${addToCartBtnClasses} mr-3 duration-500 add-to-cart-button uppercase font-thin my-2`} 
-                            onClick={ () => addToCart( product?.id ?? 0, quantity ?? 1, setCart, setIsAddedToCart, setLoading ) }
-                            disabled={ loading }
-                            >
-                            { loading ? 'Добавление...' : 'В корзину' }  
-                        </button>
-                        { isAddedToCart && ! loading ? (
-                            <Link href="/cart">
-                                <a
-                                    className="duration-500 view-cart-button uppercase font-thin my-2"
-                                >
-                                    Перейти в корзину
-                                </a>
-                            </Link>
-                        ) : null } 
+                <div className="mb-5 flex flex-wrap">
+                    <div className="quantity-counter my-2 mr-3 border border-brand-gray88 text-brand-gray88">
+                        <span className="minus cursor-pointer" onClick={()=>decreaseQuantity()}>-</span>
+                        <input type="text" readOnly={true} value={quantity}/>
+                        <span className="plus cursor-pointer" onClick={()=>increaseQuantity()}>+</span>
                     </div>
+
+                    <button
+                        className={` ${addToCartBtnClasses} mr-3 duration-500 add-to-cart-button uppercase font-thin my-2`} 
+                        onClick={ () => addToCart( product?.id ?? 0, quantity ?? 1, setCart, setIsAddedToCart, setLoading ) }
+                        disabled={ loading }
+                        >
+                        { loading ? 'Добавление...' : 'В корзину' }  
+                    </button>
+                    { isAddedToCart && ! loading ? (
+                        <Link href="/cart">
+                            <a
+                                className="duration-500 view-cart-button uppercase font-thin my-2"
+                            >
+                                Перейти в корзину
+                            </a>
+                        </Link>
+                    ) : null } 
+                </div>
             </>
         );
     } else {

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react"
 import { getObjectOfArray } from "../../utils/miscellaneous"
 
 const Filters = ({attributes, filters, setFilters,attrChosenLast, setAttrChosenLast, useIdForFilters, isOpened, setIsOpened, isLoading}) => {
+
     return (
         <div >
             {attributes?.length ? attributes.map( (attribute, index) => {

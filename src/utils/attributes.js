@@ -35,12 +35,13 @@ export const getAttributeTermsByAttributeName = async (attrName) => {
 }
 
 export const getRelatedAttributesData = async (products) => {
+    let isAccessory = products[0].categories.find(category => category.name.includes('Сопутствующие') || category.slug.includes('accessory')) ? true : false
     let exampleProductAttributes = products[0].attributes
     if (!(exampleProductAttributes.length && isArray(exampleProductAttributes)) ) {
         return ({relatedAttributes: [], filtersObj: {}})
     }
     //фильтрация основных аттрибутов
-    exampleProductAttributes = exampleProductAttributes.filter(attr => !(attr.name == 'Тип товара' || attr.name == 'Модельный ряд' || attr.id == 2 || attr.id ==7) )
+    exampleProductAttributes = exampleProductAttributes.filter(attr => !(isAccessory ? attr.name == 'Модельный ряд' || attr.id == 7 : attr.name == 'Тип товара' || attr.name == 'Модельный ряд' || attr.id == 2 || attr.id == 7) )
     //получение данных по всем возможным аттрибутам для получения id
     const {data: attributes} = await getAttributesData()
     //получение всех возможных значений для аттрибутов

@@ -1,5 +1,3 @@
-import Filter from "./filter"
-import { getObjectOfArray } from "../../utils/miscellaneous"
 import ChosenFilter from "./chosen-filter"
 import { Bin } from "../icons"
 
@@ -20,6 +18,7 @@ const ChosenFilters = ({attributes, filters, handleRemoveInitialFilters}) => {
                         key={index} 
                         attribute={attribute} 
                         filters={filters} 
+                        series={attribute.id == 'brands' ? attributes[1] : null}
                         >
                     </ChosenFilter>
                 )

@@ -23,6 +23,7 @@ export default function Type(props) {
     const [attrChosenLast, setAttrChosenLast] = useState([])
     const [productsPerPage, setProductsPerPage] = useState(30)
     const [isOpened, setIsOpened] = useState(getObjectOfArray(props?.relatedAttributes?.relatedAttributes, false))
+
     useEffect(()=> {
          let newProducts = props?.products
         for (const filter in filters ) {
@@ -179,7 +180,7 @@ export default function Type(props) {
 
     return (
         <Layout headerFooter={props?.headerFooter} initialHeader={'white'} isBagYellow={true} title={`${h1text} ${props?.brandData?.name}`}>
-            <BreadCrumb isMain={true}/>
+            <BreadCrumb isAbs={true}/>
             <Hero h1Content={h1text} isMain={false} image={typeId?.slice(0, typeId?.indexOf('-')) == 'tracks' ? '/tracks.jpg' : '/lamps.jpg'}/>
             <div className='flex container mx-auto mt-16 relative mb-10 md:mb-20'>
                 <div className="w-1/3 md:w-1/4 xl:w-1/5 flex flex-col flex-wrap pl-2 pr-3 ">
@@ -211,10 +212,24 @@ export async function getStaticPaths() {
 export async function getStaticProps({params}) {
     const { data: headerFooterData } = await axios.get( HEADER_FOOTER_ENDPOINT );
     const seriesData = await getCategoryDataBySlug(params.seriesId)
+    if (!seriesData.id) {
+        return {
+            notFound: true
+        }
+    } 
     const {data: brandData} = await getCategoryDataById(seriesData?.parent)
-
+    if (!brandData.id) {
+        return {
+            notFound: true
+        }
+    }
     const typeSlug = params?.typeId /* + '-' + params.seriesId */
     const typeData = await getCategoryDataBySlug(typeSlug)
+    if (!typeData.id) {
+        return {
+            notFound: true
+        }
+    }
     const { headers } = await getProductsDataByCategoryId(100, typeData?.id)
     
     async function awaitAll(count, asyncFn) {

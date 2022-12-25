@@ -43,26 +43,24 @@ const CartItemsContainer = () => {
 			<div >
 				
 				{ cart ? (
-					<div className="grid lg:grid-cols-3 gap-4 border-t border-brand-grayCF relative px-2">
+					<div className="grid lg:grid-cols-3 gap-4 sm:border-t sm:border-brand-grayCF relative px-2">
 						{/*Cart Items*/ }
-						<div className="lg:col-span-2 pb-5 border-r-0 lg:border-r  border-brand-grayCF">
+						<div className="lg:col-span-2 pb-5 border-r-0 lg:border-r  sm:border-brand-grayCF">
 							<div className='flex justify-between items-center flex-wrap'>
-								<h1 className="uppercase tracking-0.5px sm:text-4xl my-10 text-3xl">Корзина</h1>
+								<h1 className="uppercase tracking-0.5px sm:text-4xl mt-0 mb-10 md:my-10 text-3xl">Корзина</h1>
 								{/*Clear entire cart*/}
-								<div className='mr-1'>
+								<div className='mr-1 mt-0 mb-10 md:my-10'>
 									<button
 										className={`flex items-center w-full justify-end ${ isClearCartProcessing ? 'cursor-not-allowed' : 'cursor-pointer' }`}
 										onClick={(event) => handleClearCart(event)}
 										disabled={isClearCartProcessing}
-									>	{ !isClearCartProcessing ? <Bin/> : null
-
-										}
+									>	{ !isClearCartProcessing ? <Bin/> : null}
 										
 										<span className='ml-1 mr-4 hidden sm:block'>{!isClearCartProcessing ? " Очистить корзину" : "Очистка..."}</span>
 									</button>
 								</div>
 							</div>
-							<div className='mb-14 border-b border-brand-grayCF'>
+							<div className='mb-14 sm:border-b sm:border-brand-grayCF'>
 								{ cartItems.length &&
 								cartItems.map( ( item ) => (
 									<CartItem
@@ -85,8 +83,8 @@ const CartItemsContainer = () => {
 						
 						
 						{/*Cart Total*/ }
-						<div className="lg:col-span-1 p-5 pt-0 totals-container top-20 overflow-auto self-start ">
-							<h2 className='my-10'>Итого</h2>
+						<div className="lg:col-span-1 p-5 pt-0 mb-10 md:mb-0 totals-container top-20 overflow-auto self-start ">
+							<h2 className='mt-0 md:my-10'>Итого</h2>
 							<div className="grid grid-cols-2  mb-4">
 								<p className="col-span-1 p-1 mb-0">{totalQty} {totalQtyText}</p>
 								<p className="col-span-1 p-1 mb-0 flex justify-end text-end">{roundToTwo(totalPrice)  } {cartItems?.[0]?.currency ?? ''}</p>

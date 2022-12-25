@@ -8,7 +8,7 @@ const SvgArrowFilter = (props) => (
     role="img"
     {...props}
   >
-    <path d="m1 1 7 7 7-7" />
+    <path d="m1 1 7 7 7-7" stroke="#3E3D3D" strokeLinecap="round" />
   </svg>
 );
 export default SvgArrowFilter;

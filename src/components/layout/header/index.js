@@ -3,7 +3,7 @@ import Link from 'next/link'
 import Image from '../../image';
 import { useContext, useEffect, useState } from "react";
 import { sanitize } from "../../../utils/miscellaneous";
-import {BurgerIcon} from '../../icons' 
+import {BurgerIcon, BurgetIconCross} from '../../icons' 
 import {Bag} from '../../icons' 
 import { AppContext } from '../../context';
 
@@ -20,7 +20,6 @@ const Header = ({header, footer, initialHeader, isBagYellow, metaData = [], titl
 	const handleScroll = () => {
 		setClientWindowHeight(window.scrollY);
 	};
-
 	useEffect(() => {
 		window.addEventListener("scroll", handleScroll);
 		return () => window.removeEventListener("scroll", handleScroll);
@@ -54,10 +53,10 @@ const Header = ({header, footer, initialHeader, isBagYellow, metaData = [], titl
 		}
 	} else {
 		navStyle = {
-			background: `rgba(255, 255, 255, 1)`,
+			background: `rgba(62, 61, 61, 1)`,
 			padding: `${padding}px 0px`,
 			boxShadow: `rgb(0 0 0 / 1) 0px 0px 20px 6px`,
-			color: `#000`
+			color: `#fff`
 		}
 	}
 	let descriptionObj
@@ -79,8 +78,8 @@ const Header = ({header, footer, initialHeader, isBagYellow, metaData = [], titl
 			</Head>
 			<div className="fixed w-full top-0" id='header'>
 				<nav className={`p-4`} style={navStyle}>
-					<div className="flex items-center justify-between flex-wrap container mx-auto px-2">
-						<div className="flex items-center flex-shrink-0 ">
+					<div className='flex items-center justify-between flex-wrap container mx-auto px-2'>
+						<div className="items-center flex-shrink-0 hidden lg:flex">
 							<Link href="/">
 								<a>
 									{
@@ -93,7 +92,7 @@ const Header = ({header, footer, initialHeader, isBagYellow, metaData = [], titl
 												height={'50px'}
 											/>
 										) : (
-											<span className="font-medium tracking-tight">
+											<span className="font-medium tracking-tight ">
 												<p className="logo-text text-3xl md:text-5xl">Magnetic Light</p>
 											</span>
 										)
@@ -103,34 +102,51 @@ const Header = ({header, footer, initialHeader, isBagYellow, metaData = [], titl
 						</div>
 					
 						{/* mobile */}
-						<div className="block lg:hidden">
+						<div className="block lg:hidden flex-shrink-0">
 							<button
 								onClick={ () => setIsMenuVisible( ! isMenuVisible ) }
-								className="flex items-center text-red hover:text-black hover:border-black">
-								<BurgerIcon className="fill-current h-10 w-10"/>
+								className="flex items-center text-red hover:text-brand-yellow hover:border-black">
+								{!isMenuVisible ? <BurgerIcon className="fill-current h-10 w-10"/> : <BurgetIconCross className="fill-current flex justify-center items-center h-7 w-7 ml-1.5"/>}
 							</button>
 						</div>
+						<div className='lg:hidden flex'>
+							<div className='text-base font-medium header-footer-link mr-1 duration-100 flex items-center' dangerouslySetInnerHTML={{ __html: sanitize( sidebarTwo ) }}/>
+							<div className="text-sm font-medium ">
+								<Link href="/cart">
+									<a className="flex">
+										<span className={`px-2 py-2 flex flex-row items-center relative rounded-full`}>
+											<Bag className="fill-current h-7 w-7" style={isMenuVisible ? {color: `#fff`}:{color: `#FFDF38`}}/>
+											{cart?.totalQty  
+												? <span className='ml-1 cart-qty-span flex items-center justify-center text-10px font-sf-pro-display-bold absolute bottom-1 duration-100 right-1'>{cart?.totalQty}</span>
+												: null
+											}
+										</span>
+									</a>
+								</Link>
+							</div>
+						</div>
+						{/* /mobile */}
 
 						<div className={`${isMenuVisible ? `max-h-full px-2` :  `h-0`} w-full overflow-hidden lg:h-full flex-grow lg:flex lg:items-center lg:w-auto`}>
-							<div className="text-14px font-medium uppercase lg:flex-grow lg:flex lg:justify-end duration-100">
+							<div className={`${isMenuVisible ? 'flex flex-col items-center text-base my-5': 'block lg:flex'} text-14px font-medium uppercase lg:flex-grow  lg:justify-end duration-100`}>
 								<Link href="/#about">
 									<a className="block my-2 lg:my-auto lg:inline-block header-footer-link lg:mr-8 xl:mr-10 "
 									>О нас
 									</a>
 								</Link>
 								<Link href="/shop">
-									<a className="block my-2 lg:my-auto lg:inline-block header-footer-link lg:mr-8 xl:mr-10 " 
+									<a className="block my-2 mt-5 lg:mt-0 lg:my-auto lg:inline-block header-footer-link lg:mr-8 xl:mr-10 " 
 									>Каталог
 									</a>
 								</Link>
 								<Link href="/#brands">
-									<a className="block my-2 lg:my-auto lg:inline-block header-footer-link lg:mr-8 xl:mr-10 "
+									<a className="block my-2 mt-5 lg:mt-0 lg:my-auto lg:inline-block header-footer-link lg:mr-8 xl:mr-10 "
 									>Бренды
 									</a>
 								</Link>								
 							</div>
-							<div className='text-sm lg:text-2xl my-2 lg:mr-8 xl:mr-10 font-medium lg:my-auto header-footer-link duration-100' dangerouslySetInnerHTML={{ __html: sanitize( sidebarTwo ) }}/>
-							<div className="text-sm font-medium">
+							<div className='text-sm lg:text-2xl my-2 lg:mr-8 xl:mr-10 font-medium lg:my-auto header-footer-link duration-100 hidden lg:block' dangerouslySetInnerHTML={{ __html: sanitize( sidebarTwo ) }}/>
+							<div className="text-sm font-medium hidden lg:block">
 								<Link href="/cart">
 									<a className="flex mt-4 lg:inline-block lg:mt-0">
 										<span className={`px-2 py-2 flex flex-row items-center lg:flex-col relative rounded-full  duration-100 hover:bg-brand-gray99`}>
