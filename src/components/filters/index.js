@@ -1,12 +1,11 @@
 
+import ClearFilters from "./clear-filters"
 import Filter from "./filter"
-import { useEffect, useState } from "react"
-import { getObjectOfArray } from "../../utils/miscellaneous"
 
-const Filters = ({attributes, filters, setFilters,attrChosenLast, setAttrChosenLast, useIdForFilters, isOpened, setIsOpened, isLoading}) => {
-
+const Filters = ({attributes, filters, setFilters,attrChosenLast, setAttrChosenLast, useIdForFilters, isOpened, setIsOpened, isLoading, handleRemoveFilters, isMobile}) => {
     return (
         <div >
+            {handleRemoveFilters && !isMobile && <ClearFilters handleRemoveFilters={handleRemoveFilters}/>}
             {attributes?.length ? attributes.map( (attribute, index) => {
                 return (
                     <Filter key={index} 
@@ -19,6 +18,7 @@ const Filters = ({attributes, filters, setFilters,attrChosenLast, setAttrChosenL
                     ></Filter>
                 )
             }) : null} 
+            {handleRemoveFilters && isMobile && <ClearFilters handleRemoveFilters={handleRemoveFilters}/>}
         </div>
     )
 }

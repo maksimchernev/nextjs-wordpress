@@ -7,7 +7,7 @@ module.exports = {
 		includePaths: [path.join(__dirname, 'styles')]
 	},
 	images: {
-		domains: [ allowedImageWordPressDomain, 'via.placeholder.com' ],
+		domains: [ allowedImageWordPressDomain, 'via.placeholder.com', 'localhost' ],
 	}
 	/**
 	 * We specify which domains are allowed to be optimized.

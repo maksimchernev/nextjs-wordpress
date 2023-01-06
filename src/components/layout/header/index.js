@@ -7,7 +7,7 @@ import {BurgerIcon, BurgetIconCross} from '../../icons'
 import {Bag} from '../../icons' 
 import { AppContext } from '../../context';
 
-const Header = ({header, footer, initialHeader, isBagYellow, metaData = [], title}) => {
+const Header = ({header, footer, initialHeader, isBagYellow, metaData = [], title,isMain }) => {
 	const {sidebarTwo} = footer || {}
 	const [clientWindowHeight, setClientWindowHeight] = useState("");
 	const [backgroundTransparacy, setBackgroundTransparacy] = useState(0);
@@ -79,7 +79,7 @@ const Header = ({header, footer, initialHeader, isBagYellow, metaData = [], titl
 			<div className="fixed w-full top-0" id='header'>
 				<nav className={`p-4`} style={navStyle}>
 					<div className='flex items-center justify-between flex-wrap container mx-auto px-2'>
-						<div className="items-center flex-shrink-0 hidden lg:flex">
+						<div className={`items-center flex-shrink-0 lg:flex hidden`}>
 							<Link href="/">
 								<a>
 									{
@@ -93,7 +93,7 @@ const Header = ({header, footer, initialHeader, isBagYellow, metaData = [], titl
 											/>
 										) : (
 											<span className="font-medium tracking-tight ">
-												<p className="logo-text text-3xl md:text-5xl">Magnetic Light</p>
+												<p className="logo-text text-3xl md:text-5xl text-brand-yellow">Magnetic Light</p>
 											</span>
 										)
 									}
@@ -102,20 +102,40 @@ const Header = ({header, footer, initialHeader, isBagYellow, metaData = [], titl
 						</div>
 					
 						{/* mobile */}
-						<div className="block lg:hidden flex-shrink-0">
+						<div className="flex lg:hidden flex-shrink-0">
 							<button
 								onClick={ () => setIsMenuVisible( ! isMenuVisible ) }
-								className="flex items-center text-red hover:text-brand-yellow hover:border-black">
+								className="flex items-center hover:text-brand-yellow hover:border-black">
 								{!isMenuVisible ? <BurgerIcon className="fill-current h-10 w-10"/> : <BurgetIconCross className="fill-current flex justify-center items-center h-7 w-7 ml-1.5"/>}
 							</button>
+							<Link href="/" >
+								<a className={`${isMain ? 'hidden' : 'flex items-center ml-2'}`}>
+									{
+										siteLogoUrl ? (
+											<Image 
+												sourceUrl={siteLogoUrl || ''}
+												altText={`${siteTitle} logo` || ''}
+												title={`${siteTitle} logo` || ''}
+												width={'328px'}
+												height={'50px'}
+											/>
+										) : (
+											<span className="font-medium tracking-tight ">
+												<p className={`logo-text text-24px sm:text-3xl md:text-4xl mb-0 ${isBagYellow ? 'text-brand-yellow' : "text-brand-gray3E"}` }>Magnetic Light</p>
+											</span>
+										)
+									}
+								</a>
+							</Link>
 						</div>
 						<div className='lg:hidden flex'>
-							<div className='text-base font-medium header-footer-link mr-1 duration-100 flex items-center' dangerouslySetInnerHTML={{ __html: sanitize( sidebarTwo ) }}/>
+							
+							<div className={`text-20px header-footer-link mr-1 duration-100  items-center ${isMain ? 'flex phone-container' : 'hidden'}`} dangerouslySetInnerHTML={{ __html: sanitize( sidebarTwo ) }}/>
 							<div className="text-sm font-medium ">
 								<Link href="/cart">
 									<a className="flex">
 										<span className={`px-2 py-2 flex flex-row items-center relative rounded-full`}>
-											<Bag className="fill-current h-7 w-7" style={isMenuVisible ? {color: `#fff`}:{color: `#FFDF38`}}/>
+											<Bag className={`fill-current h-7 w-7 ${!isMain ? (isMenuVisible ? 'text-white' : isBagYellow ? 'text-brand-yellow' : 'text-brand-gray3E') : (isBagYellow ? 'text-brand-yellow' : null)}`}/>
 											{cart?.totalQty  
 												? <span className='ml-1 cart-qty-span flex items-center justify-center text-10px font-sf-pro-display-bold absolute bottom-1 duration-100 right-1'>{cart?.totalQty}</span>
 												: null

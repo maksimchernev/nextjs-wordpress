@@ -3,7 +3,7 @@ import BreadCrumb from "../../src/components/breadcrumb";
 import Image from "../../src/components/image";
 import Layout from "../../src/components/layout";
 import { HEADER_FOOTER_ENDPOINT } from "../../src/utils/constants/endpoints";
-import { getWindowDimensions, sanitizeTags } from "../../src/utils/miscellaneous";
+import { getArrayOfObject, getWindowDimensions, sanitizeTags } from "../../src/utils/miscellaneous";
 import { getAllProductsPaths, getProductData, getProductsDataByCategoryId } from "../../src/utils/products";
 import { useRouter } from "next/router";
 import AddToCart from "../../src/components/cart/add-to-cart";
@@ -16,6 +16,7 @@ import { roundToTwo } from "../../src/utils/miscellaneous";
 
   
 const ProductPage = (props) => {
+    console.log('productprops', props)
     const [windowDimensions, setWindowDimensions] = useState();
     const [showProducts, setShowProducts] = useState()
     const [currentImgIndex, setCurrentImgIndex] = useState(props.product?.images?.[0]?.id)
@@ -29,13 +30,16 @@ const ProductPage = (props) => {
                 setShowProducts(5)
             } else if (width > 1280) {
                 setShowProducts(4)
-            } else if (width > 1024) {
+            } else if (width > 1024){
                 setShowProducts(3)
-            } else if (width > 768) {
+            } else if (width > 640) {
                 setShowProducts(2)
+            } else if (width > 400) {
+                setShowProducts(3)
             } else {
-                setShowProducts(1)
+                setShowProducts(2)
             }
+
             setWindowDimensions(width);
  
       }, [windowDimensions]);
@@ -58,7 +62,8 @@ const ProductPage = (props) => {
         imgs = imgs.length ? imgs.filter(img => img.id !== currentImgIndex) : []
     }
      
-    
+    const dimensions = getArrayOfObject(props.product.dimensions)
+    console.log('dimensions', dimensions)
     return (
         <Layout headerFooter={props.headerFooter} 
             initialHeader={'black'} 
@@ -107,9 +112,9 @@ const ProductPage = (props) => {
                     <p className="font-sf-pro-display-light">{sanitizeTags(props.product?.purchase_note)}</p>
                     <p className="my-5 font-sf-pro-display-light text-20px leading-7" ><span > {sanitizeTags(props.product?.description)}</span></p>
                     <div className="mb-5">
-                        {/* {props.product?.attributes?.length ? props.product?.attributes?.map(attr => {
+                        {props.product?.attributes?.length ? props.product?.attributes?.map(attr => {
                             return (
-                                    <p key={attr.id} className='font-sf-pro-display-light text-20px leading-7'><span>{sanitizeTags(attr.name)}</span>: 
+                                    <p key={attr.id} className='font-sf-pro-display-light text-20px leading-7'><span>{sanitizeTags(attr.name+':')}</span> 
                                         {attr.options.length ? attr.options.map((option, index) => {
                                             return (
                                                 <span key={index} className='ml-1'>{sanitizeTags(option)}</span>
@@ -121,7 +126,29 @@ const ProductPage = (props) => {
                                     
                                 )
                             }) : null
-                        } */}
+                        }
+                    </div>
+                    <div className="mb-5">
+                        {dimensions?.length ? dimensions.map(dimension => {
+                            let dimensionName 
+                            switch (dimension.name) {
+                                case 'length' :
+                                    dimensionName = 'Длина'
+                                    break
+                                case 'width' :
+                                    dimensionName = 'Ширина'
+                                    break
+                                case 'height' :
+                                    dimensionName = 'Высота'
+                                    break
+                            }
+                            return (
+                                <p key={dimension.name} className='font-sf-pro-display-light text-20px leading-7'><span>{sanitizeTags(dimensionName+':')}</span>
+                                    <span className='ml-1'>{sanitizeTags(dimension.value+' mm')}</span>
+                                </p>
+                            )
+                        }) : null
+                        }
                     </div>
                     <div>
                         <AddToCart product={props.product}/>

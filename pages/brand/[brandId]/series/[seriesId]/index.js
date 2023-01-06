@@ -15,7 +15,7 @@ export default function Series(props) {
     return <h1>Loading...</h1>
   }  
   return (
-    <Layout headerFooter={props.headerFooter} initialHeader={'white'} isBagYellow={true} title={props?.seriesData?.name}>
+    <Layout isMain={false} headerFooter={props.headerFooter} initialHeader={'white'} isBagYellow={true} title={props?.seriesData?.name}>
         <BreadCrumb isAbs={true} bgProduct={false}/>
         <Hero h1Content={props?.seriesData?.name} isMain={false} />
         <div className="w-full flex flex-wrap justify-center container mx-auto py-14 md:py-24 category-card" id='series'>

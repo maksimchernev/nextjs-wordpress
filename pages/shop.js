@@ -14,6 +14,8 @@ import ChosenFilters from '../src/components/filters/chosen-filters';
 import _, { filter, isArray, isEmpty } from 'lodash';
 import useDidMountEffect from '../src/hooks/useDidMountEffect';
 import Image from 'next/image';
+import { BurgerIcon, BurgetIconCross, FiltersIcon } from '../src/components/icons';
+import ClearFilters from '../src/components/filters/clear-filters';
 
 
 const getRelatedAttributesDataFromAPi = async (products) => {
@@ -119,12 +121,28 @@ export default function Shop(props) {
     const [isLoading, setIsLoading] = useState(false)
     const [isInitialOpened, setIsInitialOpened] = useState(getObjectOfArray(props?.initialFiltersData?.relatedAttributes, false))
     const [isOpened, setIsOpened] = useState({})
-    useEffect(() => {
-        let {width} = getWindowDimensions()
-        if (width >= 1536) {
-            setProductsPerPage(32)
-        } 
-    }, []);   
+
+    const [isShowFilters, setIsShowfilters] = useState(false)
+    const [isMobile, setIsMobile] = useState()
+
+    useEffect(()=> {
+        function handleResize() {
+            let {width} = getWindowDimensions()
+            if (width >= 1536) {
+                setProductsPerPage(32)
+            } else if (width < 1536){
+                setProductsPerPage(30)
+            }
+            if (width >=1024) {
+                setIsMobile(false)
+            } else {
+                setIsMobile(true)
+            }
+        }      
+        handleResize()
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, [])  
 
     useEffect(() => {
         (async () => {
@@ -434,32 +452,64 @@ export default function Shop(props) {
     }, [filters, page])
 
 
-    
+    useEffect(()=> {
+        console.log('isOpened', isOpened)
+    }, [isOpened])
     const router = useRouter()
     if (router.isFallback) {
         return <h1>Loading...</h1>
     }  
     const handleRemoveInitialFilters = () => {
-        setShowAllFilters((prev)=> !prev)
+        setShowAllFilters(false)
         const newInitialFilters = 
             Object
                 .keys(initialFilters)
                 .reduce((result, k) => { 
                 return { ...result, [k]: [] };
             }, {})
-
+        if(isMobile) {
+            const newIsOpened = 
+                Object
+                    .keys(isOpened)
+                    .reduce((result, k) => { 
+                    return { ...result, [k]: false };
+                }, {})
+            setIsOpened(newIsOpened)
+            const newIsInitialOpened = 
+                Object
+                    .keys(isInitialOpened)
+                    .reduce((result, k) => { 
+                    return { ...result, [k]: false };
+                }, {})
+            setIsInitialOpened(newIsInitialOpened)
+        }
         setInitialFilters(newInitialFilters)
         setCurrentProducts(props?.products)
         setInitialPagesNumber(props?.pages)
     }
+    
+
 	return (
-		<Layout headerFooter={props.headerFooter || {}} initialHeader={'black'} isBagYellow={true}>
+		<Layout headerFooter={props.headerFooter || {}} initialHeader={'black'} isBagYellow={false}>
 			<div className='mt-28 container mx-auto'>
 				<BreadCrumb />
-                <div className='flex container mx-auto relative mb-10 md:mb-20'>
-                <div className="w-1/3 md:w-1/4 xl:w-1/5 flex flex-col flex-wrap pl-2 pr-3 ">
-                    <div className="overflow-auto filters-container pr-3 pl-2 top-20 w-full self-start">
+                <div className='flex flex-col lg:flex-row mx-auto relative mb-10 md:mb-20'>
+
+                    <button
+                        onClick={ () => setIsShowfilters( ! isShowFilters ) }
+                        className="flex lg:hidden  items-center w-6 h-6 rounded bg-brand-gray78 justify-center mx-4 hover:bg-brand-gray99 mb-4">
+                        {<FiltersIcon className="fill-current h-4 w-3 text-brand-yellow"/>}
+                    </button>
+                    <div className={`${isShowFilters ? `px-4` : `px-2 lg:flex`} w-full lg:w-1/4 xl:w-1/5  flex-col flex-wrap lg:pl-2 lg:pr-3`} style={{
+                        opacity: isShowFilters || !isMobile ? "1" : "0",
+                        transition: isShowFilters ? "all .1s" : 'all 0s',
+                        visibility: isShowFilters || !isMobile ? "visible" : "hidden",  
+                        height: isMobile && (!isShowFilters && '0')
+                    }}>
+                        <div className="lg:overflow-auto filters-container lg:pr-3 lg:pl-2 lg:top-20 w-full lg:self-start filter-card-mobile">
+                            {!isMobile && <ClearFilters handleRemoveFilters={handleRemoveInitialFilters}/>}
                             {!showAllFilters ? 
+                               
                                 <Filters
                                     filters={initialFilters} setFilters={setInitialFilters} 
                                     attributes={initialFiltersData} 
@@ -472,7 +522,6 @@ export default function Shop(props) {
                                 <ChosenFilters 
                                     filters={initialFilters} setFilters={setInitialFilters} 
                                     attributes={initialFiltersData} 
-                                    handleRemoveInitialFilters={handleRemoveInitialFilters}
                                     >
                                     
                                 </ChosenFilters>
@@ -482,7 +531,8 @@ export default function Shop(props) {
                             <div style={{
                                 opacity: !showAllFilters ? "0" : "1",
                                 transition: "all .2s",
-                                visibility: !showAllFilters ? "hidden" : "visible",                        
+                                visibility: !showAllFilters ? "hidden" : "visible",   
+                                height: !showAllFilters && '0'                  
                             }}>
                                 <Filters
                                     filters={filters} setFilters={setFilters} 
@@ -492,10 +542,12 @@ export default function Shop(props) {
                                     isLoading={isLoading}
                                 ></Filters>
                             </div>
+                            {isMobile && <ClearFilters handleRemoveFilters={handleRemoveInitialFilters}/>}
+
                         </div>
                     </div>
                     {isLoading ?  
-                    <div className='flex justify-center w-2/3 md:w-3/4 h-full'> 
+                    <div className='flex justify-center w-full lg:w-3/4 xl:w-4/5 h-full mt-4'> 
                         <Image width="100" height='100' src="/cart-spinner.gif"  alt="spinner"/> 
                     </div>
                     : 

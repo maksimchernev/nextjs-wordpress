@@ -1,6 +1,6 @@
 const Howto = () => {
     return (
-        <div id="howto" className="pb-20 sm:pb-28 pt-10 sm:pt-14">
+        <div id="howto" className="pt-10 sm:pt-14">
             <div className="flex justify-content flex-wrap py-3 container mx-auto px-2" >
                 <div className="w-full pr-12">
                     <h2>

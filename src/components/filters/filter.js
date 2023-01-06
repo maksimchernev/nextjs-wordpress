@@ -13,7 +13,7 @@ const Filter = ({attribute, filters, setFilters, isOpened, setIsOpened, attrChos
             
         } );
         
-        setIsOpened({...newIsOpened})
+        setIsOpened(newIsOpened)
     }
     const handleOnChange = (attrId, attrTerm, isRadio)=> {  
         
@@ -72,16 +72,16 @@ const Filter = ({attribute, filters, setFilters, isOpened, setIsOpened, attrChos
             break
     }
     return (
-        <div className="w-full flex flex-wrap relative py-2 mt-3 filter-card ">
+        <div className="w-full flex flex-wrap relative py-1 lg:py-2 lg:mt-3 filter-card px-4">
             {attribute.hasOwnProperty('id') ? 
                 <>
-                    <a className="flex justify-between filter-btn w-full mx-4 gray3E font-sf-pro-display-medium" onClick={ () => handleOnClick(attribute.id) }><span dangerouslySetInnerHTML={{ __html: sanitize(attribute.name) }}></span><ArrowFilter className={`${isOpened[attribute.id] ? `rotate-180` :  null} mx-1 filter-arrow`}></ArrowFilter></a>
-                    <div className={`${isOpened[attribute.id] ? `flex ` : `hidden`} flex-col w-full mt-2 mx-4 bg-white font-sf-pro-display-medium`}>
+                    <a className="flex justify-between filter-btn w-full gray3E font-sf-pro-display-medium" onClick={ () => handleOnClick(attribute.id) }><span dangerouslySetInnerHTML={{ __html: sanitize(attribute.name) }}></span><ArrowFilter className={`${isOpened[attribute.id] ? `rotate-180` :  null} mx-1 filter-arrow`}></ArrowFilter></a>
+                    <div className={`${isOpened[attribute.id] ? `flex ` : `hidden`} flex-col w-full mt-2  bg-white font-sf-pro-display-medium`}>
                         {attribute.terms?.length ? attribute.terms.map((term) => {
                             let attrTerm = useIdForFilters ? term.id : term.name
                             let allowedStyles = 'cursor-pointer checkbox-wrapper-hover text-brand-gray3E'
                             return (
-                                <label key={term.id} className={`${filters[attribute.id].includes(term.name) ? allowedStyles : !term.isVisible || isLoading ? 'cursor-not-allowed text-gray-300 ' : allowedStyles}  checkbox-wrapper mb-3 font-sf-pro-display-light `}  >
+                                <label key={term.id} className={`${filters[attribute.id].includes(term.name) ? allowedStyles : !term.isVisible || isLoading ? 'cursor-not-allowed text-gray-300 ' : allowedStyles}  checkbox-wrapper mb-2 lg:mb-3 font-sf-pro-display-light `}  >
                                     <span dangerouslySetInnerHTML={{ __html: sanitize(term.name) }}></span>
                                     {!attribute.oneAtATime ? 
                                         <input type="checkbox" 
@@ -89,6 +89,7 @@ const Filter = ({attribute, filters, setFilters, isOpened, setIsOpened, attrChos
                                             value={term.id} 
                                             id={term.name} 
                                             name={attribute.name}
+                                            checked={filters ? filters[attribute.id].includes(attrTerm) : false}
                                             onChange={() => handleOnChange(attribute.id, attrTerm, false)}
                                             />
                                         :
@@ -97,6 +98,7 @@ const Filter = ({attribute, filters, setFilters, isOpened, setIsOpened, attrChos
                                             value={term.id} 
                                             id={term.name} 
                                             name={attribute.name} 
+                                            checked={filters ? filters[attribute.id].includes(attrTerm) : false}
                                             onChange={() => handleOnChange(attribute.id, attrTerm, true)}
                                             />
                                     }
@@ -109,13 +111,13 @@ const Filter = ({attribute, filters, setFilters, isOpened, setIsOpened, attrChos
                 </>
                 : 
                 <>
-                    <a className="flex justify-between filter-btn w-full mx-4 gray3E font-sf-pro-display-medium" onClick={ () => handleOnClick(attribute.name) }><span>{attributeName}</span><ArrowFilter className={`${isOpened[attribute.name] ? `rotate-180` :  null} mx-1 filter-arrow`}></ArrowFilter></a>
-                    <div className={`${isOpened[attribute.name] ? `flex ` : `hidden`} flex-col w-full mt-2 mx-4 bg-white font-sf-pro-display-medium`}>
-                        <div className="flex flex-col font-sf-pro-display-light">
-                            <div className="flex mb-2 mt-1">
+                    <a className="flex justify-between filter-btn w-full  gray3E font-sf-pro-display-medium" onClick={ () => handleOnClick(attribute.name) }><span>{attributeName}</span><ArrowFilter className={`${isOpened[attribute.name] ? `rotate-180` :  null} mx-1 filter-arrow`}></ArrowFilter></a>
+                    <div className={`${isOpened[attribute.name] ? `flex ` : `hidden`} flex-col w-full mt-2 bg-white font-sf-pro-display-medium`}>
+                        <div className="flex lg:flex-col font-sf-pro-display-light">
+                            <div className="flex my-2 mr-5 lg:mr-0 lg:mt-1">
                                 <span className="mr-2 leading-6">От</span>
                                 <input type='number' 
-                                    className="w-2/5 border-b focus:outline-none leading-5 flex self-end" 
+                                    className="w-16 border-b focus:outline-none leading-5 flex self-end" 
                                     onChange={(e)=>handleOnDimentionsChange(e, attribute.name, true)}
                                     onKeyDown={e => exceptThisSymbols.includes(e.key) && e.preventDefault()}
 
@@ -125,7 +127,7 @@ const Filter = ({attribute, filters, setFilters, isOpened, setIsOpened, attrChos
                             <div className="flex my-2">
                                 <span className="mr-2 leading-6">До</span>
                                 <input type='number' 
-                                    className="w-2/5 border-b focus:outline-none leading-5 flex self-end" 
+                                    className="w-16 border-b focus:outline-none leading-5 flex self-end" 
                                     onChange={(e)=>handleOnDimentionsChange(e, attribute.name, false)}
                                     onKeyDown={e => exceptThisSymbols.includes(e.key) && e.preventDefault()}
 

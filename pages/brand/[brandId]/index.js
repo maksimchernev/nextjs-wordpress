@@ -13,6 +13,8 @@ import {useRouter} from 'next/router'
 
 
 export default function Brand(props) {
+  console.log('PROPS',props
+  )
   const router = useRouter()
   if (router.isFallback) {
     return <h1>Loading...</h1>
@@ -50,7 +52,7 @@ export default function Brand(props) {
   }
 
   return (
-    <Layout headerFooter={props.headerFooter} initialHeader={'black'} isHeaderVisible={true} isBagYellow={false} title={props?.brandData?.name}>
+    <Layout isMain={false} headerFooter={props.headerFooter} initialHeader={'black'} isHeaderVisible={true} isBagYellow={false} title={props?.brandData?.name}>
         <BreadCrumb/>
         <div className='w-full flex flex-wrap overflow-hidden container mx-auto px-12 justify-center'>
           <Image 
@@ -64,7 +66,7 @@ export default function Brand(props) {
         </div>
 
         <div className="w-full flex flex-wrap overflow-hidden container mx-auto py-12 px-2">
-          <div className='flex w-full md:w-1/2 h-86 bg-red flex-col text-xl leading-8'>
+          <div className='flex w-full sm:w-1/2 h-86 bg-red flex-col text-xl leading-8'>
             <p className='pl-1 font-medium text-20px lg:text-26px uppercase'>Особенности:</p>
               <ol className="pl-6 list-disc pt-4 overflow-visible">
                 {pecOne && <li className='text-base lg:text-20px mb-2'>{pecOne}</li>}
@@ -75,27 +77,26 @@ export default function Brand(props) {
                 }) : null}
               </ol>
           </div>
-          <div className='flex w-full md:w-1/2 pt-7 md:pt-0 h-86 bg-red flex-col md:pl-12  text-xl leading-8'>
+          <div className='flex w-full sm:w-1/2 pt-7 sm:pt-0 h-86 bg-red flex-col md:pl-12  text-xl leading-8'>
             <p className='font-medium text-20px lg:text-26px uppercase pl-1'>Варианты установки:</p>
               <div className='flex flex-row flex-wrap justify-between mt-7 installation-options'>
                 {instOptions?.length ? instOptions?.map((option, index) => {
                   let icon 
-
                   switch (option) {
                     case 'встраиваемый':
-                      icon = <Embedded/>
+                      icon = <Embedded />
                       break
                     case 'накладной':
-                      icon = <Overhead/>
+                      icon = <Overhead />
                       break
                     case 'профиль':
-                      icon = <Profile/>
+                      icon = <Profile />
                       break
                     default:
                       icon = null
                   }
                   return (
-                    <div className='flex items-center justify-center flex-col w-1/3 sm:w-1/4 md:w-1/3 lg:w-1/4' key={ index }>
+                    <div className='flex items-center flex-wrap justify-center flex-col w-1/3 xl:w-1/4' key={ index }>
                       {icon}
                       <p className='capitalize pt-2 text-brand-gray78'>{option}</p>
                     </div>
@@ -166,6 +167,7 @@ export async function getStaticPaths() {
 export async function getStaticProps({params}) {
   const { data: headerFooterData } = await axios.get( HEADER_FOOTER_ENDPOINT );
   const brandData = await getCategoryDataBySlug(params.brandId)
+  console.log('brandData?.id',brandData?.id)
   if (!brandData?.id) {
     return {
       notFound: true

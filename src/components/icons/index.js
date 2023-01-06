@@ -8,6 +8,7 @@ export { default as BurgetIconCross } from "./BurgetIconCross";
 export { default as Cross } from "./Cross";
 export { default as Embedded } from "./Embedded";
 export { default as Facebook } from "./Facebook";
+export { default as FiltersIcon } from "./FiltersIcon";
 export { default as Instagram } from "./Instagram";
 export { default as Overhead } from "./Overhead";
 export { default as Profile } from "./Profile";

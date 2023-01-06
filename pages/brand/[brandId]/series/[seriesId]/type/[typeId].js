@@ -13,23 +13,31 @@ import { useState, useEffect } from 'react';
 import { getObjectOfArray, getWindowDimensions, splitIntoPages } from '../../../../../../src/utils/miscellaneous';
 import Pagination from '../../../../../../src/components/products/pagination';
 import {isArray, isEmpty} from 'lodash'
+import { FiltersIcon } from '../../../../../../src/components/icons';
 
 export default function Type(props) {
+    console.log('typeprops', props)
+    /* product display states */
     const [products, setProducts] = useState(splitIntoPages(props?.products, 30))
     const [page, setPage] = useState(1)
     const [currentProducts, setCurrentProducts] = useState(products[page-1])
+    const [productsPerPage, setProductsPerPage] = useState(30)
+
+    /* filtration states */
     const [filters, setFilters] = useState(props?.relatedAttributes?.filtersObj || {})
     const [attributes, setAttributes] = useState( props?.relatedAttributes?.relatedAttributes || [])
     const [attrChosenLast, setAttrChosenLast] = useState([])
-    const [productsPerPage, setProductsPerPage] = useState(30)
     const [isOpened, setIsOpened] = useState(getObjectOfArray(props?.relatedAttributes?.relatedAttributes, false))
 
+    /* mobile filters statesw */
+    const [isShowFilters, setIsShowfilters] = useState(false)
+    const [isMobile, setIsMobile] = useState()
     useEffect(()=> {
-         let newProducts = props?.products
+        let newProducts = [...props?.products]
         for (const filter in filters ) {
             //click filters
             if (filters[filter]?.length && filter != 'length' && filter != 'width' && filter != 'height' ) {
-                let midNewproducts = newProducts?.filter(product=> {
+                let midNewproducts = newProducts?.filter(product => {
                     let condition 
                     for (const attribute of product?.attributes) {
                         if (attribute?.id == filter ) {
@@ -84,7 +92,6 @@ export default function Type(props) {
                     }
                 }
             }
-            setProducts(newProducts)
             setCurrentProducts([])
             
         } else {
@@ -155,15 +162,24 @@ export default function Type(props) {
             setCurrentProducts(newProducts[page-1])
         }
     }, [filters, page, productsPerPage])
-    useEffect(() => {
-        let {width} = getWindowDimensions()
-        if (width >= 1536) {
-            setProductsPerPage(32)
-        } else if (width < 1536){
-            setProductsPerPage(30)
-        }
-    }, []);   
-
+    useEffect(()=> {
+        function handleResize() {
+            let {width} = getWindowDimensions()
+            if (width >= 1536) {
+                setProductsPerPage(32)
+            } else if (width < 1536){
+                setProductsPerPage(30)
+            }
+            if (width >=1024) {
+                setIsMobile(false)
+            } else {
+                setIsMobile(true)
+            }
+        }      
+        handleResize()
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, [])  
     const router = useRouter()
     if (router.isFallback) {
         return <h1>Loading...</h1>
@@ -178,20 +194,48 @@ export default function Type(props) {
         h1text = 'Аксессуары'
     }
 
+    const handleRemoveFilters = () => {
+        if (isMobile) {
+            const newIsOpened = 
+                Object
+                    .keys(isOpened)
+                    .reduce((result, k) => { 
+                    return { ...result, [k]: false };
+                }, {})
+            setIsOpened(newIsOpened)
+        } 
+        setFilters(props?.relatedAttributes?.filtersObj || {})
+        setProducts(splitIntoPages(props?.products, productsPerPage))
+        setCurrentProducts(products[page-1])
+    }
+    useEffect(()=> {
+        console.log('filters', filters)
+    }, [filters])
     return (
-        <Layout headerFooter={props?.headerFooter} initialHeader={'white'} isBagYellow={true} title={`${h1text} ${props?.brandData?.name}`}>
+        <Layout isMain={false} headerFooter={props?.headerFooter} initialHeader={'white'} isBagYellow={true} title={`${h1text} ${props?.brandData?.name}`}>
             <BreadCrumb isAbs={true}/>
             <Hero h1Content={h1text} isMain={false} image={typeId?.slice(0, typeId?.indexOf('-')) == 'tracks' ? '/tracks.jpg' : '/lamps.jpg'}/>
-            <div className='flex container mx-auto mt-16 relative mb-10 md:mb-20'>
-                <div className="w-1/3 md:w-1/4 xl:w-1/5 flex flex-col flex-wrap pl-2 pr-3 ">
-                    <div className="overflow-auto filters-container pr-3 pl-2 top-20 w-full self-start">
+            <div className='flex flex-col lg:flex-row container mx-auto mt-5 sm:mt-16 relative mb-10 md:mb-20'>
+                <button
+                    onClick={ () => setIsShowfilters( ! isShowFilters ) }
+                    className="flex lg:hidden  items-center w-6 h-6 rounded bg-brand-gray78 justify-center mx-4 hover:bg-brand-gray99 mb-4">
+                    {<FiltersIcon className="fill-current h-4 w-3 text-brand-yellow"/>}
+                </button>
+                <div className={`${isShowFilters ? `px-4` : `px-2 lg:flex`} w-full lg:w-1/4 xl:w-1/5  flex-col flex-wrap lg:pl-2 lg:pr-3`} style={{
+                    opacity: isShowFilters || !isMobile ? "1" : "0",
+                    transition: isShowFilters ? "all .1s" : 'all 0s',
+                    visibility: isShowFilters || !isMobile ? "visible" : "hidden", 
+                    height: isMobile && (!isShowFilters && '0') 
+                }}>
+                    <div className="lg:overflow-auto filters-container lg:pr-3 lg:pl-2 lg:top-20 w-full lg:self-start filter-card-mobile">
                         <Filters
                             filters={filters} setFilters={setFilters} 
                             attributes={attributes} 
                             attrChosenLast={attrChosenLast} setAttrChosenLast={setAttrChosenLast}
                             isOpened={isOpened} setIsOpened={setIsOpened} 
+                            handleRemoveFilters={handleRemoveFilters}
+                            isMobile={isMobile}
                         ></Filters>
-
                     </div>
                 </div>
                 <ProductList products={currentProducts} ></ProductList>

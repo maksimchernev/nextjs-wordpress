@@ -1,5 +1,6 @@
 import DOMPurify from 'dompurify';
 import { isArray } from 'lodash';
+import { object } from 'prop-types';
 
 /**
  * Sanitize markup or text when used inside dangerouslysetInnerHTML
@@ -40,6 +41,14 @@ export const getObjectOfArray = (arrayWithIds, baseValue) => {
 		}
 	}
 	return obj
+}
+
+export const getArrayOfObject = (object) => {
+	const array = []
+	for (let key in object) {
+		array.push({name: [key][0], value: object[key]})
+	}
+	return array
 }
 
 export default function inpNum(e) {

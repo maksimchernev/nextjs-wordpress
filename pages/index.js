@@ -12,7 +12,7 @@ import ContactUs from '../src/components/contact-us';
 
 export default function Home({headerFooter, brands, hero}) {
   return (
-    <Layout headerFooter={headerFooter} initialHeader={'white'} isBagYellow={false}>
+    <Layout headerFooter={headerFooter} initialHeader={'white'} isBagYellow={false} isMain={true}>
        <Hero h1Content={hero.heroTitle} text={hero.heroDescription} button={hero.heroBtnTxt} isMain={true} image={hero.heroImgURL} header={headerFooter.header}/>
        <About/>
        <Howto/>

@@ -27,7 +27,7 @@ const Footer = ({footer, header}) => {
 										/>
 									) : (
 										<span className="font-medium text-xl tracking-tight">
-											<p className="logo-text text-3xl sm:text-4xl uppercase font-sf-pro-display-medium">Magnetic Light</p>
+											<p className="logo-text text-3xl sm:text-4xl uppercase font-sf-pro-display-medium text-brand-yellow">Magnetic Light</p>
 										</span>
 									)
 								}

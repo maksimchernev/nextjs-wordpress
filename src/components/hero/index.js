@@ -34,11 +34,11 @@ const Hero = ({h1Content, text, button, isMain, image, header}) => {
                     }
                 </div>}
                 {h1Content && 
-                    <h1 className={`${!isMain ? `text-brand-yellow mb-0` : `text-white mt-14 mb-3 md:mb-5 text-center lg:text-left`} uppercase text-24px sm:text-36px lg:text-48px` }>
+                    <h1 className={`${!isMain ? `text-brand-yellow mb-0` : `text-white mt-14 mb-3 md:mb-5 text-center lg:text-left`} uppercase text-28px sm:text-36px lg:text-48px` }>
                         {h1Content}
                     </h1>}
                 {text && 
-                    <p className={`${isMain ? 'text-center lg:text-left font-sf-pro-display-light lg:font-sf-pro-display-medium' : ''} mt-2 lg:mt-7 text-base lg:text-4xl sm:text-28px sm:mt-4`}>
+                    <p className={`${isMain ? 'text-center lg:text-left font-sf-pro-display-light lg:font-sf-pro-display-medium' : ''} mt-2 lg:mt-7 text-20px lg:text-4xl sm:text-28px sm:mt-4`}>
                         {text}
                     </p> }
                 {button && 

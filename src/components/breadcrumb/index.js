@@ -22,9 +22,17 @@ export default function BreadCrumb({isAbs}) {
             return index != crumblistWithoutMiddlePaths.length-1
         }) */
         const crumblistWithRussianText = crumblistWithoutMiddlePaths.map((path) => {
+            let text = path.text.replace(/series/gi, 'Серия').replace(/-/gi, ' ')
+            if (text.includes('lamps')) {
+                text = 'Светильники'
+            } else if (text.includes('tracks')) {
+                text = 'Шинопроводы'
+            } else if (text.includes('accessory')) {
+                text = 'Аксессуары'
+            }
             return {
                 ...path,
-                text: path.text.replace(/series/gi, 'Серия').replace(/-/gi, ' ')
+                text: text
             }
         })
         return [{ href: "/", text: "Главная" }, ...crumblistWithRussianText];

@@ -6,7 +6,7 @@ import BreadCrumb from '../src/components/breadcrumb';
 
 export default function Cart({ headerFooter }) {
 	return (
-		<Layout headerFooter={headerFooter || {}} initialHeader={'black'} isBagYellow={true}>
+		<Layout headerFooter={headerFooter || {}} initialHeader={'black'} isBagYellow={false}>
 			<div className='mt-28 container mx-auto'>
 				<BreadCrumb />
 				<CartItemsContainer/>
