@@ -13,8 +13,6 @@ import {useRouter} from 'next/router'
 
 
 export default function Brand(props) {
-  console.log('PROPS',props
-  )
   const router = useRouter()
   if (router.isFallback) {
     return <h1>Loading...</h1>
@@ -167,7 +165,6 @@ export async function getStaticPaths() {
 export async function getStaticProps({params}) {
   const { data: headerFooterData } = await axios.get( HEADER_FOOTER_ENDPOINT );
   const brandData = await getCategoryDataBySlug(params.brandId)
-  console.log('brandData?.id',brandData?.id)
   if (!brandData?.id) {
     return {
       notFound: true

@@ -16,7 +16,6 @@ import { roundToTwo } from "../../src/utils/miscellaneous";
 
   
 const ProductPage = (props) => {
-    console.log('productprops', props)
     const [windowDimensions, setWindowDimensions] = useState();
     const [showProducts, setShowProducts] = useState()
     const [currentImgIndex, setCurrentImgIndex] = useState(props.product?.images?.[0]?.id)
@@ -63,7 +62,6 @@ const ProductPage = (props) => {
     }
      
     const dimensions = getArrayOfObject(props.product.dimensions)
-    console.log('dimensions', dimensions)
     return (
         <Layout headerFooter={props.headerFooter} 
             initialHeader={'black'} 

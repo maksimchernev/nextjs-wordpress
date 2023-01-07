@@ -451,10 +451,6 @@ export default function Shop(props) {
         setIsLoading(false)
     }, [filters, page])
 
-
-    useEffect(()=> {
-        console.log('isOpened', isOpened)
-    }, [isOpened])
     const router = useRouter()
     if (router.isFallback) {
         return <h1>Loading...</h1>

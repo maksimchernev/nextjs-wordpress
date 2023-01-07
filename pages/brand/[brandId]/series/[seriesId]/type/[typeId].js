@@ -16,7 +16,6 @@ import {isArray, isEmpty} from 'lodash'
 import { FiltersIcon } from '../../../../../../src/components/icons';
 
 export default function Type(props) {
-    console.log('typeprops', props)
     /* product display states */
     const [products, setProducts] = useState(splitIntoPages(props?.products, 30))
     const [page, setPage] = useState(1)
@@ -208,9 +207,6 @@ export default function Type(props) {
         setProducts(splitIntoPages(props?.products, productsPerPage))
         setCurrentProducts(products[page-1])
     }
-    useEffect(()=> {
-        console.log('filters', filters)
-    }, [filters])
     return (
         <Layout isMain={false} headerFooter={props?.headerFooter} initialHeader={'white'} isBagYellow={true} title={`${h1text} ${props?.brandData?.name}`}>
             <BreadCrumb isAbs={true}/>
