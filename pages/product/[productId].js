@@ -7,22 +7,23 @@ import { getArrayOfObject, getWindowDimensions, sanitizeTags } from "../../src/u
 import { getAllProductsPaths, getProductData, getProductsDataByCategoryId } from "../../src/utils/products";
 import { useRouter } from "next/router";
 import AddToCart from "../../src/components/cart/add-to-cart";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import ProductSlider from "../../src/components/products/slider";
 import { getCategoryDataById, getLinkToSubCatalog, getSubCategoriesById } from "../../src/utils/categories";
 import { isArray } from "lodash";
 import { roundToTwo } from "../../src/utils/miscellaneous";
+import Loader from "../../src/components/loader";
 
 
   
 const ProductPage = (props) => {
     const [windowDimensions, setWindowDimensions] = useState();
     const [showProducts, setShowProducts] = useState()
-    const [currentImgIndex, setCurrentImgIndex] = useState(props.product?.images?.[0]?.id)
-    const { pathname } = useRouter()
+    const [currentImg, setCurrentImg] = useState()
+    const router = useRouter()
     useEffect(()=> {
         window.scrollTo(0, 0)
-    }, [pathname])
+    }, [router.pathname])
     useEffect(() => {
             let {width} = getWindowDimensions()
             if (width > 1536) {
@@ -50,15 +51,13 @@ const ProductPage = (props) => {
         window.addEventListener('resize', handleResize);
         return () => window.removeEventListener('resize', handleResize);
     }, [])
-    const router = useRouter()
+   
+    const handleClickOnImage = useCallback((id) => {
+        setCurrentImg(props.product?.images.find(img => img.id == id))
+    }, [props.product?.images])
+
     if (router.isFallback) {
-        return <h1>Loading...</h1>
-    }
-    let imgs = props.product?.images ?? [];
-    let img = imgs.length ? imgs.find(img =>img.id == currentImgIndex) : null
-    const handleClickOnImage = (id) => {
-        setCurrentImgIndex(id)
-        imgs = imgs.length ? imgs.filter(img => img.id !== currentImgIndex) : []
+        return <Loader/>
     }
      
     const dimensions = getArrayOfObject(props.product.dimensions)
@@ -66,37 +65,34 @@ const ProductPage = (props) => {
         <Layout headerFooter={props.headerFooter} 
             initialHeader={'black'} 
             isBagYellow={true} 
-            bgProduct={true} 
             metaData={props?.product?.metaData ?? []} 
             title={props?.product?.name}
             > 
-            <BreadCrumb isAbs={false} bgProduct={true}/>
+            <BreadCrumb isAbs={false} />
             <div className="container mx-auto">
-                <h1 className="text-center text-40px">{props.product?.name}</h1>
+                <h1 className="text-center text-32px sm:text-40px">{sanitizeTags(props.product?.name)}</h1>
             </div>
             <div className="flex flex-wrap container mx-auto my-8 md:my-16 justify-center ">
                 <div className="flex flex-col-reverse md:w-1/2 md:justify-end lg:flex-row xl:pr-10">
                     <div className="flex flex-wrap lg:flex-col lg:h-96 lg:flex-wrap-reverse">
-                        {imgs.length ? imgs.map(img => {
-                            if (img.id != currentImgIndex) {
-                                return (
-                                    <a className="cursor-pointer duration-250 ease-in m-1" key={img.id} onClick={()=> handleClickOnImage(img.id)}>
-                                        <Image
-                                            sourceUrl={ img?.src ?? '' }
-                                            altText={img?.alt || props.product?.name}
-                                            title={ props.product?.name ?? '' }
-                                            layout='fill'
-                                            containerClassNames={`border border-brand-gray78 product-image-preview`}
-                                        />
-                                    </a>
-                                )
-                            }
+                        {props.product?.images?.length ? props.product?.images.map(img => {
+                            return (
+                                <a className="cursor-pointer duration-250 ease-in m-1" key={img.id} onClick={()=> handleClickOnImage(img.id)}>
+                                    <Image
+                                        sourceUrl={ img?.src ?? '' }
+                                        altText={img?.alt || props.product?.name}
+                                        title={ props.product?.name ?? '' }
+                                        layout='fill'
+                                        containerClassNames={`${img.id === currentImg?.id ? 'border-brand-gray78 product-card-image-preview-shadow' : 'border-brand-grayCF'} border product-image-preview`}
+                                    />
+                                </a>
+                            )
                         }) : null}
                     </div>
                     <div className="duration-250 ease-in mb-2 sm:mb-0 p-1 flex sm:justify-center md:justify-start">
                         <Image
-                            sourceUrl={ img?.src ?? '' }
-                            altText={img?.alt || props.product?.name}
+                            sourceUrl={!currentImg ? props.product.images?.[0]?.src : currentImg.src }
+                            altText={currentImg?.src.alt || props.product?.name}
                             title={ props.product?.name ?? '' }
                             layout='fill'
                             containerClassNames={`border border-brand-grayCF w-80 h-80 sm:w-96 sm:w-96 md:w-80 md:h-80 xl:w-96 xl:h-96`}
@@ -105,8 +101,8 @@ const ProductPage = (props) => {
                 </div>
 
                 <div className="w-full md:w-1/2 px-2 leading-6 mt-5 md:mt-0">
-                    <p className="mb-5"><span className="font-sf-pro-display-light text-20px">Артикул: </span><span className="font-sf-pro-display-medium">{sanitizeTags(props.product?.sku)} </span></p>
-                    <p className="flex flex-col"><span>Цена:</span><span className="text-5xl font-sf-pro-display-bold"> {roundToTwo(sanitizeTags(props.product?.price))}₽</span></p>
+                    <p className="mb-5"><span className="font-sf-pro-display-light text-20px">Артикул: </span><span className="font-sf-pro-display-medium ">{sanitizeTags(props.product?.sku)} </span></p>
+                    <p className="flex flex-col"><span>Цена:</span><span className="text-5xl font-sf-pro-display-bold"> {roundToTwo(props.product?.price)}₽</span></p>
                     <p className="font-sf-pro-display-light">{sanitizeTags(props.product?.purchase_note)}</p>
                     <p className="my-5 font-sf-pro-display-light text-20px leading-7" ><span > {sanitizeTags(props.product?.description)}</span></p>
                     <div className="mb-5">
@@ -120,31 +116,31 @@ const ProductPage = (props) => {
                                         }): null
                                         }
                                     </p>
-                                    
-                                    
                                 )
                             }) : null
                         }
                     </div>
                     <div className="mb-5">
                         {dimensions?.length ? dimensions.map(dimension => {
-                            let dimensionName 
-                            switch (dimension.name) {
-                                case 'length' :
-                                    dimensionName = 'Длина'
-                                    break
-                                case 'width' :
-                                    dimensionName = 'Ширина'
-                                    break
-                                case 'height' :
-                                    dimensionName = 'Высота'
-                                    break
+                            if (dimension.value) { 
+                                let dimensionName 
+                                switch (dimension.name) {
+                                    case 'length' :
+                                        dimensionName = 'Длина'
+                                        break
+                                    case 'width' :
+                                        dimensionName = 'Ширина'
+                                        break
+                                    case 'height' :
+                                        dimensionName = 'Высота'
+                                        break
+                                }
+                                return (
+                                    <p key={dimension.name} className='font-sf-pro-display-light text-20px leading-7'><span >{sanitizeTags(dimensionName+':')}</span>
+                                        <span className='ml-1'>{sanitizeTags(dimension.value+' mm')}</span>
+                                    </p>
+                                )
                             }
-                            return (
-                                <p key={dimension.name} className='font-sf-pro-display-light text-20px leading-7'><span>{sanitizeTags(dimensionName+':')}</span>
-                                    <span className='ml-1'>{sanitizeTags(dimension.value+' mm')}</span>
-                                </p>
-                            )
                         }) : null
                         }
                     </div>
@@ -232,7 +228,7 @@ export async function getStaticProps({params}) {
         supportingProducts = data
     } 
     const addsLink = await getLinkToSubCatalog(addsCatId)
-    const accessoriesLink = await getLinkToSubCatalog(addsCatId)
+    const accessoriesLink = await getLinkToSubCatalog(accessoriesCatId)
 
     
     return {

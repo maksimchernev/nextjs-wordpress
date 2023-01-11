@@ -22,7 +22,8 @@
     "react-dom": "18.2.0",
     "sass": "^1.55.0",
     "sharp": "^0.31.2",
-    "validator": "^13.7.0"
+    "validator": "^13.7.0",
+    "webpack": "^5.75.0"
   },
   "devDependencies": {
     "@svgr/cli": "^6.5.0",

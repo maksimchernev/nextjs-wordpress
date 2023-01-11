@@ -10,44 +10,50 @@ import { Embedded } from '../../../src/components/icons';
 import { Overhead } from '../../../src/components/icons';
 import { Profile } from '../../../src/components/icons';
 import {useRouter} from 'next/router'
+import { capitalized, sanitizeTags } from '../../../src/utils/miscellaneous';
+import { useMemo } from 'react';
+import Loader from '../../../src/components/loader';
 
 
 export default function Brand(props) {
+  const {img, pecOne, pecs, instOptions} = useMemo(function generateCharData() {
+    const img = props?.brandData?.image ?? {}
+    let pecOne
+    if (props?.series?.length > 1) {
+      pecOne = `${props?.series?.length} отдельные системы светильников`
+    } else {
+      pecOne = null
+    }
+    let pecs = []
+    props?.series ? props?.series.map(name => { 
+      let descrArr = name.description.split('\r\n')
+      if(descrArr[descrArr.indexOf('Особенности:')+1]) {
+        pecs.push ({
+          name: name.name,
+          peculiarity: descrArr[descrArr.indexOf('Особенности:')+1],
+        })
+      }
+    }) : null
+    let availablePics = ['встраиваемый', 'накладной', 'профиль']
+    
+    let options = props?.series ? props?.series.map(name => { 
+      let descrArr = name.description.split('\r\n')
+      return descrArr[descrArr.indexOf('Варианты установки:')+1]
+    }) : null
+    options? options = options.join() : options = null
+    let instOptions = []
+    for (let picName of availablePics) {
+      if (options && options.includes(picName)) {
+        instOptions.push(picName)
+      } 
+    }
+    return {img, pecOne, pecs, instOptions}
+  }, [props?.brandData?.image, props?.series])
+
   const router = useRouter()
   if (router.isFallback) {
-    return <h1>Loading...</h1>
+    return <Loader/>
   }  
-  const img = props?.brandData?.image ?? {}
-  let pecOne
-  if (props?.series?.length > 1) {
-    pecOne = `${props?.series?.length} отдельные системы светильников`
-  } else {
-    pecOne = null
-  }
-  let pecs = []
-  props?.series ? props?.series.map(name => { 
-    let descrArr = name.description.split('\r\n')
-    if(descrArr[descrArr.indexOf('Особенности:')+1]) {
-      pecs.push ({
-        name: name.name,
-        peculiarity: descrArr[descrArr.indexOf('Особенности:')+1],
-      })
-    }
-  }) : null
-
-  let availablePics = ['встраиваемый', 'накладной', 'профиль']
-  
-  let options = props?.series ? props?.series.map(name => { 
-    let descrArr = name.description.split('\r\n')
-    return descrArr[descrArr.indexOf('Варианты установки:')+1]
-  }) : null
-  options? options = options.join() : options = null
-  let instOptions = []
-  for (let picName of availablePics) {
-    if (options && options.includes(picName)) {
-      instOptions.push(picName)
-    } 
-  }
 
   return (
     <Layout isMain={false} headerFooter={props.headerFooter} initialHeader={'black'} isHeaderVisible={true} isBagYellow={false} title={props?.brandData?.name}>
@@ -55,7 +61,7 @@ export default function Brand(props) {
         <div className='w-full flex flex-wrap overflow-hidden container mx-auto px-12 justify-center'>
           <Image 
             sourceUrl={img?.src ?? ''}
-            altText={img?.alt || props?.brandData?.name}
+            altText={img?.alt || capitalized(props?.brandData?.name)}
             title={props?.brandData?.name ?? ''}
             width={'250px'}
             height={'50px'}
@@ -63,22 +69,22 @@ export default function Brand(props) {
           /> 
         </div>
 
-        <div className="w-full flex flex-wrap overflow-hidden container mx-auto py-12 px-2">
-          <div className='flex w-full sm:w-1/2 h-86 bg-red flex-col text-xl leading-8'>
-            <p className='pl-1 font-medium text-20px lg:text-26px uppercase'>Особенности:</p>
-              <ol className="pl-6 list-disc pt-4 overflow-visible">
+        {instOptions.length && pecs.length ? <div className="w-full flex flex-wrap overflow-hidden container mx-auto py-6 sm:py-12 px-2">
+          {pecs.length ? <div className='flex w-full sm:w-1/2 h-86 bg-red flex-col text-xl leading-8'>
+            <p className='pl-1 font-sf-pro-display-medium text-20px lg:text-26px uppercase'>Особенности:</p>
+              <ol className="pl-6 list-disc mt-7  overflow-visible">
                 {pecOne && <li className='text-base lg:text-20px mb-2'>{pecOne}</li>}
-                {pecs?.length ? pecs.map((pec, index) => {
+                {pecs.map((pec, index) => {
                   return (
-                    <li key={ index } className='text-base lg:text-20px mb-2'>{`${pec.name} - ${pec.peculiarity}`}</li>
+                    <li key={ index } className='text-base lg:text-20px mb-2'>{`${sanitizeTags(pec.name)} - ${sanitizeTags(pec.peculiarity)}`}</li>
                   )
-                }) : null}
+                }) }
               </ol>
-          </div>
-          <div className='flex w-full sm:w-1/2 pt-7 sm:pt-0 h-86 bg-red flex-col md:pl-12  text-xl leading-8'>
-            <p className='font-medium text-20px lg:text-26px uppercase pl-1'>Варианты установки:</p>
-              <div className='flex flex-row flex-wrap justify-between mt-7 installation-options'>
-                {instOptions?.length ? instOptions?.map((option, index) => {
+          </div> : null}
+          {instOptions.length ? <div className='flex w-full sm:w-1/2 pt-7 sm:pt-0 h-86 bg-red flex-col md:pl-12  text-xl leading-8'>
+            <p className='font-sf-pro-display-medium text-20px lg:text-26px uppercase pl-1'>Варианты установки:</p>
+              <div className='flex flex-row flex-wrap justify-between  mt-7 installation-options'>
+                {instOptions?.map((option, index) => {
                   let icon 
                   switch (option) {
                     case 'встраиваемый':
@@ -94,16 +100,19 @@ export default function Brand(props) {
                       icon = null
                   }
                   return (
-                    <div className='flex items-center flex-wrap justify-center flex-col w-1/3 xl:w-1/4' key={ index }>
-                      {icon}
-                      <p className='capitalize pt-2 text-brand-gray78'>{option}</p>
+                    <div className='flex items-center flex-wrap justify-center md:items-start flex-col w-1/3' key={ index }>
+                      <div className='flex flex-col items-center w-28'>
+                        {icon}
+                        <p className='pt-2 text-brand-gray78'>{capitalized(option)}</p>
+                      </div>
                     </div>
                   )
-                }) : null}
+                })}
               </div>
           </div>
+          : null}
          
-        </div>
+        </div> : null}
         <div className="w-full md:flex hidden flex-wrap overflow-hidden container mx-auto md:my-4 px-2">
           <p className='w-full flex md:justify-center uppercase text-20px lg:text-26px font-sf-pro-display-medium'>Выбрать серию</p>
           <div className='flex w-full justify-center md:my-4'>
@@ -117,9 +126,9 @@ export default function Brand(props) {
           </div>
         </div>
         
-        <div className="w-full flex flex-wrap  container mx-auto py-12 px-2" id='series'>
-          <h1 className='w-full flex text-2xl font-sf-pro-display uppercase text-26px lg:text-40px mb-12 ml-1'>Магнитные трековые системы {props?.brandData?.name ?? ""}</h1>
-          <div className='category-card flex flex-wrap w-full'>
+        <div className="w-full flex flex-wrap  container mx-auto py-6 sm:py-12 px-2" id='series'>
+          <h1 className='w-full flex text-2xl font-sf-pro-display uppercase text-26px lg:text-40px mb-3 sm:mb-6 ml-1'>Магнитные трековые системы {props?.brandData?.name ?? ""}</h1>
+          <div className='category-card flex flex-wrap w-full my-3 sm:my-6'>
 
             {
               props.series?.length ? props.series?.map ( name => {
@@ -140,7 +149,7 @@ export default function Brand(props) {
                             containerClassNames={'card series-card h-24 sm:h-80 md:h-52 lg:h-80 xl:h-96 '}
                             className={'rounded-2xl brightness-50'}
                           />
-                          <h3 className='text-white uppercase series-card-text mb-0 font-sf-pro-display-medium cursor-pointer text-center w-full text-26px'>{name?.name}</h3>
+                          <h3 className='text-white uppercase series-card-text mb-0 font-sf-pro-display-medium cursor-pointer text-center w-full text-26px'>{capitalized(name?.name)}</h3>
                         </div>
                       </a>
                     </Link>

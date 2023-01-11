@@ -22,11 +22,15 @@ main {
 .product-card-shadow {
     max-height: 400px;
 }
+.product-card-image-preview-shadow {
+    box-shadow: 2px 5px 9px rgba(0, 0, 0, 0.25);
+}
 @media (min-width: 640px) {
     .product-card-shadow {
         box-shadow: 3px 5px 10px rgba(0, 0, 0, 0.25);
         border-radius: 16px;
     }
+
 }
 .popup {
     box-shadow: 3px 5px 10px rgba(0, 0, 0, 0.25);
@@ -80,13 +84,10 @@ main {
 
 
 .filter-red {
-    -webkit-filter: invert(40%) grayscale(100%) brightness(40%) sepia(100%) hue-rotate(-50deg) saturate(400%) contrast(2);
+    -webkit-filter: brightness(0) invert(1) grayscale(100%) brightness(40%) sepia(100%) hue-rotate(-50deg) saturate(600%) contrast(100);
       filter: brightness(0) invert(1) grayscale(100%) brightness(40%) sepia(100%) hue-rotate(-50deg) saturate(600%) contrast(100);
 }
-.filter-red-on-hover:hover {
-    -webkit-filter: invert(40%) grayscale(100%) brightness(40%) sepia(100%) hue-rotate(-50deg) saturate(400%) contrast(2);
-      filter: brightness(0) invert(1) grayscale(100%) brightness(40%) sepia(100%) hue-rotate(-50deg) saturate(600%) contrast(100);
-}
+
 .filter-white {
     filter: brightness(0) invert(1);
 }
@@ -129,8 +130,6 @@ $dotSize: 80px;
     box-sizing: border-box;
         
 }
-
-
 
 .base-timeline__summary-text_container {
     display: flex;
@@ -223,9 +222,21 @@ $dotSize: 80px;
         padding-bottom: 7rem;
     }
 }
+@media (max-width: 639px) {
+    .product-card-slider {
+       max-width: 50%;
+    }
+}
 @media (min-width: 640px) {
     .product-card {
         max-width: 50%;
+    }
+    
+}
+
+@media (min-width: 1024px) {
+    .product-card-slider {
+        max-width: calc(1 / 3);
     }
 }
 @media (min-width: 1280px) {
@@ -238,6 +249,9 @@ $dotSize: 80px;
     .product-card {
         max-width: 33%;
       }
+    .product-card-slider {
+        max-width: 25%;
+    }
 }
 @media (min-width: 1536px) {
     .base-timeline {
@@ -248,7 +262,10 @@ $dotSize: 80px;
     }
     .product-card {
         max-width: 25%;
-      }
+    }
+    .product-card-slider {
+        max-width: 20%;
+    }
 }
 
 .back-btn, .filter-btn {
@@ -349,7 +366,10 @@ $dotSize: 80px;
     content: "";
     flex: auto;
 }
-
+.choose-brand-card::after {
+    content: "";
+    flex: auto;
+}
 @media (max-width: 639px) { 
     .product-image-card {
         width: 70px;
@@ -377,9 +397,10 @@ $dotSize: 80px;
     height: 36px;
     border-radius: 4px;
 }
+
 .add-to-cart-button, .view-cart-button {
-    width: 200px;
-    height: 52px;
+    width: 180px;
+    height: 45px;
     display: flex;
     align-items: center;
     justify-content: space-around;
@@ -401,17 +422,56 @@ $dotSize: 80px;
     color: rgba(136, 136, 136, 1);
 }
 
-.quantity-counter {
-    width: 130px;
-    height: 52px;
+.quantity-counter-cart {
+    width: 70px;
+    min-width: 90px;
+    height: 35px;
     background-color: #FFFFFF;
     display: flex;
     align-items: center;
     justify-content: space-around;
     position: relative;
 }
+.quantity-counter {
+    width: 70px;
+    min-width: 90px;
+    height: 45px;
+    background-color: #FFFFFF;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    position: relative;
+}
+@media (max-width: 400px) {
+    .cart-item-name {
+        font-size: 14px;
+        line-height: 20px;
+        height: 40px;
+        @apply mb-0
+    }
+    .cart-item-purchase-note {
+        font-size: 12px;
+        line-height: 16px;
+    }
+}
+@media (min-width: 768px) {
+    .add-to-cart-button, .view-cart-button{
+        min-width: 200px;
+        height: 52px;
+    }
+    .quantity-counter,.quantity-counter-cart {
+        width: 130px;
+        min-width: 130px;;
+        height: 52px;
+        background-color: #FFFFFF;
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
+        position: relative;
+    }
+}
 
-.quantity-counter .minus, .quantity-counter .plus{
+.quantity-counter .minus, .quantity-counter .plus, .quantity-counter-cart .minus, .quantity-counter-cart .plus{
     position: absolute;
     display: flex;
     align-items: center;
@@ -420,13 +480,13 @@ $dotSize: 80px;
     text-align: center;
     width: 15px;
 }
-.quantity-counter .plus {
+.quantity-counter .plus, .quantity-counter-cart .plus {
     right: 0;
 }
-.quantity-counter .minus {
+.quantity-counter .minus, .quantity-counter-cart .minus  {
     left: 0;
 }
-.quantity-counter input{
+.quantity-counter input, .quantity-counter-cart input {
     width: 100%;
     height: 100%;
     text-align: center;
@@ -505,7 +565,6 @@ $dotSize: 80px;
 
 }
 .totals-container{
-    padding-bottom: 12px;
     position: -webkit-sticky;
     position: sticky;
     max-height: calc(100vh - 5rem);

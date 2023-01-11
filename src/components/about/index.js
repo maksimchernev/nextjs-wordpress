@@ -1,7 +1,7 @@
 import Image from "../image"
 const About = () => {
     return (
-        <div className="flex flex-wrap my-14 lg:mt-28 container mx-auto px-2" id="about">
+        <div className="flex flex-wrap my-7 sm:my-14 lg:mt-28 container mx-auto px-2" id="about">
             <h2 className="w-full">
                 О нас
             </h2>

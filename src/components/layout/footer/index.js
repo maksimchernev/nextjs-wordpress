@@ -10,7 +10,7 @@ const Footer = ({footer, header}) => {
 	const {siteTitle, siteLogoUrl} = header || {}
 	const {copyrightText, sidebarOne, socialLinks, sidebarTwo} = footer || {}
     return (
-      <footer className="py-20 px-2" id='footer'>
+      <footer className="pt-14 sm:pt-20 pb-10 px-2" id='footer'>
 			<div className="container mx-auto flex flex-wrap">
 				<div className="flex flex-wrap flex-col-reverse md:flex-row w-full">
 					<div className="md:w-1/2 w-full">
@@ -72,23 +72,23 @@ const Footer = ({footer, header}) => {
 								<div dangerouslySetInnerHTML={{ __html: sanitize( sidebarTwo ) }}/>
 							</div>
 						</div>
+						<div className="sm:mt-8 w-full flex flex-wrap">
+							{/*Copyright Text*/}
+							<div className="w-full text-white mt-10 text-xs">
+								{ copyrightText ? copyrightText : '© Magnetic light 2022' }
+							</div>
+						</div>
+
 					</div>
 
 					{/* form */}
 				
-					<div className="w-full md:w-1/2 flex">
+					<div className="w-full md:w-1/2 hidden sm:flex">
 						<ContactForm></ContactForm>
 					</div>
 				</div>
 
-				<div className="mt-8 w-full flex flex-wrap">
-					
-					{/*Copyright Text*/}
-					<div className="w-full text-white mt-10 text-xs">
-						{ copyrightText ? copyrightText : '© Magnetic light 2022' }
-					</div>
-				</div>
-
+				
 			</div>
 		</footer>
     )

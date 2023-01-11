@@ -1,9 +1,8 @@
 import { handleSentForm } from "../../utils/main-form";
 import validateAndSanitizeMainForm from "../../validator/main-form";
 import Error from "../checkout/error";
-import InputField from "../checkout/form-elements/input-field";
 import cx from 'classnames';
-import { useState, useEffect} from 'react';
+import { useState } from 'react';
 import { Cross } from "../icons"
 
 

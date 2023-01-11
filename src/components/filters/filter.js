@@ -1,5 +1,5 @@
-import { useEffect } from "react"
-import inpNum, { blockInvalidChar, sanitize } from "../../utils/miscellaneous"
+
+import  { capitalized, sanitize } from "../../utils/miscellaneous"
 import { ArrowFilter } from "../icons"
 const exceptThisSymbols = ["e", "E", "+", "-", "."];
 
@@ -75,14 +75,14 @@ const Filter = ({attribute, filters, setFilters, isOpened, setIsOpened, attrChos
         <div className="w-full flex flex-wrap relative py-1 lg:py-2 lg:mt-3 filter-card px-4">
             {attribute.hasOwnProperty('id') ? 
                 <>
-                    <a className="flex justify-between filter-btn w-full gray3E font-sf-pro-display-medium" onClick={ () => handleOnClick(attribute.id) }><span dangerouslySetInnerHTML={{ __html: sanitize(attribute.name) }}></span><ArrowFilter className={`${isOpened[attribute.id] ? `rotate-180` :  null} mx-1 filter-arrow`}></ArrowFilter></a>
+                    <a className="flex justify-between filter-btn w-full gray3E font-sf-pro-display-medium" onClick={ () => handleOnClick(attribute.id) }><span dangerouslySetInnerHTML={{ __html: sanitize(capitalized(attribute.name)) }}></span><ArrowFilter className={`${isOpened[attribute.id] ? `rotate-180` :  null} mx-1 filter-arrow`}></ArrowFilter></a>
                     <div className={`${isOpened[attribute.id] ? `flex ` : `hidden`} flex-col w-full mt-2  bg-white font-sf-pro-display-medium`}>
                         {attribute.terms?.length ? attribute.terms.map((term) => {
                             let attrTerm = useIdForFilters ? term.id : term.name
                             let allowedStyles = 'cursor-pointer checkbox-wrapper-hover text-brand-gray3E'
                             return (
                                 <label key={term.id} className={`${filters[attribute.id].includes(term.name) ? allowedStyles : !term.isVisible || isLoading ? 'cursor-not-allowed text-gray-300 ' : allowedStyles}  checkbox-wrapper mb-2 lg:mb-3 font-sf-pro-display-light `}  >
-                                    <span dangerouslySetInnerHTML={{ __html: sanitize(term.name) }}></span>
+                                    <span dangerouslySetInnerHTML={{ __html: sanitize(capitalized(term.name)) }}></span>
                                     {!attribute.oneAtATime ? 
                                         <input type="checkbox" 
                                             disabled={filters[attribute.id].includes(term.name) ? false : !term.isVisible || isLoading} 
@@ -103,7 +103,6 @@ const Filter = ({attribute, filters, setFilters, isOpened, setIsOpened, attrChos
                                             />
                                     }
                                     {!attribute.oneAtATime ? <span className="checkmark top-0.5"></span> : <span className="checkmark-rounded top-0.5"></span>}
-                                    {/* <label dangerouslySetInnerHTML={{ __html: sanitize(term.name) }} ></label>    */} 
                                 </label>
                             )
                         }) : null }

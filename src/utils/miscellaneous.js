@@ -1,6 +1,5 @@
 import DOMPurify from 'dompurify';
 import { isArray } from 'lodash';
-import { object } from 'prop-types';
 
 /**
  * Sanitize markup or text when used inside dangerouslysetInnerHTML
@@ -13,9 +12,27 @@ export const sanitize = ( content ) => {
 	return process.window ? DOMPurify.sanitize( content ) : content;
 };
 export const sanitizeTags = (content) => {
-	return content.replace( /(<([^>]+)>)/ig, '')
+	return capitalized(unescape(content.replace( /(<([^>]+)>)/ig, '')))
 }
-
+function unescape(s) {
+	var re = /&(?:amp|#38|lt|#60|gt|#62|apos|#39|quot|#34);/g;
+	var unescaped = {
+	  '&amp;': '&',
+	  '&#38;': '&',
+	  '&lt;': '<',
+	  '&#60;': '<',
+	  '&gt;': '>',
+	  '&#62;': '>',
+	  '&apos;': "'",
+	  '&#39;': "'",
+	  '&quot;': '"',
+	  '&#34;': '"'
+	};
+	return s.replace(re, function (m) {
+	  return unescaped[m];
+	});
+  }
+  
 export const splitIntoPages = (array, perPage) => {
 	let products = array
 	let resultArray = []
@@ -67,3 +84,25 @@ export function getWindowDimensions() {
     const { innerWidth: width, innerHeight: height } = window;
     return {width, height}
   }
+
+
+export function checkEmptyFilters(filters) {
+	let values =  Object.values(filters)
+	let result = true
+	for (let i =0; i<values.length; i++) {
+		if (Array.isArray(values[i])) {
+			if (values[i].length) {
+				result = false;
+				break
+			}
+		} else {
+			if (values[i].till !== 99999999 || values[i].from !== 0) {
+				result = false;
+				break
+			}
+		}
+	}
+	return result
+}
+
+export function capitalized (str) {return str.replace(str.charAt(0), str.charAt(0).toUpperCase())};

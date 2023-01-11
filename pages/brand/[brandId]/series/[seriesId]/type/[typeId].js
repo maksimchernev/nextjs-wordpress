@@ -10,10 +10,11 @@ import { getRelatedAttributesData } from '../../../../../../src/utils/attributes
 import ProductList from '../../../../../../src/components/products';
 import Filters from '../../../../../../src/components/filters';
 import { useState, useEffect } from 'react';
-import { getObjectOfArray, getWindowDimensions, splitIntoPages } from '../../../../../../src/utils/miscellaneous';
+import { checkEmptyFilters, getObjectOfArray, getWindowDimensions, splitIntoPages } from '../../../../../../src/utils/miscellaneous';
 import Pagination from '../../../../../../src/components/products/pagination';
 import {isArray, isEmpty} from 'lodash'
 import { FiltersIcon } from '../../../../../../src/components/icons';
+import Loader from '../../../../../../src/components/loader';
 
 export default function Type(props) {
     /* product display states */
@@ -94,19 +95,7 @@ export default function Type(props) {
             setCurrentProducts([])
             
         } else {
-            const isFiltersEmpty = Object.values(filters)?.every(value => {
-                if (typeof value != 'object') {
-                    if (!value?.length) {
-                      return true;
-                    }
-                    return false;
-                } else {
-                    if (value?.till != 99999999 && value?.from != 0) {
-                        return true;
-                    }
-                    return false;
-                }
-              });
+            let isFiltersEmpty = checkEmptyFilters(filters)
             if (!isFiltersEmpty) {
                 //modify available attributes
                 let newAttributesArray = props?.relatedAttributes?.relatedAttributes
@@ -179,42 +168,39 @@ export default function Type(props) {
         window.addEventListener('resize', handleResize);
         return () => window.removeEventListener('resize', handleResize);
     }, [])  
+
     const router = useRouter()
     if (router.isFallback) {
-        return <h1>Loading...</h1>
+        return <Loader/>
     }
     const typeId = router?.query?.typeId
-    let h1text 
-    if (typeId.includes('tracks')) {
-        h1text = 'Трековые системы'
-    } else if (typeId.includes('lamps')){
-        h1text = 'Светильники'
-    } else if (typeId.includes('accessory')) {
-        h1text = 'Аксессуары'
-    }
+
 
     const handleRemoveFilters = () => {
-        if (isMobile) {
-            const newIsOpened = 
-                Object
-                    .keys(isOpened)
-                    .reduce((result, k) => { 
-                    return { ...result, [k]: false };
-                }, {})
-            setIsOpened(newIsOpened)
-        } 
-        setFilters(props?.relatedAttributes?.filtersObj || {})
-        setProducts(splitIntoPages(props?.products, productsPerPage))
-        setCurrentProducts(products[page-1])
+        let isFiltersEmpty = checkEmptyFilters(filters)
+        if (!isFiltersEmpty) {
+            if (isMobile) {
+                const newIsOpened = 
+                    Object
+                        .keys(isOpened)
+                        .reduce((result, k) => { 
+                        return { ...result, [k]: false };
+                    }, {})
+                setIsOpened(newIsOpened)
+            } 
+            setFilters(props?.relatedAttributes?.filtersObj || {})
+            setProducts(splitIntoPages(props?.products, productsPerPage))
+            setCurrentProducts(products[page-1])
+        }
     }
     return (
-        <Layout isMain={false} headerFooter={props?.headerFooter} initialHeader={'white'} isBagYellow={true} title={`${h1text} ${props?.brandData?.name}`}>
-            <BreadCrumb isAbs={true}/>
-            <Hero h1Content={h1text} isMain={false} image={typeId?.slice(0, typeId?.indexOf('-')) == 'tracks' ? '/tracks.jpg' : '/lamps.jpg'}/>
-            <div className='flex flex-col lg:flex-row container mx-auto mt-5 sm:mt-16 relative mb-10 md:mb-20'>
+        <Layout isMain={false} headerFooter={props?.headerFooter} initialHeader={'white'} isBagYellow={true} title={`${props?.typeData?.name} ${props?.brandData?.name}`}>
+            <BreadCrumb isAbs={true} typeContentName={props?.typeData?.name}/>
+            <Hero h1Content={props?.typeData?.name} isMain={false} image={typeId?.slice(0, typeId?.indexOf('-')) == 'tracks' ? '/tracks.jpg' : '/lamps.jpg'}/>
+            <div className='flex flex-col lg:flex-row container mx-auto mt-5 sm:mt-16 relative mb-5 sm:mb-10 md:mb-20'>
                 <button
                     onClick={ () => setIsShowfilters( ! isShowFilters ) }
-                    className="flex lg:hidden  items-center w-6 h-6 rounded bg-brand-gray78 justify-center mx-4 hover:bg-brand-gray99 mb-4">
+                    className="flex lg:hidden  items-center w-8 h-8 rounded bg-brand-gray78 justify-center mx-4 hover:bg-brand-gray99 mb-4">
                     {<FiltersIcon className="fill-current h-4 w-3 text-brand-yellow"/>}
                 </button>
                 <div className={`${isShowFilters ? `px-4` : `px-2 lg:flex`} w-full lg:w-1/4 xl:w-1/5  flex-col flex-wrap lg:pl-2 lg:pr-3`} style={{
@@ -300,6 +286,7 @@ export async function getStaticProps({params}) {
             products: productsConcated   ?? {},
             relatedAttributes: relatedAttributes ?? {},
             brandData: brandData ?? {},
+            typeData: typeData ?? {}
         },
         revalidate: 1000
     };

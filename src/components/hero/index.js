@@ -1,5 +1,6 @@
 import _ from "lodash"
 import { useState } from "react"
+import { capitalized } from "../../utils/miscellaneous";
 import Popup from "../contact-form/pop-up"
 import Image from "../image";
 
@@ -28,24 +29,24 @@ const Hero = ({h1Content, text, button, isMain, image, header}) => {
                             />
                         ) : (
                             <span className="font-medium text-xl tracking-tight flex w-full justify-center px-2">
-                                <p className="logo-text text-4xl uppercase font-sf-pro-display-bold text-center">Magnetic Light</p>
+                                <p className="logo-text text-4xl uppercase text-brand-yellow  font-sf-pro-display-bold text-center">Magnetic Light</p>
                             </span>
                         )
                     }
                 </div>}
                 {h1Content && 
                     <h1 className={`${!isMain ? `text-brand-yellow mb-0` : `text-white mt-14 mb-3 md:mb-5 text-center lg:text-left`} uppercase text-28px sm:text-36px lg:text-48px` }>
-                        {h1Content}
+                        {capitalized(h1Content)}
                     </h1>}
                 {text && 
                     <p className={`${isMain ? 'text-center lg:text-left font-sf-pro-display-light lg:font-sf-pro-display-medium' : ''} mt-2 lg:mt-7 text-20px lg:text-4xl sm:text-28px sm:mt-4`}>
-                        {text}
+                        {capitalized(text)}
                     </p> }
                 {button && 
                     <div className="text-center lg:text-left">
                         <button className="mt-14 text-xl button-form text-center"
                             onClick={()=>handleOnClick()}>
-                            {button}
+                            {capitalized(button)}
                         </button>
                     </div>
                 }   

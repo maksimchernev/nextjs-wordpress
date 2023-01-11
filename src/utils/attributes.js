@@ -1,5 +1,4 @@
 import { isArray } from "lodash";
-import { getBrandsAndSeriesPaths } from "./categories";
 import { getObjectOfArray } from "./miscellaneous";
 
 const WooCommerceRestApi = require("@woocommerce/woocommerce-rest-api").default;
@@ -81,21 +80,23 @@ export const getRelatedAttributesData = async (products) => {
     let exampleProductDimentions = []
     for (let product of products) {
         for (let productDim in product.dimensions) {
-            if (exampleProductDimentions.length) {
-                let foundAlready = false
-                for (let dim of exampleProductDimentions) {
-                    if (dim.name == productDim) {
-                        foundAlready = true
+            if (product.dimensions[product.dimensions]) {
+                if (exampleProductDimentions.length) {
+                    let foundAlready = false
+                    for (let dim of exampleProductDimentions) {
+                        if (dim.name == productDim) {
+                            foundAlready = true
+                        }
+                    } 
+                    if (!foundAlready) {
+                        exampleProductDimentions.push({name: productDim})
                     }
-                } 
-                if (!foundAlready) {
+                } else {
                     exampleProductDimentions.push({name: productDim})
                 }
-            } else {
-                exampleProductDimentions.push({name: productDim})
-            }
-            if (exampleProductDimentions.length >2) {
-                break
+                if (exampleProductDimentions.length >2) {
+                    break
+                }
             }
         }
         if (exampleProductDimentions.length >2) {

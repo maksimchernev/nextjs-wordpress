@@ -2,8 +2,9 @@ import React, { useEffect, useState, useRef } from 'react';
 import {isEmpty} from "lodash";
 import Image from '../image';
 import { deleteCartItem, updateCart } from '../../utils/cart';
-import { roundToTwo } from '../../utils/miscellaneous';
 import { Cross } from '../icons';
+import { roundToTwo, sanitizeTags } from '../../utils/miscellaneous';
+import Link from 'next/link';
 
 const CartItem = ( {item,products,setCart} ) => {	
 	const [productCount, setProductCount] = useState( item.quantity );
@@ -41,7 +42,7 @@ const CartItem = ( {item,products,setCart} ) => {
 			let newQty;
 			
 			// If the previous cart request is still updatingProduct or removingProduct, then return.
-			if ( updatingProduct || removingProduct || ( 'decrement' === type && 1 === productCount ) ) {
+			if ( updatingProduct || removingProduct || ( 'decrement' === type && (item.data?.purchase_note ? 2 : 1) === productCount ) ) {
 				return;
 			}
 			
@@ -63,24 +64,36 @@ const CartItem = ( {item,products,setCart} ) => {
 	};
 	
 	return (
-		<div className="flex  mb-6 w-full">
-			<figure className='w-20 h-20 flex '>
-				<Image
-					layout='fill'
-					altText={productImg?.alt || item?.data?.name}
-					sourceUrl={! isEmpty( productImg?.src ) ? productImg?.src : ''} // use normal <img> attributes as props
-					containerClassNames='border border-brand-grayCF product-image-preview'
-				/>
-			</figure>
-			<div className="flex items-end md:items-center ml-3 flex-col md:flex-row w-full relative">
-				<h3 className="mb-2 md:mb-0 text-20px leading-7 pr-12 md:pr-2 w-full">{ item?.data?.name }</h3>
-				<div className='flex items-center justify-end '>
-					<div className="quantity-counter mr-2 text-brand-gray88 border-brand-grayCF border">
+		<div className="flex mb-5 sm:mb-6 w-full">
+			<Link href={`/product/${item.data?.slug || ''}`}>
+				<a>
+					<figure className='w-20 h-20 flex '>
+						<Image
+							layout='fill'
+							altText={productImg?.alt || item?.data?.name}
+							sourceUrl={! isEmpty( productImg?.src ) ? productImg?.src : ''} 
+							containerClassNames='border border-brand-grayCF product-image-preview'
+						/>
+					</figure>
+				</a>
+			</Link>
+			<div className="flex md:items-center ml-3 flex-col md:flex-row w-full relative">
+				<div className='w-full'>
+					<h3 className="mb-1 md:mb-0 cart-item-name text-16px leading-7 md:pr-2 w-full truncate-p ">{ sanitizeTags(item?.data?.name) }</h3>
+					{item.data?.purchase_note && <p className='hidden md:block w-full text-14px my-1'>{item.data?.purchase_note}</p>}
+					<div className='flex justify-between items-center my-0.5 sm:my-1'>
+						{item.data?.regular_price && <span className='font-sf-pro-display-bold'>{roundToTwo(item.data?.regular_price)} ₽</span>}
+						<button className="w-8 hover:bg-brand-yellow mx-2 aspect-square md:hidden flex items-center justify-center text-22px leading-22px bg-transparent" onClick={ ( event ) => handleRemoveProductClick( event, item?.key ) }><Cross/></button>
+					</div>
+				</div>
+				<div className={`flex items-center justify-end flex-wrap flex-row-reverse md:flex-nowrap md:flex-row`}>
+					{item.data?.purchase_note && <p className='block md:hidden mr-4 w-full text-14px my-1 '>{item.data?.purchase_note}</p>}
+					<div className="quantity-counter-cart mr-2 text-brand-gray88 border-brand-grayCF border">
 						<span className={`${ updatingProduct ? 'cursor-not-allowed' : 'cursor-pointer' }  minus `} onClick={( event ) => handleQtyChange( event, item?.cartKey, 'decrement' )}>-</span>
 						<input type="text" 
 							/* type="number" */
 							/* onChange={ ( event ) => handleQtyChange( event, item?.cartKey, '' ) } */
-							min="1" 
+							min={item.data?.purchase_note ? 2 : 1}
 							value={ productCount } 
 							readOnly={true} 
 							data-cart-key={ item?.data?.cartKey } 
@@ -91,10 +104,7 @@ const CartItem = ( {item,products,setCart} ) => {
 					</div>
 					<button className="w-14 mx-2 aspect-square hidden md:flex items-center justify-center text-22px leading-22px bg-transparent  " onClick={ ( event ) => handleRemoveProductClick( event, item?.key ) }><Cross/></button>
 				</div>
-				<button className="absolute top-0 right-0 w-8 hover:bg-brand-yellow mx-2 aspect-square md:hidden flex items-center justify-center text-22px leading-22px bg-transparent  " onClick={ ( event ) => handleRemoveProductClick( event, item?.key ) }><Cross/></button>
-
 			</div>
-
 		</div>
 	)
 };

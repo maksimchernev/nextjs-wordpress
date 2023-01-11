@@ -8,17 +8,18 @@ import Image from '../../../../../src/components/image'
 import BreadCrumb from '../../../../../src/components/breadcrumb';
 import Hero from '../../../../../src/components/hero';
 import { isArray } from 'lodash';
+import Loader from '../../../../../src/components/loader';
 
 export default function Series(props) {
   const router = useRouter()
   if (router.isFallback) {
-    return <h1>Loading...</h1>
+    return <Loader/>
   }  
   return (
     <Layout isMain={false} headerFooter={props.headerFooter} initialHeader={'white'} isBagYellow={true} title={props?.seriesData?.name}>
-        <BreadCrumb isAbs={true} bgProduct={false}/>
+        <BreadCrumb isAbs={true}/>
         <Hero h1Content={props?.seriesData?.name} isMain={false} />
-        <div className="w-full flex flex-wrap justify-center container mx-auto py-14 md:py-24 category-card" id='series'>
+        <div className="w-full flex flex-wrap justify-center container mx-auto my-6 sm:my-12 md:py-16 category-card" id='series'>
           {props.typeCategoryData?.length && isArray(props.typeCategoryData) ? props.typeCategoryData.map((type)=> {
             const slug = type?.slug
             const img = type?.image

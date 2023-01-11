@@ -1,6 +1,3 @@
-import { getAttributeTermsByAttributeName } from "./attributes";
-import { GET_PRODUCTS_ENDPOINT } from "./constants/endpoints";
-
 const WooCommerceRestApi = require("@woocommerce/woocommerce-rest-api").default;
 
 const api = new WooCommerceRestApi({

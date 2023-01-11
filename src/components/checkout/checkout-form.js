@@ -6,12 +6,12 @@ import UserForm from './user-form';
 
 // Use this for testing purposes, so you dont have to fill the checkout form over an over again.
 /* const defaultCustomerInfo = {
-	city: 'Mumbai',
+	city: 'moscow',
 	address: '123 Abc farm',
-	firstName: 'Imran',
-	lastName: 'Sayed',
+	firstName: 'max',
+	lastName: 'chernev',
 	phone: '9883778278',
-	email: 'codeytek.academy@gmail.com',
+	email: 'wdwf@www.com',
 	errors: null,
 }; */
 
@@ -90,7 +90,7 @@ const CheckoutForm = ({cart, setCart, isOrderProcessing, setIsOrderProcessing, r
 					<div className="">
 						<div>
 							<div className="billing-details">
-								<h2 className="font-sf-pro-display-medium text-40px my-8">Оформление заказа</h2>
+								<h2 className="font-sf-pro-display-medium text-32px sm:text-40px sm:my-8">Оформление заказа</h2>
 								<UserForm input={ input } 
 									handleOnChange={( event ) => handleOnChange( event )} 
 									handleShippingChange={(event) => handleShippingChange(event)}

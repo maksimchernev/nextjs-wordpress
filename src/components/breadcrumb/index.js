@@ -1,12 +1,13 @@
 import Router, { useRouter } from 'next/router';
 import Link from "next/link"
 import { Back } from '../icons';
-import * as React from 'react';
+import {useMemo} from 'react';
+import { capitalized } from '../../utils/miscellaneous';
 
-export default function BreadCrumb({isAbs}) {
+export default function BreadCrumb({isAbs, typeContentName}) {
     
     const router = useRouter()
-    const breadcrumbs = React.useMemo(function generateBreadcrumbs() {
+    const breadcrumbs = useMemo(function generateBreadcrumbs() {
         const asPathWithoutQuery = router.asPath.split("?")[0];
         const asPathNestedRoutes = asPathWithoutQuery.split("/")
                                                      .filter(v => v.length > 0);
@@ -21,14 +22,22 @@ export default function BreadCrumb({isAbs}) {
         /* const crumblistWithoutLastItem = crumblistWithoutMiddlePaths.filter((path, index) => {
             return index != crumblistWithoutMiddlePaths.length-1
         }) */
-        const crumblistWithRussianText = crumblistWithoutMiddlePaths.map((path) => {
-            let text = path.text.replace(/series/gi, 'Серия').replace(/-/gi, ' ')
-            if (text.includes('lamps')) {
-                text = 'Светильники'
-            } else if (text.includes('tracks')) {
-                text = 'Шинопроводы'
-            } else if (text.includes('accessory')) {
-                text = 'Аксессуары'
+        const crumblistWithRussianText = crumblistWithoutMiddlePaths.map((path, index) => {
+            let text = path.text.replace(/series/gi, 'Серия').replace(/-/gi, ' ').replace(/seriya/gi, 'Серия')
+            if (!typeContentName) {
+                if (text.includes('lamps')) {
+                    text = 'Светильники'
+                } else if (text.includes('tracks')) {
+                    text = 'Шинопроводы'
+                } else if (text.includes('accessory')) {
+                    text = 'Аксессуары'
+                } else if (text.includes('osnovanie dlya svetilnikov')) {
+                    text = 'Основание для светильников'
+                } 
+            } else {
+                if (index == crumblistWithoutMiddlePaths.length-1) {
+                    text = typeContentName
+                }
             }
             return {
                 ...path,
@@ -36,22 +45,22 @@ export default function BreadCrumb({isAbs}) {
             }
         })
         return [{ href: "/", text: "Главная" }, ...crumblistWithRussianText];
-      }, [router.asPath]);    
+      }, [router.asPath, typeContentName]);    
 
     return (
-        <div className={`mt-28 w-full flex flex-wrap overflow-hidden container mx-auto pb-12 px-2 ${isAbs && 'back-cont-abs'} ` }>
+        <div className={`mt-28 w-full flex flex-wrap overflow-hidden container mx-auto pb-6 sm:pb-12 px-2 ${isAbs && 'back-cont-abs'} ` }>
             {breadcrumbs.length > 2? breadcrumbs.map((crumb) => {
                 return (
                     <Link href={crumb.href} key={crumb.href}>
                         <a className='back-btn flex pr-2 mb-2'>
                             <Back className={`${isAbs ? 'back-white': 'back-dark'} `}/>
-                            <span className={`back-text capitalize ${isAbs ? 'back-white': 'back-dark'}`}>{crumb.text}</span>
+                            <span className={`back-text ${isAbs ? 'back-white': 'back-dark'}`}>{capitalized(crumb.text)}</span>
                         </a>
                     </Link>
                 )
             }): <button onClick={() => Router.back()} className='back-btn flex'>
                     <Back className={`${isAbs ? 'back-white': 'back-dark'} `}/>
-                    <span className={`back-text capitalize ${isAbs ? 'back-white': 'back-dark'}`}>Назад</span>
+                    <span className={`back-text ${isAbs ? 'back-white': 'back-dark'}`}>Назад</span>
                 </button>
             }
             

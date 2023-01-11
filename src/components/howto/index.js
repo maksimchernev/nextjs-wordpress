@@ -1,6 +1,6 @@
 const Howto = () => {
     return (
-        <div id="howto" className="pt-10 sm:pt-14">
+        <div id="howto" className="pt-7 sm:pt-14">
             <div className="flex justify-content flex-wrap py-3 container mx-auto px-2" >
                 <div className="w-full pr-12">
                     <h2>
@@ -13,9 +13,7 @@ const Howto = () => {
                             <div className="base-timeline__summary-text_container">
                                 <span className="base-timeline__summary-text">Выбираете бренд</span>
                             </div>
-                        
                         </li>
-                        
                         <li className="base-timeline__item base-timeline__item--data" num="2">
                             <div className="base-timeline__summary-text_container">
                                 <span className="base-timeline__summary-text">Выбираете конфигурацию</span>

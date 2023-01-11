@@ -2,20 +2,15 @@ import PropTypes from 'prop-types';
 import CheckboxField from './form-elements/checkbox-field';
 import InputField from "./form-elements/input-field";
 import SectionLabel from './form-elements/section-label';
-/* import CountrySelection from "./country-selection";
-import StateSelection from "./states-selection"; */
-
 
 const UserForm = ({input, handleOnChange, handleShippingChange , handlePaymentChange}) => {
-	
-	const {errors} = input || {};
-	
+ 	
 	return (
 		<>	
 			<SectionLabel
 				number={1}
 				label="Ваш город"
-				containerClassNames={'mb-6 lg:mr-10 '}
+				containerClassNames={'mb-4 sm:mb-6 lg:mr-10 '}
 			/>
 			<InputField
 				name="city"
@@ -29,7 +24,7 @@ const UserForm = ({input, handleOnChange, handleShippingChange , handlePaymentCh
 			<SectionLabel
 				number={2}
 				label="Способ получения заказа"
-				containerClassNames={'mb-6 mt-10'}
+				containerClassNames={'mb-4 sm:mb-6 mt-6 sm:mt-10'}
 			/>
 			<CheckboxField
 				name="isShipping"
@@ -68,7 +63,7 @@ const UserForm = ({input, handleOnChange, handleShippingChange , handlePaymentCh
 			<SectionLabel
 				number={3}
 				label="Контактные данные"
-				containerClassNames={'mb-6 mt-10'}
+				containerClassNames={'mb-4 sm:mb-6 mt-6 sm:mt-10'}
 			/>
 			<div className='grid grid-cols-2 gap-4 lg:mr-10'>
 				<InputField
@@ -112,7 +107,7 @@ const UserForm = ({input, handleOnChange, handleShippingChange , handlePaymentCh
 			<SectionLabel
 				number={4}
 				label="Способ оплаты"
-				containerClassNames={'mb-6 mt-10'}
+				containerClassNames={'mb-4 sm:mb-6 mt-6 sm:mt-10'}
 			/>
 			<CheckboxField
 				name="isBankPayment"
@@ -132,7 +127,7 @@ const UserForm = ({input, handleOnChange, handleShippingChange , handlePaymentCh
 			<SectionLabel
 				number={5}
 				label="Комментарий"
-				containerClassNames={'mb-6 mt-10'}
+				containerClassNames={'mb-4 sm:mb-6 mt-6 sm:mt-10'}
 			/>
 			<InputField
 				multiline={true}

@@ -1,5 +1,4 @@
-import { isEmpty, isArray } from "lodash";
-import { func } from "prop-types";
+import { isArray } from "lodash";
 import { getObjectOfArray } from "./miscellaneous";
 const WooCommerceRestApi = require("@woocommerce/woocommerce-rest-api").default;
 
@@ -45,7 +44,7 @@ export async function getSubCategoriesById(id, nameToBeExcluded) {
     const brands = []
     if (categories.length && isArray(categories)) {
       for (let i=0; i<categories.length; i++ ) {
-        if (categories[i].slug !== 'uncategorized' && categories[i].slug !== 'lamps' && categories[i].slug !== 'accessory' && categories[i].slug !== 'tracks') {
+        if (categories[i].slug !== 'uncategorized' && categories[i].slug !== 'lamps' && categories[i].slug !== 'accessory' && categories[i].slug !== 'tracks' && categories[i].slug !== 'osnovanie-dlya-svetilnikov') {
           brands.push(categories[i])
         }
       }
@@ -75,87 +74,37 @@ export async function getCategoryDataById(id) {
 export async function getDataForInitialFilters() {
   const {brandsCats, seriesCats, typeCats} = await getBrandsSeriesType()
   let relatedAttributes = [{id: 'brands', name: 'Бренд', terms: []}, {id: 'series', name: 'Серия', terms: []}, {id: 'type', name: 'Категория товара', oneAtATime: true, terms: []}]
+  const categories = await getAllCategories(100)
+  const allTypeCats = categories.filter(category => category.parent == 0 && category.slug != 'uncategorized' && (category.slug == 'lamps' || category.slug == 'accessory' || category.slug == 'tracks' || category.slug == 'osnovanie-dlya-svetilnikov')) 
+
   for (let brand of brandsCats) {
     relatedAttributes[0].terms.push({id: brand.id, name: brand.name, isVisible:true})
     for (let series of seriesCats) {
       if (series.parent == brand.id) {
         let childrenObject = {}
+        let typesArray = []
         for (let type of typeCats) {
           if (type.parent == series.id) {
             childrenObject[type.name] = type.id
+            for (let typeAllProducts of allTypeCats) {
+              if (type.name === typeAllProducts.name) {
+                if (!typesArray.includes(typeAllProducts.id)) {
+                  typesArray.push(typeAllProducts.id)
+                }
+              }
+            }
           }
         }
-        relatedAttributes[1].terms.push({id: series.id, name: series.name, brand: brand.id, brandName: brand.name, isVisible:true, ...childrenObject})
+        relatedAttributes[1].terms.push({id: series.id, name: series.name, brand: brand.id, brandName: brand.name, isVisible:true, ...childrenObject, types: typesArray})
       }
     }
   }
-
-  const categories = await getAllCategories(100)
-  const allTypeCats = categories.filter(category => category.parent == 0 && category.slug != 'uncategorized' && (category.slug == 'lamps' || category.slug == 'accessory' || category.slug == 'tracks')) 
 
   for (let type of allTypeCats) {
       relatedAttributes[2].terms.push({id: type.id, name: type.name, isVisible:true})
   }
   const filtersObj = getObjectOfArray(relatedAttributes, [])
   return({relatedAttributes, filtersObj})
-}
-
-/////////////
-/// Paths ///
-/////////////
-export async function getAllBrandsPaths() {
-  const brands = await getSubCategoriesById(100, 0)
-  return brands.map(brand => {
-      return {
-        params: {
-          brandId: brand?.slug
-        }
-      }
-  }) 
-}
-
-function findAllChildsOfCategories (categories, childCategories, nameToBeExcluded) {
-  return childCategories.filter(seriesOrType => {
-    let found = false
-    categories.length && isArray(categories) ? categories.map(brand => { 
-      let condition = nameToBeExcluded ? brand.id == seriesOrType.parent && seriesOrType.name != nameToBeExcluded : brand.id == seriesOrType.parent
-      if (condition) {
-        found = true
-      }
-    }) : null
-    return found
-  })
-}
-
-
-
-export async function getBrandsAndSeries() {
-  const categories = await getAllCategories(100)
-  const brandsCats = categories.filter(category => category.parent == 0 && category.slug != 'uncategorized' && category.slug != 'lamps' && category.slug != 'accessory' && category.slug != 'tracks') 
-  const seriesAndTypesCats = categories.filter(category => category.parent !== 0) 
-  const seriesCats = findAllChildsOfCategories(brandsCats, seriesAndTypesCats)
-  return {brandsCats, seriesCats}
-}
-
-export async function getBrandsAndSeriesPaths() {
-  const {brandsCats, seriesCats} = await getBrandsAndSeries()
-  return seriesCats?.map(series => {
-    let brand = brandsCats.find(brand => brand?.id == series.parent)
-    return {
-      params: {
-        brandId: brand?.slug,
-        seriesId: series?.slug,
-      }
-    }
-  })
-}
-export async function getBrandsSeriesType() {
-  const categories = await getAllCategories(100)
-  const brandsCats = categories.filter(category => category.parent == 0 && category.slug != 'uncategorized' && category.slug != 'lamps' && category.slug != 'accessory' && category.slug != 'tracks') 
-  const seriesAndTypesCats = categories.filter(category => category.parent !== 0) 
-  const seriesCats = findAllChildsOfCategories(brandsCats, seriesAndTypesCats)
-  const typeCats = findAllChildsOfCategories(seriesCats, seriesAndTypesCats)
-  return {brandsCats, seriesCats, typeCats}
 }
 
 export async function getLinkToSubCatalog(id) {
@@ -190,6 +139,66 @@ export async function getLinkToSubCatalog(id) {
 
 
 }
+
+/////////////
+/// Paths ///
+/////////////
+export async function getAllBrandsPaths() {
+  const brands = await getSubCategoriesById(100, 0)
+  return brands.map(brand => {
+      return {
+        params: {
+          brandId: brand?.slug
+        }
+      }
+  }) 
+}
+
+function findAllChildsOfCategories (categories, childCategories, nameToBeExcluded) {
+  return childCategories.filter(seriesOrType => {
+    let found = false
+    categories.length && isArray(categories) ? categories.map(brand => { 
+      let condition = nameToBeExcluded ? brand.id == seriesOrType.parent && seriesOrType.name != nameToBeExcluded : brand.id == seriesOrType.parent
+      if (condition) {
+        found = true
+      }
+    }) : null
+    return found
+  })
+}
+
+
+
+export async function getBrandsAndSeries() {
+  const categories = await getAllCategories(100)
+  const brandsCats = categories.filter(category => category.parent == 0 && category.slug != 'uncategorized' && category.slug != 'lamps' && category.slug != 'accessory' && category.slug != 'tracks' && category.slug != 'osnovanie-dlya-svetilnikov') 
+  const seriesAndTypesCats = categories.filter(category => category.parent !== 0) 
+  const seriesCats = findAllChildsOfCategories(brandsCats, seriesAndTypesCats)
+  return {brandsCats, seriesCats}
+}
+
+export async function getBrandsAndSeriesPaths() {
+  const {brandsCats, seriesCats} = await getBrandsAndSeries()
+  return seriesCats?.map(series => {
+    let brand = brandsCats.find(brand => brand?.id == series.parent)
+    return {
+      params: {
+        brandId: brand?.slug,
+        seriesId: series?.slug,
+      }
+    }
+  })
+}
+export async function getBrandsSeriesType() {
+  const categories = await getAllCategories(100)
+  const brandsCats = categories.filter(category => category.parent == 0 && category.slug != 'uncategorized' && category.slug != 'lamps' && category.slug != 'accessory' && category.slug != 'tracks' && category.slug != 'osnovanie-dlya-svetilnikov') 
+  const seriesAndTypesCats = categories.filter(category => category.parent !== 0) 
+  const seriesCats = findAllChildsOfCategories(brandsCats, seriesAndTypesCats)
+  const typeCats = findAllChildsOfCategories(seriesCats, seriesAndTypesCats)
+  return {brandsCats, seriesCats, typeCats}
+}
+
+
 export async function getBrandsSeriesTypePaths() {
   const {brandsCats, seriesCats, typeCats} = await getBrandsSeriesType()
   return typeCats?.map(type => {

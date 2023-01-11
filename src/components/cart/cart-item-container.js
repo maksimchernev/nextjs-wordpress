@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useMemo, useState } from 'react';
 import { AppContext } from '../context';
 import CartItem from './cart-item';
 import { roundToTwo } from '../../utils/miscellaneous';
@@ -18,14 +18,15 @@ const CartItemsContainer = () => {
 	const [ orderSuccessful, setOrderSuccessful] = useState (null)
 	const [shippingType, setShippingType] = useState('Самовывоз')
 	const [paymentType, setPaymentType] = useState('Наличными')
-	let totalQtyText
-	if(totalQty >4) {
-		totalQtyText = 'товаров на сумму'
-	} else if (totalQty >1) {
-		totalQtyText = 'товара на сумму'
-	} else {
-		totalQtyText = 'товар на сумму'
-	}
+	let totalQtyText = useMemo(function generateQuantityText() {
+		if(totalQty % 10 > 4 || (totalQty / 10) % 10 < 2 || totalQty % 10 === 0 ) {
+			return 'товаров на сумму'
+		} else if (totalQty % 10 > 1) {
+			return 'товара на сумму'
+		} else {
+			return 'товар на сумму'
+		}
+	}, [totalQty])
 	// Clear the entire cart.
 	const handleClearCart = async ( event ) => {
 		event.stopPropagation();
@@ -45,9 +46,9 @@ const CartItemsContainer = () => {
 				{ cart ? (
 					<div className="grid lg:grid-cols-3 gap-4 sm:border-t sm:border-brand-grayCF relative px-2">
 						{/*Cart Items*/ }
-						<div className="lg:col-span-2 pb-5 border-r-0 lg:border-r  sm:border-brand-grayCF">
+						<div className="lg:col-span-2 sm:pb-5 border-r-0 lg:border-r  sm:border-brand-grayCF">
 							<div className='flex justify-between items-center flex-wrap'>
-								<h1 className="uppercase tracking-0.5px sm:text-4xl mt-0 mb-10 md:my-10 text-3xl">Корзина</h1>
+								<h1 className="uppercase  tracking-0.5px sm:text-4xl mt-0 mb-10 sm:my-10 text-3xl">Корзина</h1>
 								{/*Clear entire cart*/}
 								<div className='mr-1 mt-0 mb-10 md:my-10'>
 									<button
@@ -60,7 +61,7 @@ const CartItemsContainer = () => {
 									</button>
 								</div>
 							</div>
-							<div className='mb-14 sm:border-b sm:border-brand-grayCF'>
+							<div className='mb-5 sm:mb-14 sm:border-b sm:border-brand-grayCF'>
 								{ cartItems.length &&
 								cartItems.map( ( item ) => (
 									<CartItem
@@ -83,9 +84,9 @@ const CartItemsContainer = () => {
 						
 						
 						{/*Cart Total*/ }
-						<div className="lg:col-span-1 p-5 pt-0 mb-10 md:mb-0 totals-container top-20 overflow-auto self-start ">
-							<h2 className='mt-0 md:my-10'>Итого</h2>
-							<div className="grid grid-cols-2  mb-4">
+						<div className="lg:col-span-1 px-5 pt-0 mb-9 totals-container top-10 overflow-auto self-start ">
+							<h2 className='mt-0 md:my-10 lg:hidden'>Итого</h2>
+							<div className="grid grid-cols-2 lg:mt-10 mb-4">
 								<p className="col-span-1 p-1 mb-0">{totalQty} {totalQtyText}</p>
 								<p className="col-span-1 p-1 mb-0 flex justify-end text-end">{roundToTwo(totalPrice)  } {cartItems?.[0]?.currency ?? ''}</p>
 								<p className="col-span-1 p-1 mb-0">Способ доставки</p>
@@ -120,10 +121,10 @@ const CartItemsContainer = () => {
 					</div>
 					
 				) : ( 
-					<div className="mt-14 px-2">
-						<h1 className="uppercase tracking-0.5px text-4xl my-10">Корзина</h1>
-						<h2>В корзине пусто</h2>
-						{orderSuccessful && <p>Ваш заказ оформлен! В ближайшее время с вами свяжется оператор!</p>}
+					<div className="sm:pt-7 px-2">
+						<h1 className="uppercase tracking-0.5px text-4xl sm:my-5">Корзина</h1>
+						{!orderSuccessful && <p>В корзине пусто</p>}
+						{orderSuccessful && <p className='text-20px leading-7'>Ваш заказ оформлен! В ближайшее время с вами свяжется оператор!</p>}
 						<Link href="/shop">
 							<button className="button-form-black my-5">
 								Перейти в каталог

@@ -1,6 +1,6 @@
 import { isEmpty } from 'lodash';
 import { addToCart } from '../../utils/cart';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useState } from 'react';
 import { AppContext } from '../context';
 import Link from 'next/link';
 import cx from 'classnames';
@@ -70,7 +70,7 @@ const AddToCart = ( { product, isItemCard } ) => {
             <div className='flex'>
             <button
                 className={` ${addToCartBtnIconClasses}  add-to-cart-button-icon ${!loading && !isAddedToCart ? `bg-brand-light-gray88 hover:bg-brand-gray78` : `bg-white` }  duration-100 flex justify-center items-center`} 
-                onClick={ () => addToCart( product?.id ?? 0, quantity ?? 1, setCart, setIsAddedToCart, setLoading ) }
+                onClick={ () => addToCart( product?.id ?? 0, quantity ?? (product?.purchase_note ? 2 : 1), setCart, setIsAddedToCart, setLoading ) }
                 disabled={ loading }
                 >
                 { loading ? <Image width="20" height="20" src="/cart-spinner.gif"  alt="spinner"/> : !isAddedToCart ? <Bag className='text-brand-yellow  fill-current'></Bag> : <Success className='text-brand-yellow  fill-current'></Success>} 

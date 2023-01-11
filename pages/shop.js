@@ -9,13 +9,14 @@ import Filters from '../src/components/filters';
 import ProductList from '../src/components/products';
 import Pagination from '../src/components/products/pagination';
 import { useRouter } from 'next/router';
-import { getObjectOfArray, getWindowDimensions, splitIntoPages } from '../src/utils/miscellaneous';
+import { capitalized, checkEmptyFilters, getObjectOfArray, getWindowDimensions, splitIntoPages } from '../src/utils/miscellaneous';
 import ChosenFilters from '../src/components/filters/chosen-filters';
-import _, { filter, isArray, isEmpty } from 'lodash';
+import _, { isArray, isEmpty } from 'lodash';
 import useDidMountEffect from '../src/hooks/useDidMountEffect';
 import Image from 'next/image';
-import { BurgerIcon, BurgetIconCross, FiltersIcon } from '../src/components/icons';
+import { FiltersIcon } from '../src/components/icons';
 import ClearFilters from '../src/components/filters/clear-filters';
+import Loader from '../src/components/loader';
 
 
 const getRelatedAttributesDataFromAPi = async (products) => {
@@ -25,7 +26,7 @@ const getRelatedAttributesDataFromAPi = async (products) => {
         return ({relatedAttributes: [], filtersObj: {}})
     }
     //фильтрация основных аттрибутов
-    exampleProductAttributes = exampleProductAttributes.filter(attr => !(isAccessory ? attr.name == 'Модельный ряд' || attr.id == 7 : attr.name == 'Тип товара' || attr.name == 'Модельный ряд' || attr.id == 2 || attr.id == 7) )
+    exampleProductAttributes = exampleProductAttributes.filter(attr => !(isAccessory ? capitalized(attr.name) == 'Модельный ряд' || attr.id == 7 : capitalized(attr.name) == 'Тип товара' || capitalized(attr.name) == 'Модельный ряд' || attr.id == 2 || attr.id == 7) )
     //получение данных по всем возможным аттрибутам для получения id
     let {data: attributes} = await axios.get( `${GET_ATTRIBUTES_ENDPOINT}`)
     attributes = attributes.attributes
@@ -38,7 +39,7 @@ const getRelatedAttributesDataFromAPi = async (products) => {
             let found = false
             for (let product of products) {
                 for (let attribute of product.attributes) {
-                    if (attribute.options.includes(term.name)) {                        
+                    if (attribute.options.includes(capitalized(term.name))) {                        
                         found = true
                         break
                     }
@@ -143,7 +144,6 @@ export default function Shop(props) {
         window.addEventListener('resize', handleResize);
         return () => window.removeEventListener('resize', handleResize);
     }, [])  
-
     useEffect(() => {
         (async () => {
             let numOfChosen =0
@@ -152,47 +152,109 @@ export default function Shop(props) {
                     numOfChosen+=1
                 }
             }
-            if (numOfChosen >0) {
-                let newAttributesArray = [...initialFiltersData]
-                if (newAttributesArray && isArray(newAttributesArray) && newAttributesArray.length) {
-                    for (let attribute of newAttributesArray) {
-                        if(attribute.id != initialChosenLast[initialChosenLast.length-1] && attribute.id != 'type') {
-                            if (attribute.hasOwnProperty('terms')){
-                                for (let term of attribute.terms) {
-                                    term.isVisible = false
-                                } 
-                            }
-                        }
-                    }
-                }
-                if (initialChosenLast[initialChosenLast.length-1] == 'series') {
-                    let brandsAvailable = []
-                    if (newAttributesArray[1].hasOwnProperty('terms')){
-                        for (let term of newAttributesArray[1].terms) {
-                            if (!brandsAvailable.includes(term.brand)) {
-                                brandsAvailable.push(term.brand)
-                            }
-                        }
-                    }
-                    if (brandsAvailable.length) {
-                        for (let brand of brandsAvailable) {
-                            for (let term of newAttributesArray[0].terms) { 
-                                if (term.id == brand) {
-                                    term.isVisible = true
+            if (numOfChosen > 0) {
+                /* if (!initialChosenLast[initialChosenLast.length-1] === 'type') { */
+
+                    let newAttributesArray = [...initialFiltersData]
+                    if (newAttributesArray && isArray(newAttributesArray) && newAttributesArray.length) {
+                        for (let attribute of newAttributesArray) {
+                            if(attribute.id != initialChosenLast[initialChosenLast.length-1] ) {
+                                if (attribute.hasOwnProperty('terms')){
+                                    for (let term of attribute.terms) {
+                                        term.isVisible = false
+                                    } 
                                 }
                             }
                         }
                     }
-                } else if (initialChosenLast[initialChosenLast.length-1] == 'brands') {
-                    if (newAttributesArray[1].hasOwnProperty('terms')){
-                        for (let term of newAttributesArray[1].terms) {
-                            if (initialFilters['brands'].includes(term.brand)) {
-                                term.isVisible = true
+                    if (initialChosenLast[initialChosenLast.length-1] == 'series') {
+                        let brandsAvailable = []
+                        let typesAvailable = []
+                        //1 -series
+                        for (let seriesId of initialFilters['series']) {
+                            if (newAttributesArray[1].hasOwnProperty('terms')){
+                                for (let termSeries of newAttributesArray[1].terms) {
+                                    if (seriesId === termSeries.id) {
+                                        if (!brandsAvailable.includes(termSeries.brand)) {
+                                            brandsAvailable.push(termSeries.brand)
+                                        }
+                                        for (let type of termSeries.types) {
+                                            if (!typesAvailable.includes(type)) {
+                                                typesAvailable.push(type)
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        if (brandsAvailable.length) {
+                            for (let brand of brandsAvailable) {
+                                for (let termBrand of newAttributesArray[0].terms) { 
+                                    if (termBrand.id == brand) {
+                                        termBrand.isVisible = true
+                                    }
+                                }
+                            }
+                        }
+                        if (typesAvailable.length) {
+                            for (let type of typesAvailable) {
+                                for (let termType of newAttributesArray[2].terms) { 
+                                    if (termType.id == type) {
+                                        termType.isVisible = true
+                                    }
+                                }
+                            }
+                        }
+                    } else if (initialChosenLast[initialChosenLast.length-1] == 'brands') {
+                        let typesAvailable = []
+                        if (newAttributesArray[1].hasOwnProperty('terms')){
+                            for (let termSeries of newAttributesArray[1].terms) {
+                                if (initialFilters['brands'].includes(termSeries.brand)) {
+                                    termSeries.isVisible = true
+                                    for (let relTypeId of termSeries.types) {
+                                        if (!typesAvailable.includes(relTypeId)){
+                                            typesAvailable.push(relTypeId)
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        if (typesAvailable.length) {
+                            for (let type of typesAvailable) {
+                                for (let termType of newAttributesArray[2].terms) { 
+                                    if (termType.id == type) {
+                                        termType.isVisible = true
+                                    }
+                                }
+                            }
+                        }
+                        
+                    } else if (initialChosenLast[initialChosenLast.length-1] == 'type') {
+                        let brandsAvailable = []
+                        if (newAttributesArray[1].hasOwnProperty('terms')){
+                            for (let termSeries of newAttributesArray[1].terms) {
+                                for (let relTypeId of termSeries.types) {
+                                    if (initialFilters['type'].includes(relTypeId)) {
+                                        termSeries.isVisible = true
+                                        if (!brandsAvailable.includes(termSeries.brand)) {
+                                            brandsAvailable.push(termSeries.brand)
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        if (brandsAvailable.length) {
+                            for (let brand of brandsAvailable) {
+                                for (let termBrand of newAttributesArray[0].terms) { 
+                                    if (termBrand.id == brand) {
+                                        termBrand.isVisible = true
+                                    }
+                                }
                             }
                         }
                     }
-                }
-                setInitialFiltersData([...newAttributesArray])
+                    setInitialFiltersData([...newAttributesArray])
+                /* } */
             } else {
                 let newAttributesArray = [...initialFiltersData]
                 if (newAttributesArray && isArray(newAttributesArray) && newAttributesArray.length) {
@@ -208,10 +270,10 @@ export default function Shop(props) {
             }
             if (numOfChosen==3 || (initialFilters.series.length && initialFilters.type.length)){
                 setIsLoading(true)
-                
                 //if all changed
                 let namesOfTypes = []
                 for (let chosenTypeId of initialFilters.type) {
+                    
                     for (let term of initialFiltersData[2].terms) {
                         if (term.id == chosenTypeId) {
                             namesOfTypes.push(term.name)
@@ -243,7 +305,6 @@ export default function Shop(props) {
 
                     let { data } = await axios.get(`${GET_PRODUCTS_ENDPOINT}?category=${categoryIds.join(',')}&per_page=100&page=1`)
                     let products = await awaitAll(Number(data.headers['x-wp-totalpages']))
-                    
                     products?.length ? products = products.map(data => {
                       return data.data.products
                     }) : products = []
@@ -260,10 +321,13 @@ export default function Shop(props) {
                     setAllProducts(products)
                     products = splitIntoPages(products, productsPerPage)
                     setInitialPagesNumber(products.length)
-                    setCurrentProducts(products[0])
+                    setCurrentProducts(products?.[0] || [])
                     setAllPagesNumber(products.length)
                     setShowAllFilters(true)
                 } else {
+                    setCurrentProducts([])
+                    setAllPagesNumber(0)
+                    setInitialPagesNumber(0)
                     setShowAllFilters(false)
                 }
                 setIsLoading(false)
@@ -306,19 +370,18 @@ export default function Shop(props) {
                     }
                 }
                 setIsLoading(false)
-            } 
-            
-            else {
+            } else {
                 //if none
                 setIsLoading(true)
-                const {headers, data: productsData} = await axios.get(`${GET_ALL_PRODUCTS_ENDPOINT}?per_page=${productsPerPage}&page=${initialPage}`)
+                const {data: productsData} = await axios.get(`${GET_ALL_PRODUCTS_ENDPOINT}?per_page=${productsPerPage}&page=${initialPage}`)
                 setInitialPagesNumber(productsData.headers['x-wp-totalpages'])
-                setCurrentProducts(productsData?.products)
+                setCurrentProducts(productsData?.products || [])
                 setIsLoading(false)
             }
 
         })()
     }, [initialFilters, initialPage, productsPerPage])
+
     useDidMountEffect(()=> {
         let newProducts = [...allProducts]
         setIsLoading(true)
@@ -383,19 +446,7 @@ export default function Shop(props) {
             setCurrentProducts([])
             
         } else {
-            const isFiltersEmpty = Object.values(filters).every(value => {
-                if (typeof value != 'object') {
-                    if (!value.length) {
-                        return true;
-                    }
-                    return false;
-                } else {
-                    if (value.till != 99999999 && value.from != 0) {
-                        return true;
-                    }
-                    return false;
-                }
-                });
+            const isFiltersEmpty = checkEmptyFilters(filters) 
             if (!isFiltersEmpty) {
                 //modify available attributes
                 let newAttributesArray = [...attributes]
@@ -430,7 +481,7 @@ export default function Shop(props) {
                 setAttributes([...newAttributesArray])
             } else {
                 //if filters became empty
-                let newAttributesArray = props.relatedAttributes.relatedAttributes
+                let newAttributesArray = [...attributes]
                 if (newAttributesArray && isArray(newAttributesArray) && newAttributesArray.length) {
                     for (let attribute of newAttributesArray) {
                         if (attribute.hasOwnProperty('terms')){
@@ -453,35 +504,39 @@ export default function Shop(props) {
 
     const router = useRouter()
     if (router.isFallback) {
-        return <h1>Loading...</h1>
+        return <Loader/>
     }  
     const handleRemoveInitialFilters = () => {
-        setShowAllFilters(false)
-        const newInitialFilters = 
-            Object
-                .keys(initialFilters)
-                .reduce((result, k) => { 
-                return { ...result, [k]: [] };
-            }, {})
-        if(isMobile) {
-            const newIsOpened = 
+        const isInitialFiltersEmpty = checkEmptyFilters(initialFilters)
+        const isFiltersEmpty = checkEmptyFilters(filters)
+        if (!isInitialFiltersEmpty || !isFiltersEmpty) {
+            setShowAllFilters(false)
+            const newInitialFilters = 
                 Object
-                    .keys(isOpened)
+                    .keys(initialFilters)
                     .reduce((result, k) => { 
-                    return { ...result, [k]: false };
+                    return { ...result, [k]: [] };
                 }, {})
-            setIsOpened(newIsOpened)
-            const newIsInitialOpened = 
-                Object
-                    .keys(isInitialOpened)
-                    .reduce((result, k) => { 
-                    return { ...result, [k]: false };
-                }, {})
-            setIsInitialOpened(newIsInitialOpened)
+            if(isMobile) {
+                const newIsOpened = 
+                    Object
+                        .keys(isOpened)
+                        .reduce((result, k) => { 
+                        return { ...result, [k]: false };
+                    }, {})
+                setIsOpened(newIsOpened)
+                const newIsInitialOpened = 
+                    Object
+                        .keys(isInitialOpened)
+                        .reduce((result, k) => { 
+                        return { ...result, [k]: false };
+                    }, {})
+                setIsInitialOpened(newIsInitialOpened)
+            }
+            setInitialFilters(newInitialFilters)
+            setCurrentProducts(props?.products)
+            setInitialPagesNumber(props?.pages)
         }
-        setInitialFilters(newInitialFilters)
-        setCurrentProducts(props?.products)
-        setInitialPagesNumber(props?.pages)
     }
     
 
@@ -493,7 +548,7 @@ export default function Shop(props) {
 
                     <button
                         onClick={ () => setIsShowfilters( ! isShowFilters ) }
-                        className="flex lg:hidden  items-center w-6 h-6 rounded bg-brand-gray78 justify-center mx-4 hover:bg-brand-gray99 mb-4">
+                        className="flex lg:hidden  items-center w-8 h-8 rounded bg-brand-gray78 justify-center mx-4 hover:bg-brand-gray99 mb-4">
                         {<FiltersIcon className="fill-current h-4 w-3 text-brand-yellow"/>}
                     </button>
                     <div className={`${isShowFilters ? `px-4` : `px-2 lg:flex`} w-full lg:w-1/4 xl:w-1/5  flex-col flex-wrap lg:pl-2 lg:pr-3`} style={{
@@ -503,7 +558,7 @@ export default function Shop(props) {
                         height: isMobile && (!isShowFilters && '0')
                     }}>
                         <div className="lg:overflow-auto filters-container lg:pr-3 lg:pl-2 lg:top-20 w-full lg:self-start filter-card-mobile">
-                            {!isMobile && <ClearFilters handleRemoveFilters={handleRemoveInitialFilters}/>}
+                            {!isMobile && <ClearFilters handleRemoveFilters={handleRemoveInitialFilters} isLoading={isLoading}/>}
                             {!showAllFilters ? 
                                
                                 <Filters
@@ -538,7 +593,7 @@ export default function Shop(props) {
                                     isLoading={isLoading}
                                 ></Filters>
                             </div>
-                            {isMobile && <ClearFilters handleRemoveFilters={handleRemoveInitialFilters}/>}
+                            {isMobile && <ClearFilters handleRemoveFilters={handleRemoveInitialFilters} isLoading={isLoading}/>}
 
                         </div>
                     </div>
