@@ -2,7 +2,7 @@ import Head from 'next/head'
 import Link from 'next/link'
 import Image from '../../image';
 import { useContext, useEffect, useState } from "react";
-import { sanitize } from "../../../utils/miscellaneous";
+import { capitalized, sanitize } from "../../../utils/miscellaneous";
 import {BurgerIcon, BurgetIconCross} from '../../icons' 
 import {Bag} from '../../icons' 
 import { AppContext } from '../../context';
@@ -72,7 +72,7 @@ const Header = ({header, footer, initialHeader, isBagYellow, metaData = [], titl
 				<meta name="description" content={ descriptionObj ? descriptionObj.value : siteDescription || ''}></meta>
 				<meta name="keywords" content={ keywordsObj ? keywordsObj.value : ''}></meta>
 				<meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
-				<title>{title ? title : siteTitle}</title>
+				<title>{title ? capitalized(title) : capitalized(siteTitle)}</title>
 				<link rel="icon" href={favicon || "/favicon.png"} />
 				
 			</Head>

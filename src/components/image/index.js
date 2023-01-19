@@ -33,6 +33,7 @@ const Image = ( props ) => {
 			src: sourceUrl || ( showDefault ? DEFAULT_IMG_URL : '' ),
 			layout: 'fill',
 			className: cx( 'object-cover', className ),
+			priority: true,
 			...rest
 		};
 		
@@ -48,6 +49,7 @@ const Image = ( props ) => {
 			width: width || 'auto',
 			height: height || 'auto',
 			className,
+			priority: true,
 			...rest
 		};
 		return <Img {...attributes} />;

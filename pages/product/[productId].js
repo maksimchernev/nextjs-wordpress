@@ -3,7 +3,7 @@ import BreadCrumb from "../../src/components/breadcrumb";
 import Image from "../../src/components/image";
 import Layout from "../../src/components/layout";
 import { HEADER_FOOTER_ENDPOINT } from "../../src/utils/constants/endpoints";
-import { getArrayOfObject, getWindowDimensions, sanitizeTags } from "../../src/utils/miscellaneous";
+import { getArrayOfObject, getCategoryLinkNameForButton, getWindowDimensions, sanitizeTags } from "../../src/utils/miscellaneous";
 import { getAllProductsPaths, getProductData, getProductsDataByCategoryId } from "../../src/utils/products";
 import { useRouter } from "next/router";
 import AddToCart from "../../src/components/cart/add-to-cart";
@@ -104,64 +104,66 @@ const ProductPage = (props) => {
                     <p className="mb-5"><span className="font-sf-pro-display-light text-20px">Артикул: </span><span className="font-sf-pro-display-medium ">{sanitizeTags(props.product?.sku)} </span></p>
                     <p className="flex flex-col"><span>Цена:</span><span className="text-5xl font-sf-pro-display-bold"> {roundToTwo(props.product?.price)}₽</span></p>
                     <p className="font-sf-pro-display-light">{sanitizeTags(props.product?.purchase_note)}</p>
-                    <p className="my-5 font-sf-pro-display-light text-20px leading-7" ><span > {sanitizeTags(props.product?.description)}</span></p>
-                    <div className="mb-5">
-                        {props.product?.attributes?.length ? props.product?.attributes?.map(attr => {
-                            return (
-                                    <p key={attr.id} className='font-sf-pro-display-light text-20px leading-7'><span>{sanitizeTags(attr.name+':')}</span> 
-                                        {attr.options.length ? attr.options.map((option, index) => {
-                                            return (
-                                                <span key={index} className='ml-1'>{sanitizeTags(option)}</span>
-                                            )
-                                        }): null
-                                        }
-                                    </p>
-                                )
-                            }) : null
-                        }
-                    </div>
-                    <div className="mb-5">
-                        {dimensions?.length ? dimensions.map(dimension => {
-                            if (dimension.value) { 
-                                let dimensionName 
-                                switch (dimension.name) {
-                                    case 'length' :
-                                        dimensionName = 'Длина'
-                                        break
-                                    case 'width' :
-                                        dimensionName = 'Ширина'
-                                        break
-                                    case 'height' :
-                                        dimensionName = 'Высота'
-                                        break
-                                }
+                    <p className="my-5 font-sf-pro-display-light text-20px leading-7 text-justify" ><span > {sanitizeTags(props.product?.description)}</span></p>
+                    <div className="flex gap-5 flex-wrap lg:flex-nowrap">
+                        <div className="w-full lg:w-1/2">
+                            {props.product?.attributes?.length ? props.product?.attributes?.map(attr => {
                                 return (
-                                    <p key={dimension.name} className='font-sf-pro-display-light text-20px leading-7'><span >{sanitizeTags(dimensionName+':')}</span>
-                                        <span className='ml-1'>{sanitizeTags(dimension.value+' mm')}</span>
-                                    </p>
-                                )
+                                        <p key={attr.id} className='font-sf-pro-display-light text-20px leading-7'><span>{sanitizeTags(attr.name+':')}</span> 
+                                            {attr.options.length ? attr.options.map((option, index) => {
+                                                return (
+                                                    <span key={index} className='ml-1'>{sanitizeTags(option)}</span>
+                                                )
+                                            }): null
+                                            }
+                                        </p>
+                                    )
+                                }) : null
                             }
-                        }) : null
-                        }
+                        </div>
+                        <div className="w-full lg:w-1/2">
+                            {dimensions?.length ? dimensions.map(dimension => {
+                                if (dimension.value) { 
+                                    let dimensionName 
+                                    switch (dimension.name) {
+                                        case 'length' :
+                                            dimensionName = 'Длина'
+                                            break
+                                        case 'width' :
+                                            dimensionName = 'Ширина'
+                                            break
+                                        case 'height' :
+                                            dimensionName = 'Высота'
+                                            break
+                                    }
+                                    return (
+                                        <p key={dimension.name} className='font-sf-pro-display-light text-20px leading-7'><span >{sanitizeTags(dimensionName+':')}</span>
+                                            <span className='ml-1'>{sanitizeTags(dimension.value+' mm')}</span>
+                                        </p>
+                                    )
+                                }
+                            }) : null
+                            }
+                        </div>
                     </div>
                     <div>
                         <AddToCart product={props.product}/>
                     </div>
                 </div>
             </div>
-            { props.supportingProducts && isArray(props.supportingProducts) && props?.supportingProducts?.length && showProducts ? 
-                <div className="mb-12 flex flex-col items-center">
-                    <h2 className="flex justify-center text-36px my-3 px-2">Сопутствующие товары</h2>
-                    <ProductSlider products={props.supportingProducts} show={showProducts}></ProductSlider>
-                    <a href={props.addsLink} target="_blank" rel="noreferrer" className="button-form-black flex w-fit justify-center mt-5 md:mt-10">Перейти к сопутствующим</a>
+            { props.addsProducts && isArray(props.addsProducts) && props?.addsProducts?.length && showProducts ? 
+                <div className="mb-6 flex flex-col items-center">
+                    <h2 className="flex justify-center text-36px my-5 px-2">Сопутствующие товары</h2>
+                    <ProductSlider products={props.addsProducts} show={showProducts}></ProductSlider>
+                    <a href={props.addsLink} target="_blank" rel="noreferrer" className="button-form-black flex w-fit justify-center my-5">Перейти к {props.addsName}</a>
                 </div>
                 : null
             }
-            { props.accessories && isArray(props.accessories) && props?.accessories?.length && showProducts?
+            { props.supportingProducts && isArray(props.supportingProducts) && props?.supportingProducts?.length && showProducts?
                 <div className="mb-12 flex flex-col items-center">
-                    <h2 className="flex justify-center text-36px my-3 px-2">Аксессуары</h2>
-                    <ProductSlider products={props.accessories} show={showProducts}></ProductSlider>
-                    <a href={props.accessoriesLink} target="_blank" rel="noreferrer" className="button-form-black flex w-fit justify-center mt-5 md:mt-10">Перейти к аксессуарам</a>
+                    <h2 className="flex justify-center text-36px my-5 px-2">Аксессуары</h2>
+                    <ProductSlider products={props.supportingProducts} show={showProducts}></ProductSlider>
+                    <a href={props.supportingLink} target="_blank" rel="noreferrer" className="button-form-black flex w-fit justify-center my-5">Перейти к {props.supportingName}</a>
                 </div>
                 : null
             }
@@ -197,49 +199,84 @@ export async function getStaticProps({params}) {
     parentCategories = parentCategories.map(data => {
         return data.data
     })
-    let seriesId = parentCategories.find(category => category.parent != 0 && (category.name == 'Шинопроводы' || category.name == 'Светильники' || category.name == 'Сопутствующие'))
-    
-    
-    let accessoriesCatId,
-        typeCategories
+    let seriesId = parentCategories.find(category => category.parent !== 0 && (category.name === 'Шинопроводы' || category.name === 'Светильники' || category.name === 'Сопутствующие' || category.name === 'Основание для светильников'))
+        
+    let typeCategories
     if (seriesId)  {
         typeCategories = await getSubCategoriesById(seriesId.parent)
-        accessoriesCatId = typeCategories.find(cat => cat.name.includes('Сопутствующие'))
     }
-    
-    let accessories
-    if (accessoriesCatId) {
-        accessoriesCatId = accessoriesCatId.id
-        let {data} = await getProductsDataByCategoryId(15, accessoriesCatId, 1)
-        accessories = data
-    } 
 
+    //get сопутствующие (adds)
+    let addsProducts
     let addsCatId
-    let add = product[0].attributes.find(attr => attr.name == 'Тип товара')
-    if (add && typeCategories) {
-        add.options.includes('Шинопровод') ? add = 'Светильники' : add = 'Шинопроводы'
-        addsCatId = typeCategories.find(cat => cat.name.includes(add))
+    let currentProductTypeName
+    let supportingName = 'Сопутствующие'
+    let addsName    
+    if (typeCategories) {
+        // Получаем категории 'Тип товара' для текущего товара
         
-    }
-    let supportingProducts
-    if (addsCatId) {
-        addsCatId = addsCatId.id
-        const {data} = await getProductsDataByCategoryId(15, addsCatId, 1) 
-        supportingProducts = data
-    } 
-    const addsLink = await getLinkToSubCatalog(addsCatId)
-    const accessoriesLink = await getLinkToSubCatalog(accessoriesCatId)
+        let addsArray = product[0].attributes.find(attr => attr.name === 'Тип товара')
+         // Для шинопроводов или оснований сопутствующие - светильники
+        addsName = (addsArray.options.includes('Шинопровод (трек)') || addsArray.options.includes('Основание для светильников')) ? 'Светильники' : 'Шинопроводы'
+        //Получаем имя категории в основном option только один для условия по выводу аксессуаров
+        currentProductTypeName = addsArray.options[0] 
 
+        let addsCatObj = typeCategories.find(cat => cat.name.includes(addsName))
+        if (addsCatObj) {
+            //если текущая категория - шинопровод
+            addsCatId = addsCatObj.id
+            const {data} = await getProductsDataByCategoryId(15, addsCatId, 1) 
+            addsProducts = data
+        } else {
+            //если текущая категория - Основание для светильников
+            addsCatObj = typeCategories.find(cat => cat.name.includes('Основание для светильников'))
+            if (addsCatObj) {
+                addsCatId = addsCatObj.id
+                const {data} = await getProductsDataByCategoryId(15, addsCatId, 1) 
+                addsProducts = data
+            }
+        }
+    }
+
+    //get аксессуары (supporting)
+    let supportingProducts
+    let supportingCatId
+    // получаем аксессуары если сопутствующие - светильники или если текущая категория - аксессуар(они бывают разные, поэтому от обратного)
+    if ( typeCategories && supportingName && ((addsName === 'Светильники') || (currentProductTypeName !== 'Светильник' && currentProductTypeName !== 'Шинопровод' && currentProductTypeName !== 'Основание для светильников'))) {
+        let supportingCatObj = typeCategories.find(cat => cat.name.includes(supportingName))
+        if (supportingCatObj) {
+            supportingCatId = supportingCatObj.id
+            const {data} = await getProductsDataByCategoryId(15, supportingCatId, 1)
+            supportingProducts = data
+        }
+    }
+
+    let addsLink
+    let supportingLink
+    let addsLinkName
+    let supportigLinkName
+    if (addsCatId) {
+        addsLink = await getLinkToSubCatalog(addsCatId)
+        addsLinkName = getCategoryLinkNameForButton(addsLink.name)
+    }
+    // получаем ссылку если сопутствующие - светильники или если текущая категория - аксессуар(они бывают разные, поэтому от обратного)
+    if (supportingCatId && ((addsName === 'Светильники') || (currentProductTypeName !== 'Светильник' && currentProductTypeName !== 'Шинопровод' && currentProductTypeName !== 'Основание для светильников'))) {
+        supportingLink = await getLinkToSubCatalog(supportingCatId)
+        supportigLinkName = getCategoryLinkNameForButton(supportingLink.name)
+    }
     
     return {
 		props: {
 			headerFooter: headerFooterData?.data ?? {},
             product: product[0] ?? [],
-            accessories: accessories ?? [],
+
+            supportingName: supportigLinkName ?? '',
+            supportingLink: supportingLink?.path ?? '', 
             supportingProducts: supportingProducts ?? [],
-            addsLink: addsLink ?? '',
-            accessoriesLink: accessoriesLink ?? '',
-            add: add ?? ''
+
+            addsName: addsLinkName ?? '',
+            addsLink: addsLink?.path ?? '',
+            addsProducts: addsProducts ?? [],
 		},
         revalidate: 10
 	};

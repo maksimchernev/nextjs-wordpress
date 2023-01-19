@@ -106,3 +106,26 @@ export function checkEmptyFilters(filters) {
 }
 
 export function capitalized (str) {return str.replace(str.charAt(0), str.charAt(0).toUpperCase())};
+
+
+export function getCategoryLinkNameForButton (str) {
+	if (!str) return str
+	let categoryLinkName
+	switch(str) {
+		case "Светильники":
+			categoryLinkName = 'светильникам'
+			break
+		case 'Шинопроводы':
+			categoryLinkName = 'шинопроводам'
+			break
+		case 'Сопутствующие':
+			categoryLinkName = 'аксессуарам'
+			break
+		case 'Основание для светильников':
+			categoryLinkName = 'основаниям'
+			break
+		default: 
+			categoryLinkName = str
+	}
+	return categoryLinkName
+}

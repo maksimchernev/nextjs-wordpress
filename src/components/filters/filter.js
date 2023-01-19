@@ -81,11 +81,11 @@ const Filter = ({attribute, filters, setFilters, isOpened, setIsOpened, attrChos
                             let attrTerm = useIdForFilters ? term.id : term.name
                             let allowedStyles = 'cursor-pointer checkbox-wrapper-hover text-brand-gray3E'
                             return (
-                                <label key={term.id} className={`${filters[attribute.id].includes(term.name) ? allowedStyles : !term.isVisible || isLoading ? 'cursor-not-allowed text-gray-300 ' : allowedStyles}  checkbox-wrapper mb-2 lg:mb-3 font-sf-pro-display-light `}  >
+                                <label key={term.id} className={`${filters[attribute.id].includes(attrTerm) ? allowedStyles : (!term.isVisible || isLoading ? 'cursor-not-allowed text-gray-300 ' : allowedStyles)}  checkbox-wrapper mb-2 lg:mb-3 font-sf-pro-display-light `}  >
                                     <span dangerouslySetInnerHTML={{ __html: sanitize(capitalized(term.name)) }}></span>
                                     {!attribute.oneAtATime ? 
                                         <input type="checkbox" 
-                                            disabled={filters[attribute.id].includes(term.name) ? false : !term.isVisible || isLoading} 
+                                            disabled={filters[attribute.id].includes(attrTerm) ? false : !term.isVisible || isLoading} 
                                             value={term.id} 
                                             id={term.name} 
                                             name={attribute.name}
@@ -94,7 +94,7 @@ const Filter = ({attribute, filters, setFilters, isOpened, setIsOpened, attrChos
                                             />
                                         :
                                         <input type="radio" 
-                                            disabled={filters[attribute.id].includes(term.name) ? false : !term.isVisible || isLoading} 
+                                            disabled={filters[attribute.id].includes(attrTerm) ? false : !term.isVisible || isLoading} 
                                             value={term.id} 
                                             id={term.name} 
                                             name={attribute.name} 

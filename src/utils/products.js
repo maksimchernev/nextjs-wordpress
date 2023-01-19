@@ -22,7 +22,8 @@ export const getProductsDataByCategoryId = async (per_page, category, page) => {
             {
               per_page: per_page || 100,
               category: category || 0,
-              page: page || 1
+              page: page || 1,
+              orderby: 'title'
             }
         )
 }
@@ -32,7 +33,8 @@ export const getProductsData = async (per_page, page) => {
       'products',
       {
         per_page: per_page || 100,
-        page: page || 1
+        page: page || 1,
+        orderby: 'title'
       }
   )
 }
@@ -40,7 +42,7 @@ export const getProductData = async (slug) => {
   return await api.get(
     'products',
     {
-      slug: slug || ''
+      slug: slug || '',
     }
   )
 }

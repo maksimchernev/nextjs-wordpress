@@ -78,30 +78,71 @@ export async function getDataForInitialFilters() {
   const allTypeCats = categories.filter(category => category.parent == 0 && category.slug != 'uncategorized' && (category.slug == 'lamps' || category.slug == 'accessory' || category.slug == 'tracks' || category.slug == 'osnovanie-dlya-svetilnikov')) 
 
   for (let brand of brandsCats) {
-    relatedAttributes[0].terms.push({id: brand.id, name: brand.name, isVisible:true})
+    //for brand
+    let childBrandSeriesArray = []
+    let childBrandTypesArray = []
     for (let series of seriesCats) {
       if (series.parent == brand.id) {
-        let childrenObject = {}
-        let typesArray = []
+        //for brand
+        if (!childBrandSeriesArray.includes(series.id)) {
+          childBrandSeriesArray.push(series.id)
+        }
+        //for series
+        let childSeriesTypesObject = {}
+        let childSeriesTypesArray = []
+
         for (let type of typeCats) {
           if (type.parent == series.id) {
-            childrenObject[type.name] = type.id
+            childSeriesTypesObject[type.name] = type.id
+            //for type
             for (let typeAllProducts of allTypeCats) {
               if (type.name === typeAllProducts.name) {
-                if (!typesArray.includes(typeAllProducts.id)) {
-                  typesArray.push(typeAllProducts.id)
+                //for brand
+                if (!childBrandTypesArray.includes(typeAllProducts.id)) {
+                  childBrandTypesArray.push(typeAllProducts.id)
+                }
+                //for series
+                if (!childSeriesTypesArray.includes(typeAllProducts.id)) {
+                  childSeriesTypesArray.push(typeAllProducts.id)
+                }
+                
+              }
+            }
+
+          }
+        }
+        relatedAttributes[1].terms.push({id: series.id, name: series.name, brand: brand.id, brandName: brand.name, isVisible:true, ...childSeriesTypesObject, types: childSeriesTypesArray})
+      }
+    }
+    relatedAttributes[0].terms.push({id: brand.id, name: brand.name, isVisible:true, series: childBrandSeriesArray, types: childBrandTypesArray})
+  }
+  //for type
+  for (let typeAllProducts of allTypeCats) {
+    let childTypesArray = []
+    let childSeriesArray = []
+    let childBrandsArray = []
+    for (let type of typeCats) {
+      if (type.name === typeAllProducts.name) {
+        if (!childTypesArray.includes(type.id)) {
+          childTypesArray.push(type.id)
+        }
+        for (let series of seriesCats) {
+          if (type.parent === series.id) {
+            if (!childSeriesArray.includes(series.id)) {
+              childSeriesArray.push(series.id)
+            }
+            for (let brand of brandsCats) {
+              if (series.parent === brand.id) {
+                if (!childBrandsArray.includes(brand.id)) {
+                  childBrandsArray.push(brand.id)
                 }
               }
             }
           }
         }
-        relatedAttributes[1].terms.push({id: series.id, name: series.name, brand: brand.id, brandName: brand.name, isVisible:true, ...childrenObject, types: typesArray})
       }
     }
-  }
-
-  for (let type of allTypeCats) {
-      relatedAttributes[2].terms.push({id: type.id, name: type.name, isVisible:true})
+    relatedAttributes[2].terms.push({id: typeAllProducts.id, name: typeAllProducts.name, isVisible:true, childTypes: childTypesArray, series: childSeriesArray, brands: childBrandsArray})
   }
   const filtersObj = getObjectOfArray(relatedAttributes, [])
   return({relatedAttributes, filtersObj})
@@ -109,10 +150,12 @@ export async function getDataForInitialFilters() {
 
 export async function getLinkToSubCatalog(id) {
   const {brandsCats, seriesCats, typeCats} = await getBrandsSeriesType()
+  let typeName
   let typeSlug
   let typeParent
   for (let type of typeCats) {
     if (type.id == id) {
+      typeName = type.name
       typeSlug = type.slug
       typeParent = type.parent
     }
@@ -132,7 +175,7 @@ export async function getLinkToSubCatalog(id) {
     }
   }
   if (typeSlug && seriesSlug && brandSlug) {
-    return `/brand/${brandSlug}/series/${seriesSlug}/type/${typeSlug}`
+    return {path: `/brand/${brandSlug}/series/${seriesSlug}/type/${typeSlug}`, name: typeName}
   } else {
     return ''
   }

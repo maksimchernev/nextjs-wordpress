@@ -1,7 +1,7 @@
 import Layout from '../../../../../../src/components/layout';
 import { HEADER_FOOTER_ENDPOINT } from '../../../../../../src/utils/constants/endpoints';
 import {getProductsDataByCategoryId} from '../../../../../../src/utils/products'
-import {getBrandsSeriesTypePaths, getCategoryDataBySlug, getCategoryDataById} from '../../../../../../src/utils/categories'
+import {getBrandsSeriesTypePaths, getCategoryDataBySlug} from '../../../../../../src/utils/categories'
 import axios from 'axios'
 import { useRouter } from 'next/router';
 import BreadCrumb from '../../../../../../src/components/breadcrumb';
@@ -17,6 +17,7 @@ import { FiltersIcon } from '../../../../../../src/components/icons';
 import Loader from '../../../../../../src/components/loader';
 
 export default function Type(props) {
+    const router = useRouter()
     /* product display states */
     const [products, setProducts] = useState(splitIntoPages(props?.products, 30))
     const [page, setPage] = useState(1)
@@ -169,12 +170,11 @@ export default function Type(props) {
         return () => window.removeEventListener('resize', handleResize);
     }, [])  
 
-    const router = useRouter()
+    const typeId = router?.query?.typeId
+
     if (router.isFallback) {
         return <Loader/>
     }
-    const typeId = router?.query?.typeId
-
 
     const handleRemoveFilters = () => {
         let isFiltersEmpty = checkEmptyFilters(filters)
@@ -236,6 +236,13 @@ export async function getStaticPaths() {
 } 
 
 export async function getStaticProps({params}) {
+    const typeSlug = params.typeId /* + '-' + params.seriesId */
+    const typeData = await getCategoryDataBySlug(typeSlug)
+    if (!typeData.id) {
+        return {
+            notFound: true
+        }
+    }
     const { data: headerFooterData } = await axios.get( HEADER_FOOTER_ENDPOINT );
     const seriesData = await getCategoryDataBySlug(params.seriesId)
     if (!seriesData.id) {
@@ -243,15 +250,13 @@ export async function getStaticProps({params}) {
             notFound: true
         }
     } 
-    const {data: brandData} = await getCategoryDataById(seriesData?.parent)
+    const brandData = await getCategoryDataBySlug(params.brandId)
     if (!brandData.id) {
         return {
             notFound: true
         }
     }
-    const typeSlug = params?.typeId /* + '-' + params.seriesId */
-    const typeData = await getCategoryDataBySlug(typeSlug)
-    if (!typeData.id) {
+    if (typeData.parent !== seriesData.id || seriesData.parent !== brandData.id) {
         return {
             notFound: true
         }

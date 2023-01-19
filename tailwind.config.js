@@ -83,6 +83,28 @@ module.exports = {
 				'56px': '56px',
 				'72px': '72px',
 			},
+			width: {
+				'900px': '900px'
+			},
+			maxWidth: {
+				'900px': '900px',
+				'400px': '400px',
+				'566px': '566px',
+			},
+			maxHeight: {
+				'566px': '566px',
+				'333px': '333px'
+			},
+			minWidth: {
+				'50px': '50px',
+				'566px': '566px',
+				'400px': '400px',
+			},
+			minHeight: {
+				'50px': '50px',
+				'566px': '566px',
+				'333px': '333px'
+			}
 		},
 		
 	},

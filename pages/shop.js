@@ -98,7 +98,7 @@ const getProductsOfSiblingCategoriesFromApi = async (idsArray, productsPerPage,i
     setInitialPagesNumber(productsData.headers['x-wp-totalpages'])
     setCurrentProducts(productsData?.products || [])
 }
-export default function Shop(props) {
+export default function Shopm(props) {
     const [initialFilters, setInitialFilters] = useState(props?.initialFiltersData?.filtersObj || {})
     const [filters, setFilters] = useState({})
 
@@ -152,6 +152,7 @@ export default function Shop(props) {
                     numOfChosen+=1
                 }
             }
+            //filters hiding
             if (numOfChosen > 0) {
                 /* if (!initialChosenLast[initialChosenLast.length-1] === 'type') { */
 
@@ -231,12 +232,14 @@ export default function Shop(props) {
                         
                     } else if (initialChosenLast[initialChosenLast.length-1] == 'type') {
                         let brandsAvailable = []
+                        
                         if (newAttributesArray[1].hasOwnProperty('terms')){
                             for (let termSeries of newAttributesArray[1].terms) {
                                 for (let relTypeId of termSeries.types) {
                                     if (initialFilters['type'].includes(relTypeId)) {
                                         termSeries.isVisible = true
                                         if (!brandsAvailable.includes(termSeries.brand)) {
+                                            
                                             brandsAvailable.push(termSeries.brand)
                                         }
                                     }
@@ -268,6 +271,7 @@ export default function Shop(props) {
                 }
                 setInitialFiltersData([...newAttributesArray])
             }
+            //filters hiding
             if (numOfChosen==3 || (initialFilters.series.length && initialFilters.type.length)){
                 setIsLoading(true)
                 //if all changed
@@ -334,6 +338,7 @@ export default function Shop(props) {
 
             } else if (numOfChosen == 2) {
                 //if some changed
+                
                 setIsLoading(true)
                 if (initialFilters.brands.length && initialFilters.series.length && !initialFilters.type.length) {
                     await getProductsOfSiblingCategoriesFromApi(initialFilters.series, productsPerPage, initialPage, setInitialPagesNumber, setCurrentProducts)
@@ -345,7 +350,6 @@ export default function Shop(props) {
                                 nameOfType = term.name
                                 break
                             }
-                            
                         }
                         if (nameOfType) {
                             break
@@ -355,7 +359,12 @@ export default function Shop(props) {
                     if (initialFiltersData[1]?.terms?.length) {
                         for (let term of initialFiltersData[1].terms) {
                             if (term.hasOwnProperty(nameOfType)) {
-                                categoryIds.push(term[nameOfType])
+                                for (let brand of initialFilters.brands) {
+                                    if (brand === term.brand && !categoryIds.includes(term[nameOfType])) {
+                                        categoryIds.push(term[nameOfType])
+                                    }
+                                }
+                                
                             }
                         }
                     }
@@ -381,7 +390,6 @@ export default function Shop(props) {
 
         })()
     }, [initialFilters, initialPage, productsPerPage])
-
     useDidMountEffect(()=> {
         let newProducts = [...allProducts]
         setIsLoading(true)
@@ -599,7 +607,7 @@ export default function Shop(props) {
                     </div>
                     {isLoading ?  
                     <div className='flex justify-center w-full lg:w-3/4 xl:w-4/5 h-full mt-4'> 
-                        <Image width="100" height='100' src="/cart-spinner.gif"  alt="spinner"/> 
+                        <Image width="100" height='100' src="/loader.gif"  alt="spinner"/> 
                     </div>
                     : 
                     <ProductList products={currentProducts} ></ProductList>                    

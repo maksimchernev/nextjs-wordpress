@@ -39,7 +39,7 @@ const Hero = ({h1Content, text, button, isMain, image, header}) => {
                         {capitalized(h1Content)}
                     </h1>}
                 {text && 
-                    <p className={`${isMain ? 'text-center lg:text-left font-sf-pro-display-light lg:font-sf-pro-display-medium' : ''} mt-2 lg:mt-7 text-20px lg:text-4xl sm:text-28px sm:mt-4`}>
+                    <p className={`${isMain && 'text-center leading-8 lg:text-left font-sf-pro-display-light max-w-900px'} mt-2 lg:mt-7 text-20px lg:text-3xl sm:text-28px sm:mt-4`}>
                         {capitalized(text)}
                     </p> }
                 {button && 

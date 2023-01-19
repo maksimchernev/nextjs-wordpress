@@ -24,7 +24,7 @@ const Product = ( { product, slider} ) => {
 		<div className={`${slider ? 'product-card-slider': 'md:w-1/2 xl:w-1/3 2xl:w-1/4 product-card'} w-full   flex flex-grow justify-center px-4 py-2`}>
             <div className={`${!slider && 'border-b border-brand-grayCF sm:border-0'} product-card-shadow flex-col flex-grow  py-5 sm:p-5 `}>
                 { isMounted ? 
-                    <div>
+                    <div className='flex flex-col justify-between h-full'>
                         <Link href={permalink ?? '/'}>
                             <a className={`flex ${!slider ? 'sm:flex-col' : 'flex-col'}`}>
                                 <div className='flex justify-center'>
@@ -36,7 +36,7 @@ const Product = ( { product, slider} ) => {
                                         containerClassNames={`${slider ? 'product-image-card-slider' : "product-image-card"}`}
                                     />
                                 </div>
-                                <p className={`${slider ? 'h-24 text-center text-14px sm:text-base' : 'h-12 sm:h-24 sm:text-center ml-5 sm:ml-0 sm:my-2 sm:mt-4 '}  text-base font-sf-pro-display  truncate-p`}>{ sanitizeTags(product?.name) ?? '' }</p>
+                                <p className={`${slider ? 'max-h-24 text-14px sm:text-base' : 'max-h-12 sm:max-h-24 ml-5 sm:ml-0 sm:my-2 sm:mt-4 '}  text-base font-sf-pro-display text-justify sm:text-center truncate-p`}>{ sanitizeTags(product?.name) ?? '' }</p>
                             </a>
                         </Link>
                         

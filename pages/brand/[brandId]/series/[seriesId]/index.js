@@ -2,7 +2,7 @@ import axios from 'axios'
 import Link from "next/link"
 import { useRouter } from 'next/router';
 import Layout from '../../../../../src/components/layout';
-import {getBrandsAndSeriesPaths, getSubCategoriesById, getCategoryDataBySlug, getCategoryDataById} from '../../../../../src/utils/categories'
+import {getBrandsAndSeriesPaths, getSubCategoriesById, getCategoryDataBySlug} from '../../../../../src/utils/categories'
 import {HEADER_FOOTER_ENDPOINT} from '../../../../../src/utils/constants/endpoints'
 import Image from '../../../../../src/components/image' 
 import BreadCrumb from '../../../../../src/components/breadcrumb';
@@ -71,8 +71,13 @@ export async function getStaticProps({params}) {
       notFound: true
     }
   }
-  const {data: brandData} = await getCategoryDataById(seriesData?.parent)
+  const brandData = await getCategoryDataBySlug(params.brandId)
   if (!brandData.id) {
+    return {
+        notFound: true
+    }
+  }
+  if (seriesData.parent !== brandData.id) {
     return {
         notFound: true
     }

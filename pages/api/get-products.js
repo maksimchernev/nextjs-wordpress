@@ -31,6 +31,7 @@ export default async function handler(req, res) {
                 per_page: per_page || 50,
                 page: page || 1,
                 category: category || 0,
+                orderby: 'title'
             }
         )
         responseData.success = true;

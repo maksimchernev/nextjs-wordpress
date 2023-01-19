@@ -1,7 +1,10 @@
+export { default as AboutDone } from "./AboutDone";
 export { default as ArrowDown } from "./ArrowDown";
 export { default as ArrowFilter } from "./ArrowFilter";
 export { default as Back } from "./Back";
 export { default as Bag } from "./Bag";
+export { default as BigArrowDownMobile } from "./BigArrowDownMobile";
+export { default as BigArrowDown } from "./BigArrowDown";
 export { default as Bin } from "./Bin";
 export { default as BurgerIcon } from "./BurgerIcon";
 export { default as BurgetIconCross } from "./BurgetIconCross";

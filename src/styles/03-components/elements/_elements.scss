@@ -137,7 +137,7 @@ $dotSize: 80px;
     top: 0;
     left: $dotSize+20px;
 }
-@media (max-width: 450px) {
+@media (max-width: 639px) {
     $dotSize: $dotSize/1.5;
     .base-timeline {
         width: 95%;
@@ -174,11 +174,11 @@ $dotSize: 80px;
     .base-timeline__item::before {
     font-size: 30px;
     }
-    #howto {
-        padding-bottom: 5rem;
+    .go-to-contacts-link {
+        margin-top: 30px;
     }
 }
-@media (min-width: 451px) {
+@media (min-width: 640px) {
     .base-timeline__item:last-child {
         width: 0;
     }
@@ -202,10 +202,10 @@ $dotSize: 80px;
     }
     .base-timeline__summary-text_container {
         height: $dotSize/2;
-        left: -$dotSize/2; 
+        left: -$dotSize; 
         top: 7em;
         justify-content: center;   
-        width: $dotSize*2;     
+        width: $dotSize*3;     
     }
     .base-timeline__summary-text {
         text-align: center;
@@ -218,8 +218,8 @@ $dotSize: 80px;
     .base-timeline__item::before {
     font-size: 45px;
     }
-    #howto {
-        padding-bottom: 7rem;
+    .go-to-contacts-link {
+        margin-top: 110px;
     }
 }
 @media (max-width: 639px) {
@@ -227,6 +227,7 @@ $dotSize: 80px;
        max-width: 50%;
     }
 }
+
 @media (min-width: 640px) {
     .product-card {
         max-width: 50%;
@@ -251,6 +252,9 @@ $dotSize: 80px;
       }
     .product-card-slider {
         max-width: 25%;
+    }
+    .go-to-contacts-link {
+        margin-top: 70px;
     }
 }
 @media (min-width: 1536px) {
@@ -587,7 +591,8 @@ input::-webkit-inner-spin-button {
 .down-btn{
     color: #333;
 }
-.down-btn:hover{
+
+.down-btn:hover, .down-btn-how-to:hover{
     color: #FFDF38;
     transition: 0.2s;
 }

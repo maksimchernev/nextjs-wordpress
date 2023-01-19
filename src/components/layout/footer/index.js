@@ -83,7 +83,7 @@ const Footer = ({footer, header}) => {
 
 					{/* form */}
 				
-					<div className="w-full md:w-1/2 hidden sm:flex">
+					<div className="w-full md:w-1/2 hidden md:flex">
 						<ContactForm></ContactForm>
 					</div>
 				</div>
